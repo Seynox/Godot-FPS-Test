@@ -1,26 +1,22 @@
 class_name Player extends Entity
 
 @export_category("Player")
-@export_range(1, 35, 1) var speed: float = 10 # m/s
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
 
 @export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # m
-@export_range(0.1, 3.0, 0.1, "or_greater") var camera_sens: float = 1
-@export var shooting_cooldown: float = 0.2
-@export var shooting_range: float = 1000
+@export_range(0.1, 3.0, 0.1, "or_greater") var camera_sensitivity: float = 1
+@export var shooting_cooldown: float = 0.2 # In seconds
+@export var shooting_range: float = 1000 # In meters
 
 var can_shoot: bool = true
 var jumping: bool = false
 var mouse_captured: bool = false
 
-var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var movement_direction: Vector2 # Input direction for movement
+var look_direction: Vector2 # Input direction for look/aim
 
-var move_dir: Vector2 # Input direction for movement
-var look_dir: Vector2 # Input direction for look/aim
-
-var walk_vel: Vector3 # Walking velocity 
-var grav_vel: Vector3 # Gravity velocity 
-var jump_vel: Vector3 # Jumping velocity
+var movement_velocity: Vector3
+var jump_velocity: Vector3
 
 @onready var camera: Camera3D = $Camera
 
@@ -28,7 +24,7 @@ var jump_vel: Vector3 # Jumping velocity
 # PLAYER
 #
 
-func die() -> void:
+func _die() -> void:
 	print("DEAD")
 	get_tree().reload_current_scene()
 
@@ -48,12 +44,7 @@ func shoot() -> void:
 	var result = space.intersect_ray(ray)
 	var collidedNode = result.get("collider")
 	
-	if collidedNode == null:
-		print("MISS")
-		return
-	
-	# TODO Bullet impact sprite
-	if collidedNode is Entity:
+	if collidedNode != null && collidedNode is Entity:
 		collidedNode.take_hit_from(self)
 
 #
@@ -64,18 +55,22 @@ func _ready() -> void:
 	capture_mouse()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not is_multiplayer_authority():
+		return
+	
 	if event is InputEventMouseMotion:
-		look_dir = event.relative * 0.001
+		look_direction = event.relative * 0.001
 		if mouse_captured: update_camera_rotation()
-		
+		return
+	
 	if Input.is_action_just_pressed("jump"): jumping = true
 	if Input.is_action_just_pressed("shoot"): shoot()
 	if Input.is_action_just_pressed("exit"): get_tree().quit()
 
-func _physics_process(delta: float) -> void:	
+func _physics_process(delta: float) -> void:
 	if mouse_captured: handle_camera_movements(delta)
-	velocity = get_walk_vector(delta) + get_gravity_vector(delta) + get_jump_vector(delta)
-	move_and_slide()
+	velocity = calculate_velocity(delta) #get_walk_vector(delta) + get_gravity_vector(delta) + get_jump_vector(delta)
+	super._physics_process(delta)
 
 #
 # MOUSE
@@ -93,36 +88,37 @@ func release_mouse() -> void:
 # CAMERA
 #
 
-func update_camera_rotation(sens_mod: float = 1.0) -> void:
-	camera.rotation.y -= look_dir.x * camera_sens * sens_mod
-	camera.rotation.x = clamp(camera.rotation.x - look_dir.y * camera_sens * sens_mod, -1.5, 1.5)
+func update_camera_rotation(sensitivity_multiplicator: float = 1.0) -> void:
+	camera.rotation.y -= look_direction.x * camera_sensitivity * sensitivity_multiplicator
+	camera.rotation.x = clamp(camera.rotation.x - look_direction.y * camera_sensitivity * sensitivity_multiplicator, -1.5, 1.5)
 
 func handle_camera_movements(delta: float, sens_mod: float = 1.0) -> void:
 	var joypad_dir: Vector2 = Input.get_vector("look_left","look_right","look_up","look_down")
 	if joypad_dir.length() > 0:
-		look_dir += joypad_dir * delta
+		look_direction += joypad_dir * delta
 		update_camera_rotation(sens_mod)
-		look_dir = Vector2.ZERO
+		look_direction = Vector2.ZERO
 
 #
 # MOVEMENTS
 #
 
-func get_walk_vector(delta: float) -> Vector3:
-	move_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, 0, move_dir.y)
-	var walk_dir: Vector3 = Vector3(_forward.x, 0, _forward.z).normalized()
-	walk_vel = walk_vel.move_toward(walk_dir * speed * move_dir.length(), acceleration * delta)
-	return walk_vel
-
-func get_gravity_vector(delta: float) -> Vector3:
-	grav_vel = Vector3.ZERO if is_on_floor() else grav_vel.move_toward(Vector3(0, velocity.y - gravity, 0), gravity * delta)
-	return grav_vel
-
-func get_jump_vector(delta: float) -> Vector3:
+func calculate_velocity(delta: float) -> Vector3:
+	# Movements velocity
+	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	
+	var movement_vector_raw: Vector3 = camera.global_transform.basis * Vector3(movement_direction.x, 0, movement_direction.y)
+	movement_vector_raw.y = 0
+	
+	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * movement_direction.length()
+	movement_velocity = movement_velocity.move_toward(movement_vector, acceleration * delta)
+	
+	# Jump velocity
 	if jumping:
-		if is_on_floor(): jump_vel = Vector3(0, sqrt(4 * jump_height * gravity), 0)
 		jumping = false
-		return jump_vel
-	jump_vel = Vector3.ZERO if is_on_floor() else jump_vel.move_toward(Vector3.ZERO, gravity * delta)
-	return jump_vel
+		if is_on_floor():
+			jump_velocity = Vector3(0, sqrt(4 * jump_height * GRAVITY), 0)
+	else:
+		jump_velocity = jump_velocity.move_toward(Vector3.ZERO, GRAVITY * delta)
+		
+	return movement_velocity + jump_velocity
