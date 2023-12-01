@@ -1,0 +1,60 @@
+[gd_scene load_steps=11 format=3 uid="uid://b64bf0xvtrqga"]
+
+[ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_f72g8"]
+[ext_resource type="Script" path="res://game.gd" id="1_sr7ww"]
+[ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui.tscn" id="2_yhl8o"]
+[ext_resource type="PackedScene" uid="uid://diunxyob1p6gr" path="res://entities/enemy/enemy.tscn" id="4_68d5f"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_snprt"]
+size = Vector3(60, 2, 60)
+
+[sub_resource type="BoxMesh" id="BoxMesh_m3y5p"]
+size = Vector3(60, 2, 60)
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_avm6s"]
+
+[sub_resource type="Sky" id="Sky_swgvi"]
+sky_material = SubResource("PhysicalSkyMaterial_avm6s")
+
+[sub_resource type="Environment" id="Environment_3miro"]
+background_mode = 2
+sky = SubResource("Sky_swgvi")
+fog_light_color = Color(0.517647, 0.552941, 0.607843, 1)
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_85qnn"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_sr7ww")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_snprt")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("BoxMesh_m3y5p")
+
+[node name="Player" parent="." instance=ExtResource("1_f72g8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+health = null
+damages_on_hit = null
+
+[node name="Interface" parent="Player" instance=ExtResource("2_yhl8o")]
+
+[node name="Sky" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3miro")
+camera_attributes = SubResource("CameraAttributesPhysical_85qnn")
+
+[node name="Sun" type="DirectionalLight3D" parent="Sky"]
+transform = Transform3D(0.890213, 0.207875, -0.405351, 0.455545, -0.406223, 0.792125, 0, -0.889815, -0.456321, -4.64647, 8.70584, -5.12973)
+shadow_enabled = true
+
+[node name="Enemy" parent="." node_paths=PackedStringArray("TARGET") instance=ExtResource("4_68d5f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0822127, 2.11259, -10.7485)
+SPEED = null
+JUMP_VELOCITY = null
+HIT_DISTANCE = null
+TARGET = NodePath("../Player")
+health = null
+damages_on_hit = null

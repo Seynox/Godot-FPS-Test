@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqowh4oh20mje"]
+
+[ext_resource type="Script" path="res://entities/entity/entity.gd" id="1_gvv7o"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vvs2v"]
+
+[node name="Entity" type="CharacterBody3D"]
+script = ExtResource("1_gvv7o")
+
+[node name="Hitbox" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_vvs2v")

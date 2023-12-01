@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://hu7ojvfabj3c"]
+
+[ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iow1f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_manxs"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4q6xg"]
+material = SubResource("StandardMaterial3D_manxs")
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_xm53f")
+health = null
+damages_on_hit = null
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0)
+fov = 90.0
+
+[node name="Hitbox" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_iow1f")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_4q6xg")
