@@ -12,11 +12,9 @@ material = SubResource("StandardMaterial3D_61dec")
 
 [node name="Enemy" type="CharacterBody3D"]
 script = ExtResource("1_yltcs")
+HIT_DISTANCE = null
 SPEED = null
 JUMP_VELOCITY = null
-HIT_DISTANCE = null
-health = null
-damages_on_hit = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_s6706")

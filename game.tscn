@@ -37,8 +37,6 @@ mesh = SubResource("BoxMesh_m3y5p")
 
 [node name="Player" parent="." instance=ExtResource("1_f72g8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-health = null
-damages_on_hit = null
 
 [node name="Interface" parent="Player" instance=ExtResource("2_yhl8o")]
 
@@ -52,9 +50,4 @@ shadow_enabled = true
 
 [node name="Enemy" parent="." node_paths=PackedStringArray("TARGET") instance=ExtResource("4_68d5f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0822127, 2.11259, -10.7485)
-SPEED = null
-JUMP_VELOCITY = null
-HIT_DISTANCE = null
 TARGET = NodePath("../Player")
-health = null
-damages_on_hit = null
