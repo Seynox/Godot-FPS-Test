@@ -43,12 +43,12 @@ camera_attributes = SubResource("CameraAttributesPhysical_85qnn")
 transform = Transform3D(0.890213, 0.207875, -0.405351, 0.455545, -0.406223, 0.792125, 0, -0.889815, -0.456321, -4.64647, 8.70584, -5.12973)
 shadow_enabled = true
 
-[node name="Player" parent="." instance=ExtResource("1_f72g8")]
+[node name="Player" parent="." groups=["Player"] instance=ExtResource("1_f72g8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shooting_cooldown = 0.35
 
 [node name="Interface" parent="Player" instance=ExtResource("2_yhl8o")]
 
-[node name="Enemy" parent="." node_paths=PackedStringArray("TARGET") instance=ExtResource("4_68d5f")]
+[node name="Enemy" parent="." instance=ExtResource("4_68d5f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.87045, -7.561)
-TARGET = NodePath("../Player")
 SPEED = 5.0

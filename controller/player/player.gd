@@ -28,10 +28,14 @@ func _die() -> void:
 	print("DEAD")
 	get_tree().reload_current_scene()
 
-func shoot() -> void:
-	if !can_shoot:
-		return
+func shoot_coolown() -> void:
+	can_shoot = false
+	get_tree().create_timer(shooting_cooldown).timeout.connect(func(): can_shoot = true)
 	
+func shoot() -> bool:
+	if !can_shoot:
+		return false
+
 	var mouse_position = get_viewport().get_mouse_position()
 	var ray_origin = camera.project_ray_origin(mouse_position)
 	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * shooting_range
@@ -46,6 +50,9 @@ func shoot() -> void:
 	
 	if collidedNode != null && collidedNode is Entity:
 		collidedNode.take_hit_from(self)
+	
+	shoot_coolown()
+	return true
 
 #
 # OVERRIDEN METHODS
