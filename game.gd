@@ -4,7 +4,7 @@ extends Node3D
 
 @onready var ground = $Ground/GroundCollision
 
-var enemy_speed = 5 # Meters per second
+var additional_enemy_speed = 0 # Meters per second
 
 func _get_random_position() -> Vector3:
 	var ground_size: Vector3 = ground.get_shape().size
@@ -25,7 +25,8 @@ func start_enemy_spawns():
 	add_child(enemy)
 	
 	enemy.global_position = enemy_position
-	enemy.SPEED = enemy_speed
+	enemy.SPEED += additional_enemy_speed
+	additional_enemy_speed += 0.1
 	
 	get_tree().create_timer(spawn_interval).timeout.connect(start_enemy_spawns)
 
