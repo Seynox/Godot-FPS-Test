@@ -32,7 +32,11 @@ func dash() -> bool:
 	can_dash = false
 	CAN_BE_HIT = false
 	
-	get_tree().create_timer(dash_duration).timeout.connect(func(): CAN_BE_HIT = true)
+	get_tree().create_timer(dash_duration).timeout.connect(
+		func():
+			CAN_BE_HIT = true
+			can_dash = true
+	)
 	return true
 
 func _die() -> void:
@@ -82,12 +86,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	
 	if Input.is_action_just_pressed("jump"): jumping = true
+	if Input.is_action_just_pressed("dash"): dash()
 	if Input.is_action_just_pressed("shoot"): shoot()
 	if Input.is_action_just_pressed("exit"): get_tree().quit()
 
 func _physics_process(delta: float) -> void:
 	if mouse_captured: handle_camera_movements(delta)
-	velocity = calculate_velocity(delta) #get_walk_vector(delta) + get_gravity_vector(delta) + get_jump_vector(delta)
+	velocity = _calculate_velocity(delta)
 	super._physics_process(delta)
 
 #
@@ -121,7 +126,15 @@ func handle_camera_movements(delta: float, sens_mod: float = 1.0) -> void:
 # MOVEMENTS
 #
 
-func calculate_velocity(delta: float) -> Vector3:
+func _calculate_jump_velocity(delta: float) -> Vector3:
+	if jumping and is_on_floor():
+		return Vector3(0, sqrt(4 * jump_height * GRAVITY), 0)
+		
+	jumping = false
+	return jump_velocity.move_toward(Vector3.ZERO, GRAVITY * delta)
+	
+
+func _calculate_velocity(delta: float) -> Vector3:
 	# Movements velocity
 	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	
@@ -131,12 +144,6 @@ func calculate_velocity(delta: float) -> Vector3:
 	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * movement_direction.length()
 	movement_velocity = movement_velocity.move_toward(movement_vector, acceleration * delta)
 	
-	# Jump velocity
-	if jumping:
-		jumping = false
-		if is_on_floor():
-			jump_velocity = Vector3(0, sqrt(4 * jump_height * GRAVITY), 0)
-	else:
-		jump_velocity = jump_velocity.move_toward(Vector3.ZERO, GRAVITY * delta)
+	jump_velocity = _calculate_jump_velocity(delta)
 		
 	return movement_velocity + jump_velocity
