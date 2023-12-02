@@ -22,7 +22,7 @@ func _hit_target_in_range():
 		TARGET.take_hit_from(self)
 
 func get_closest_target() -> Entity:
-	var players = get_tree().get_nodes_in_group("Player") # TODO Temp rename
+	var players = get_tree().get_nodes_in_group("Player")
 	var distance_sorting = func(player: Player): return global_position.distance_squared_to(player.global_position)
 	players.sort_custom(distance_sorting)
 	return null if players.is_empty() else players[0]

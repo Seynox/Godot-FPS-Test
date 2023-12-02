@@ -1,20 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://diunxyob1p6gr"]
+[gd_scene load_steps=4 format=3 uid="uid://diunxyob1p6gr"]
 
 [ext_resource type="Script" path="res://entities/enemy/enemy.gd" id="1_yltcs"]
+[ext_resource type="Texture2D" uid="uid://b3enoam5p1vdl" path="res://assets/textures/enemy.png" id="2_0hd5o"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s6706"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_61dec"]
-albedo_color = Color(1, 0, 0, 1)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_8r3xh"]
-material = SubResource("StandardMaterial3D_61dec")
-
 [node name="Enemy" type="CharacterBody3D"]
 script = ExtResource("1_yltcs")
+SPEED = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_s6706")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("CapsuleMesh_8r3xh")
+[node name="CharacterSprite" type="Sprite3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.2, 0)
+billboard = 1
+double_sided = false
+texture = ExtResource("2_0hd5o")

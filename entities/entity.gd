@@ -6,6 +6,7 @@ class_name Entity extends CharacterBody3D
 @export var ATTACK_DISTANCE: float = 1.5
 @export var DAMAGES_ON_HIT: float = 1.0
 @export var CAN_BE_HIT: bool = true
+@export var GRAVITY_MULTIPLIER: float = 1.0
 
 var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var gravity_velocity: Vector3 = Vector3.ZERO
@@ -14,17 +15,17 @@ var gravity_velocity: Vector3 = Vector3.ZERO
 
 func _physics_process(delta: float):
 	if global_position.y <= -10:
-		print("[DEBUG] Died at %s" % global_position)
 		_die()
 	
 	_apply_gravity(delta)
 	move_and_slide()
 
 func _apply_gravity(delta: float) -> void:
-	if is_on_floor():
+	var gravity_force = GRAVITY * GRAVITY_MULTIPLIER
+	if is_on_floor() and gravity_force >= 0:
 		gravity_velocity = Vector3.ZERO
 	else:
-		gravity_velocity = gravity_velocity.move_toward(Vector3(0, velocity.y - GRAVITY, 0), GRAVITY * delta)
+		gravity_velocity = gravity_velocity.move_toward(Vector3(0, velocity.y - gravity_force, 0), gravity_force * delta)
 		
 	velocity += gravity_velocity
 
