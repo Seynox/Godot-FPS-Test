@@ -9,7 +9,7 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4q6xg"]
 material = SubResource("StandardMaterial3D_manxs")
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D" groups=["Player"]]
 script = ExtResource("1_xm53f")
 ATTACK_DISTANCE = 100.0
 
