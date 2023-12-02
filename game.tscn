@@ -2,15 +2,15 @@
 
 [ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_f72g8"]
 [ext_resource type="Script" path="res://game.gd" id="1_sr7ww"]
-[ext_resource type="Texture2D" uid="uid://cgfxsxltnb45i" path="res://assets/textures/placeholder.png" id="2_d57ed"]
+[ext_resource type="Texture2D" uid="uid://b5gv7gffea70f" path="res://assets/textures/grass.jpg" id="2_4vw12"]
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui.tscn" id="2_yhl8o"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_snprt"]
 size = Vector3(60, 2, 60)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mb1pi"]
-albedo_texture = ExtResource("2_d57ed")
-uv1_scale = Vector3(50, 50, 50)
+albedo_texture = ExtResource("2_4vw12")
+uv1_scale = Vector3(60, 60, 60)
 
 [sub_resource type="BoxMesh" id="BoxMesh_m3y5p"]
 material = SubResource("StandardMaterial3D_mb1pi")
@@ -46,9 +46,11 @@ camera_attributes = SubResource("CameraAttributesPhysical_85qnn")
 
 [node name="Sun" type="DirectionalLight3D" parent="Sky"]
 transform = Transform3D(0.890213, 0.207875, -0.405351, 0.455545, -0.406223, 0.792125, 0, -0.889815, -0.456321, -4.64647, 8.70584, -5.12973)
+light_color = Color(1, 0.870588, 0.623529, 1)
+light_energy = 3.5
 shadow_enabled = true
 
-[node name="Player" parent="." groups=["Player"] instance=ExtResource("1_f72g8")]
+[node name="Player" parent="." instance=ExtResource("1_f72g8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="Interface" parent="Player" instance=ExtResource("2_yhl8o")]
