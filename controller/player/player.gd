@@ -3,15 +3,16 @@ class_name Player extends Entity
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
 
-@export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # m
+@export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # In meters
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sensitivity: float = 1
 @export var shooting_cooldown: float = 0.2 # In seconds
-@export var dash_distance: float = 5 # In meters
-@export var dash_duration: float = 0.2 # In seconds
+@export var dash_cooldown: float = 1 # In seconds
+@export var dash_distance: float = 6 # In meters
+@export var dash_duration: float = 0.1 # In seconds
 
+var lock_velocity: bool = false # Cancel velocity updates
 var can_dash: bool = true
 var can_shoot: bool = true
-var jumping: bool = false
 var mouse_captured: bool = false
 
 var movement_direction: Vector2 # Input direction for movement
@@ -26,19 +27,6 @@ var jump_velocity: Vector3
 # PLAYER
 #
 
-func dash() -> bool:
-	if !can_dash:
-		return false
-	can_dash = false
-	CAN_BE_HIT = false
-	
-	get_tree().create_timer(dash_duration).timeout.connect(
-		func():
-			CAN_BE_HIT = true
-			can_dash = true
-	)
-	return true
-
 func _die() -> void:
 	print("DEAD")
 	get_tree().reload_current_scene()
@@ -46,7 +34,7 @@ func _die() -> void:
 func shoot_coolown() -> void:
 	can_shoot = false
 	get_tree().create_timer(shooting_cooldown).timeout.connect(func(): can_shoot = true)
-	
+
 func shoot() -> bool:
 	if !can_shoot:
 		return false
@@ -85,13 +73,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		if mouse_captured: update_camera_rotation()
 		return
 	
-	if Input.is_action_just_pressed("jump"): jumping = true
+	if Input.is_action_just_pressed("jump"): jump()
 	if Input.is_action_just_pressed("dash"): dash()
 	if Input.is_action_just_pressed("shoot"): shoot()
 	if Input.is_action_just_pressed("exit"): get_tree().quit()
 
 func _physics_process(delta: float) -> void:
 	if mouse_captured: handle_camera_movements(delta)
+	if lock_velocity:
+		move_and_slide()
+		return
+	
 	velocity = _calculate_velocity(delta)
 	super._physics_process(delta)
 
@@ -126,13 +118,38 @@ func handle_camera_movements(delta: float, sens_mod: float = 1.0) -> void:
 # MOVEMENTS
 #
 
-func _calculate_jump_velocity(delta: float) -> Vector3:
-	if jumping and is_on_floor():
-		return Vector3(0, sqrt(4 * jump_height * GRAVITY), 0)
-		
-	jumping = false
-	return jump_velocity.move_toward(Vector3.ZERO, GRAVITY * delta)
+func _toggle_dash() -> void:
+	CAN_BE_HIT = !CAN_BE_HIT
+	lock_velocity = !lock_velocity
+
+func _start_dash_cooldown() -> void:
+	if !can_dash:
+		return
+	can_dash = false
+	var cooldown_time = dash_cooldown + dash_duration
+	get_tree().create_timer(cooldown_time).timeout.connect(func(): can_dash = true)
+
+func dash() -> bool:
+	# Cooldown handling
+	if !can_dash:
+		return false
+	_start_dash_cooldown()
 	
+	# Dash action
+	var dash_speed = dash_distance / dash_duration
+	var dash_velocity = camera.global_transform.basis * Vector3(0, 0, dash_speed * -1)
+	
+	velocity = dash_velocity
+	_toggle_dash()
+	get_tree().create_timer(dash_duration).timeout.connect(_toggle_dash)
+	return true
+
+func jump() -> bool:
+	if !is_on_floor():
+		return false
+		
+	jump_velocity = Vector3(0, sqrt(4 * jump_height * GRAVITY), 0)
+	return true
 
 func _calculate_velocity(delta: float) -> Vector3:
 	# Movements velocity
@@ -144,6 +161,7 @@ func _calculate_velocity(delta: float) -> Vector3:
 	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * movement_direction.length()
 	movement_velocity = movement_velocity.move_toward(movement_vector, acceleration * delta)
 	
-	jump_velocity = _calculate_jump_velocity(delta)
-		
+	# Jump
+	jump_velocity = jump_velocity.move_toward(Vector3.ZERO, GRAVITY * delta)
+	
 	return movement_velocity + jump_velocity
