@@ -5,6 +5,7 @@ class_name Entity extends CharacterBody3D
 @export var SPEED: float = 10 # In meters per second
 @export var ATTACK_DISTANCE: float = 1.5
 @export var DAMAGES_ON_HIT: float = 1.0
+@export var CAN_BE_HIT: bool = true
 
 var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var gravity_velocity: Vector3 = Vector3.ZERO
@@ -52,4 +53,5 @@ func _die() -> void:
 	self.queue_free() # Removes entity from scene
 
 func take_hit_from(source: Entity, multiplicator: float = 1) -> void:
-	reduce_health(source.DAMAGES_ON_HIT * multiplicator)
+	if CAN_BE_HIT:
+		reduce_health(source.DAMAGES_ON_HIT * multiplicator)

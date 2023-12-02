@@ -21,19 +21,14 @@ func _get_random_position() -> Vector3:
 
 func start_enemy_spawns():
 	var enemy_position: Vector3 = _get_random_position()
-	
 	var enemy = preload("res://entities/enemy/enemy.tscn").instantiate()
+	add_child(enemy)
+	
 	enemy.global_position = enemy_position
 	enemy.SPEED = enemy_speed
-	add_child(enemy)
 	
 	get_tree().create_timer(spawn_interval).timeout.connect(start_enemy_spawns)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	start_enemy_spawns()
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

@@ -6,7 +6,10 @@ class_name Player extends Entity
 @export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # m
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sensitivity: float = 1
 @export var shooting_cooldown: float = 0.2 # In seconds
+@export var dash_distance: float = 5 # In meters
+@export var dash_duration: float = 0.2 # In seconds
 
+var can_dash: bool = true
 var can_shoot: bool = true
 var jumping: bool = false
 var mouse_captured: bool = false
@@ -22,6 +25,15 @@ var jump_velocity: Vector3
 #
 # PLAYER
 #
+
+func dash() -> bool:
+	if !can_dash:
+		return false
+	can_dash = false
+	CAN_BE_HIT = false
+	
+	get_tree().create_timer(dash_duration).timeout.connect(func(): CAN_BE_HIT = true)
+	return true
 
 func _die() -> void:
 	print("DEAD")
