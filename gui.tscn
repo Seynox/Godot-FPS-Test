@@ -9,7 +9,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="reticle" type="CenterContainer" parent="."]
+[node name="Reticle" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -25,13 +25,13 @@ grow_vertical = 2
 auto_translate = false
 localize_numeral_system = false
 
-[node name="x" type="Line2D" parent="reticle"]
+[node name="x" type="Line2D" parent="Reticle"]
 position = Vector2(20, 20)
 points = PackedVector2Array(-10, 0, 10, 0)
 width = 2.0
 default_color = Color(0, 1, 0, 1)
 
-[node name="y" type="Line2D" parent="reticle"]
+[node name="y" type="Line2D" parent="Reticle"]
 position = Vector2(20, 20)
 points = PackedVector2Array(0, -10, 0, 10)
 width = 2.0

@@ -6,7 +6,6 @@ class_name Player extends Entity
 @export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # m
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sensitivity: float = 1
 @export var shooting_cooldown: float = 0.2 # In seconds
-@export var shooting_range: float = 1000 # In meters
 
 var can_shoot: bool = true
 var jumping: bool = false
@@ -38,7 +37,7 @@ func shoot() -> bool:
 
 	var mouse_position = get_viewport().get_mouse_position()
 	var ray_origin = camera.project_ray_origin(mouse_position)
-	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * shooting_range
+	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * self.ATTACK_DISTANCE
 	
 	var ray = PhysicsRayQueryParameters3D.create(ray_origin, ray_max)
 	ray.collide_with_areas = true

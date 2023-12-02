@@ -11,8 +11,7 @@ material = SubResource("StandardMaterial3D_manxs")
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_xm53f")
-health = null
-damages_on_hit = null
+ATTACK_DISTANCE = 100.0
 
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0)

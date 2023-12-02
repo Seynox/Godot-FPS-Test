@@ -3,12 +3,14 @@
 [ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_f72g8"]
 [ext_resource type="Script" path="res://game.gd" id="1_sr7ww"]
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui.tscn" id="2_yhl8o"]
-[ext_resource type="PackedScene" uid="uid://diunxyob1p6gr" path="res://entities/enemy/enemy.tscn" id="4_68d5f"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_snprt"]
 size = Vector3(60, 2, 60)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dlun6"]
+
 [sub_resource type="BoxMesh" id="BoxMesh_m3y5p"]
+material = SubResource("StandardMaterial3D_dlun6")
 size = Vector3(60, 2, 60)
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_avm6s"]
@@ -29,10 +31,10 @@ script = ExtResource("1_sr7ww")
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+[node name="GroundCollision" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("BoxShape3D_snprt")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+[node name="GroundModel" type="MeshInstance3D" parent="Ground"]
 mesh = SubResource("BoxMesh_m3y5p")
 
 [node name="Sky" type="WorldEnvironment" parent="."]
@@ -45,10 +47,5 @@ shadow_enabled = true
 
 [node name="Player" parent="." groups=["Player"] instance=ExtResource("1_f72g8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shooting_cooldown = 0.35
 
 [node name="Interface" parent="Player" instance=ExtResource("2_yhl8o")]
-
-[node name="Enemy" parent="." instance=ExtResource("4_68d5f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.87045, -7.561)
-SPEED = 5.0
