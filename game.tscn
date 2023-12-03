@@ -51,6 +51,6 @@ light_energy = 3.5
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_f72g8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.23631, 1, 0)
 
 [node name="Interface" parent="Player" instance=ExtResource("4_qqls5")]

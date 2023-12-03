@@ -7,7 +7,7 @@ var additional_enemy_speed = 0 # Meters per second
 
 func _ready():
 	if multiplayer.is_server():
-		pass #start_enemy_spawns()
+		start_enemy_spawns()
 
 #
 # Enemy spawning
