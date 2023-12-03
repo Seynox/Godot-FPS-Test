@@ -12,7 +12,7 @@ config_version=5
 
 config/name="First 3d"
 run/main_scene="res://gui/menu/multiplayer_menu.tscn"
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://assets/icon.svg"
 
 [display]
