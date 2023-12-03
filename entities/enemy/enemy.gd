@@ -28,10 +28,12 @@ func _process(_delta: float):
 	_hit_target_in_range()
 
 func _physics_process(delta):
-	if TARGET != null: # TODO Rework
+	if TARGET != null:
 		var direction = global_position.direction_to(TARGET.global_position)
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
+	else:
+		velocity = Vector3(0, velocity.y, 0)
 	
 	super._physics_process(delta)
 
