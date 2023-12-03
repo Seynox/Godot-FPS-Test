@@ -1,10 +1,17 @@
 extends Node3D
 
-@export var spawn_interval: float = 1.0 # Seconds
+@export var SPAWN_INTERVAL: float = 1.0 # Seconds
 
 @onready var ground = $Ground/GroundCollision
-
 var additional_enemy_speed = 0 # Meters per second
+
+func _ready():
+	if multiplayer.is_server():
+		pass #start_enemy_spawns()
+
+#
+# Enemy spawning
+#
 
 func _get_random_position() -> Vector3:
 	var ground_size: Vector3 = ground.get_shape().size
@@ -28,8 +35,4 @@ func start_enemy_spawns():
 	enemy.SPEED += additional_enemy_speed
 	additional_enemy_speed += 0.1
 	
-	get_tree().create_timer(spawn_interval).timeout.connect(start_enemy_spawns)
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	start_enemy_spawns()
+	get_tree().create_timer(SPAWN_INTERVAL).timeout.connect(start_enemy_spawns)
