@@ -1,19 +1,21 @@
 [gd_scene load_steps=4 format=3 uid="uid://diunxyob1p6gr"]
 
 [ext_resource type="Script" path="res://entities/enemy/enemy.gd" id="1_yltcs"]
-[ext_resource type="Texture2D" uid="uid://b3enoam5p1vdl" path="res://assets/textures/enemy.png" id="2_0hd5o"]
+[ext_resource type="Texture2D" uid="uid://b3enoam5p1vdl" path="res://assets/sprites/enemy.png" id="2_xwkyc"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s6706"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_158vt"]
+radius = 0.7
 
 [node name="Enemy" type="CharacterBody3D"]
 script = ExtResource("1_yltcs")
+TARGET_GROUP = "Player"
 SPEED = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_s6706")
+shape = SubResource("SphereShape3D_158vt")
 
 [node name="CharacterSprite" type="Sprite3D" parent="."]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.2, 0)
+transform = Transform3D(0.45, 0, 0, 0, 0.45, 0, 0, 0, 0.45, 0, -0.00564437, 0)
 billboard = 1
 double_sided = false
-texture = ExtResource("2_0hd5o")
+texture = ExtResource("2_xwkyc")
