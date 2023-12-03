@@ -65,9 +65,6 @@ func _ready() -> void:
 	capture_mouse()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not is_multiplayer_authority():
-		return
-	
 	if event is InputEventMouseMotion:
 		look_direction = event.relative * 0.001
 		if mouse_captured: update_camera_rotation()

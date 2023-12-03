@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://mwljs7b5v7ss"]
 
-[node name="Interface" type="Control"]
+[node name="FpsInterface" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,11 +28,9 @@ localize_numeral_system = false
 [node name="x" type="Line2D" parent="Reticle"]
 position = Vector2(20, 20)
 points = PackedVector2Array(-10, 0, 10, 0)
-width = 2.0
-default_color = Color(0, 1, 0, 1)
+width = 1.0
 
 [node name="y" type="Line2D" parent="Reticle"]
 position = Vector2(20, 20)
 points = PackedVector2Array(0, -10, 0, 10)
-width = 2.0
-default_color = Color(0, 1, 0, 1)
+width = 1.0
