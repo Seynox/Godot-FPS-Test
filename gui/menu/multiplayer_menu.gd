@@ -1,8 +1,10 @@
 extends Control
 
+@export_category("Multiplayer menu")
+@export var LOBBY_SCENE: PackedScene
+
 @onready var server_ip_field: LineEdit = $ContentContainer/ConnectionContainer/HostField
 @onready var server_port_field: LineEdit = $ContentContainer/ConnectionContainer/PortField
-
 @onready var connect_button: Button = $ContentContainer/ConnectionContainer/ConnectButton
 
 const DEFAULT_PORT: int = 8000
@@ -49,7 +51,7 @@ func host_server():
 	_show_lobby()
 	
 func _show_lobby():
-	get_tree().change_scene_to_file("res://gui/menu/lobby_menu.tscn")
+	get_tree().change_scene_to_packed(LOBBY_SCENE)
 
 func quit_game():
 	get_tree().quit()

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cb31f55b7luof"]
+[gd_scene load_steps=3 format=3 uid="uid://cb31f55b7luof"]
 
 [ext_resource type="Script" path="res://gui/menu/multiplayer_menu.gd" id="1_dycj3"]
+[ext_resource type="PackedScene" uid="uid://c23hb5dankbmx" path="res://gui/menu/lobby_menu.tscn" id="2_gvbc4"]
 
 [node name="MultiplayerMenu" type="Control"]
 layout_mode = 3
@@ -10,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dycj3")
+LOBBY_SCENE = ExtResource("2_gvbc4")
 
 [node name="ContentContainer" type="BoxContainer" parent="."]
 layout_mode = 1
