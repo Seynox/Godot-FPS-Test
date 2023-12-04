@@ -3,11 +3,13 @@ extends Control
 @onready var player_list_view: BoxContainer = $ContentContainer/PlayerList
 
 # {peer_id: is_ready}
-var lobby: Dictionary = {1: false} # TODO Find way to know if server is also a player
+var lobby: Dictionary = {}
 
 func _ready():
 	_start_listening_signals()
-	update_playerlist()
+	
+	if DisplayServer.get_name() != "headless":
+		_on_server_connect() # Add server as a player
 	
 func _start_listening_signals():
 	multiplayer.peer_connected.connect(_on_player_connect)
@@ -40,7 +42,7 @@ func _is_everyone_ready() -> bool:
 func _on_server_connect(): # Client only
 	print("Joined lobby")
 	var self_id = multiplayer.get_unique_id()
-	lobby[self_id] = false
+	_set_player_ready(self_id, false)
 
 func _on_server_disconnect(): # Client only
 	print("Server disconnected")
