@@ -23,7 +23,7 @@ func _ready():
 func _start_multiplayer_game(peer: MultiplayerPeer):
 	multiplayer.multiplayer_peer = peer # Connect to multiplayer
 	_listen_multiplayer_signals()
-	_change_scene(FIRST_GAME_SCENE.instantiate())
+	_change_level(FIRST_GAME_SCENE.instantiate())
 
 func quit_game():
 	print("Quitting")
