@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1ypj05nfhalo"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_73t00"]
+[ext_resource type="PackedScene" uid="uid://cb31f55b7luof" path="res://gui/menu/main_menu.tscn" id="2_khp6u"]
+[ext_resource type="PackedScene" uid="uid://b64bf0xvtrqga" path="res://levels/arena.tscn" id="3_ehoth"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_73t00")
+MAIN_MENU_SCENE = ExtResource("2_khp6u")
+FIRST_GAME_SCENE = ExtResource("3_ehoth")

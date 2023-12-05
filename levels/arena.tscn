@@ -1,15 +1,15 @@
 [gd_scene load_steps=12 format=3 uid="uid://b64bf0xvtrqga"]
 
-[ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_f72g8"]
-[ext_resource type="Script" path="res://game.gd" id="1_sr7ww"]
-[ext_resource type="Texture2D" uid="uid://b5gv7gffea70f" path="res://assets/textures/grass.jpg" id="2_4vw12"]
-[ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="4_qqls5"]
+[ext_resource type="Script" path="res://levels/arena.gd" id="1_eude2"]
+[ext_resource type="Texture2D" uid="uid://b5gv7gffea70f" path="res://assets/textures/grass.jpg" id="2_x5qwd"]
+[ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="3_xesb6"]
+[ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="4_x2hhv"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_snprt"]
 size = Vector3(60, 2, 60)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mb1pi"]
-albedo_texture = ExtResource("2_4vw12")
+albedo_texture = ExtResource("2_x5qwd")
 uv1_scale = Vector3(60, 60, 60)
 
 [sub_resource type="BoxMesh" id="BoxMesh_m3y5p"]
@@ -29,7 +29,7 @@ fog_light_color = Color(0.517647, 0.552941, 0.607843, 1)
 [sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_85qnn"]
 
 [node name="Main" type="Node3D"]
-script = ExtResource("1_sr7ww")
+script = ExtResource("1_eude2")
 
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
@@ -50,7 +50,7 @@ light_color = Color(1, 0.870588, 0.623529, 1)
 light_energy = 3.5
 shadow_enabled = true
 
-[node name="Player" parent="." instance=ExtResource("1_f72g8")]
+[node name="Player" parent="." instance=ExtResource("3_xesb6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.23631, 1, 0)
 
-[node name="Interface" parent="Player" instance=ExtResource("4_qqls5")]
+[node name="Interface" parent="Player" instance=ExtResource("4_x2hhv")]
