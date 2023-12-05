@@ -13,6 +13,7 @@ signal quit_game
 
 func _ready():	
 	_listen_button_signals()
+	server_port_field.text = str(Main.DEFAULT_PORT) # Set port to default value
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _listen_button_signals(): # Could be done from node menu in editor
