@@ -1,0 +1,95 @@
+[gd_scene load_steps=7 format=3 uid="uid://cgwr8r183dsyd"]
+
+[ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_y2w3n"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nxfwf"]
+size = Vector3(30, 0.4, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hy2wl"]
+albedo_color = Color(0.239216, 0.239216, 0.239216, 1)
+metallic = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_ekqms"]
+material = SubResource("StandardMaterial3D_hy2wl")
+size = Vector3(30, 0.4, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_11qyv"]
+size = Vector3(30, 7, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pfoea"]
+material = SubResource("StandardMaterial3D_hy2wl")
+size = Vector3(30, 7, 0.4)
+
+[node name="Lobby" type="Node3D"]
+
+[node name="Room" type="Node3D" parent="."]
+
+[node name="Ground" type="StaticBody3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Room/Ground"]
+shape = SubResource("BoxShape3D_nxfwf")
+
+[node name="Model" type="MeshInstance3D" parent="Room/Ground"]
+mesh = SubResource("BoxMesh_ekqms")
+
+[node name="Ceiling" type="StaticBody3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Room/Ceiling"]
+shape = SubResource("BoxShape3D_nxfwf")
+
+[node name="Model" type="MeshInstance3D" parent="Room/Ceiling"]
+mesh = SubResource("BoxMesh_ekqms")
+
+[node name="WallNorth" type="StaticBody3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -15)
+
+[node name="Collision" type="CollisionShape3D" parent="Room/WallNorth"]
+shape = SubResource("BoxShape3D_11qyv")
+
+[node name="Model" type="MeshInstance3D" parent="Room/WallNorth"]
+mesh = SubResource("BoxMesh_pfoea")
+
+[node name="WallSouth" type="StaticBody3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 15)
+
+[node name="Collision" type="CollisionShape3D" parent="Room/WallSouth"]
+shape = SubResource("BoxShape3D_11qyv")
+
+[node name="Model" type="MeshInstance3D" parent="Room/WallSouth"]
+mesh = SubResource("BoxMesh_pfoea")
+
+[node name="WallEast" type="StaticBody3D" parent="Room"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 15, 2.5, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Room/WallEast"]
+shape = SubResource("BoxShape3D_11qyv")
+
+[node name="Model" type="MeshInstance3D" parent="Room/WallEast"]
+mesh = SubResource("BoxMesh_pfoea")
+
+[node name="WallWest" type="StaticBody3D" parent="Room"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -15, 2.5, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Room/WallWest"]
+shape = SubResource("BoxShape3D_11qyv")
+
+[node name="Model" type="MeshInstance3D" parent="Room/WallWest"]
+mesh = SubResource("BoxMesh_pfoea")
+
+[node name="BlueLight" type="OmniLight3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 3, 5)
+light_color = Color(0.235294, 0.796078, 0.839216, 1)
+light_energy = 10.0
+light_specular = 2.0
+omni_range = 25.0
+
+[node name="PinkLight" type="OmniLight3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 3, -2)
+light_color = Color(1, 0, 1, 1)
+light_energy = 10.0
+light_specular = 2.0
+omni_range = 25.0
+
+[node name="Player" parent="." instance=ExtResource("1_y2w3n")]
