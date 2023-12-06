@@ -14,7 +14,8 @@ func _ready():
 	# Enable processing for local player
 	var is_local_player: bool = get_multiplayer_authority() == multiplayer.get_unique_id()
 	set_process(is_local_player)
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	if is_local_player:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 
 func _unhandled_input(event: InputEvent) -> void:
