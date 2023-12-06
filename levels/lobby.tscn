@@ -30,6 +30,8 @@ PLAYER_SCENE = ExtResource("1_y2w3n")
 
 [node name="Ground" type="StaticBody3D" parent="Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+collision_layer = 4
+collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="Room/Ground"]
 shape = SubResource("BoxShape3D_nxfwf")
@@ -39,6 +41,8 @@ mesh = SubResource("BoxMesh_ekqms")
 
 [node name="Ceiling" type="StaticBody3D" parent="Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+collision_layer = 4
+collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="Room/Ceiling"]
 shape = SubResource("BoxShape3D_nxfwf")
@@ -48,6 +52,8 @@ mesh = SubResource("BoxMesh_ekqms")
 
 [node name="WallNorth" type="StaticBody3D" parent="Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -15)
+collision_layer = 4
+collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="Room/WallNorth"]
 shape = SubResource("BoxShape3D_11qyv")
@@ -57,6 +63,8 @@ mesh = SubResource("BoxMesh_pfoea")
 
 [node name="WallSouth" type="StaticBody3D" parent="Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 15)
+collision_layer = 4
+collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="Room/WallSouth"]
 shape = SubResource("BoxShape3D_11qyv")
@@ -66,6 +74,8 @@ mesh = SubResource("BoxMesh_pfoea")
 
 [node name="WallEast" type="StaticBody3D" parent="Room"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 15, 2.5, 0)
+collision_layer = 4
+collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="Room/WallEast"]
 shape = SubResource("BoxShape3D_11qyv")
@@ -75,6 +85,8 @@ mesh = SubResource("BoxMesh_pfoea")
 
 [node name="WallWest" type="StaticBody3D" parent="Room"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -15, 2.5, 0)
+collision_layer = 4
+collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="Room/WallWest"]
 shape = SubResource("BoxShape3D_11qyv")
