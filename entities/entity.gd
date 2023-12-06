@@ -1,5 +1,8 @@
 class_name Entity extends CharacterBody3D
 
+signal health_update(old_health: int, new_health: int)
+signal death
+
 @export_category("Entity")
 @export var HEALTH: float = 1.0
 @export var SPEED: float = 10 # In meters per second
@@ -15,7 +18,7 @@ var gravity_velocity: Vector3
 
 func _physics_process(delta: float):
 	if global_position.y <= -10:
-		_die()
+		set_health(0)
 	
 	gravity_velocity = _calculate_gravity_velocity(delta)
 	velocity += gravity_velocity
@@ -30,22 +33,23 @@ func _calculate_gravity_velocity(delta: float) -> Vector3:
 
 # Health
 
-func _set_health(new_health: float) -> void:
+func set_health(new_health: float) -> void:	
+	var current_health = HEALTH
 	HEALTH = new_health
+	health_update.emit(current_health, new_health)
+	
+	if new_health <= 0:
+		_die()
+
+func _die():
+	death.emit()
 
 func reduce_health(damages: float) -> void:
 	var new_health = HEALTH - damages
-	if new_health <= 0:
-		_die()
-	
-	_set_health(new_health)
+	set_health(new_health)
 
 func is_dead() -> bool:
 	return HEALTH <= 0
-
-func _die() -> void:
-	HEALTH = 0
-	self.queue_free() # TODO Emit signal instead
 
 func take_hit_from(source: Entity, multiplicator: float = 1) -> void:
 	if CAN_BE_HIT:

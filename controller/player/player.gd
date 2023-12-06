@@ -1,5 +1,9 @@
 class_name Player extends Entity
 
+signal dashing
+signal shooting
+signal jumping
+
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
 @export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # In meters
@@ -60,7 +64,8 @@ func shoot():
 	input.shooting = false
 	if !can_shoot:
 		return
-
+	
+	shooting.emit()
 	var mouse_position = get_viewport().get_mouse_position()
 	var ray_origin = camera.project_ray_origin(mouse_position)
 	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * self.ATTACK_DISTANCE
@@ -99,6 +104,7 @@ func dash():
 	if !can_dash:
 		return
 	_start_dash_cooldown()
+	dashing.emit()
 	# Dash action
 	var dash_speed = dash_distance / dash_duration
 	var dash_velocity = camera.global_transform.basis * Vector3(0, 0, dash_speed * -1)
@@ -110,7 +116,7 @@ func jump():
 	input.jumping = false
 	if !is_on_floor():
 		return
-	
+	jumping.emit()
 	jump_velocity = Vector3(0, sqrt(4 * jump_height * GRAVITY), 0)
 
 func _calculate_velocity(delta: float) -> Vector3:

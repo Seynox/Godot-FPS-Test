@@ -1,5 +1,8 @@
 class_name Enemy extends Entity
 
+signal target_found(entity: Entity)
+signal target_lost(entity: Entity)
+
 @export_category("Enemy")
 @export var TARGET_GROUP: String
 @export var TARGET_FINDING_INTERVAL: float = 1 # In seconds
@@ -10,6 +13,10 @@ class_name Enemy extends Entity
 func _ready():
 	if ENABLE_TARGET_FINDING:
 		_start_target_finding_loop()
+
+func _die():
+	super._die()
+	queue_free()
 
 func _start_target_finding_loop():
 	var update_target_and_repeat = func():
@@ -56,4 +63,9 @@ func get_closest_target() -> Entity:
 	return closest_target
 
 func update_current_target():
-	TARGET = get_closest_target()
+	var new_target = get_closest_target()
+	if TARGET != null && new_target == null:
+		target_lost.emit(TARGET)
+	else:
+		target_found.emit(new_target)
+	TARGET = new_target
