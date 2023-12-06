@@ -10,11 +10,27 @@ const DEFAULT_MAX_CLIENTS: int = 20
 var current_scene: Node
 
 func _ready():
-	if DisplayServer.get_name() == "headless":
-		_host_server.call_deferred(DEFAULT_IP, DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
+	if DisplayServer.get_name() != "headless":
+		_open_main_menu()
 		return
 	
-	_open_main_menu()
+	# Host server if started as headless
+	var args := _parse_command_args()
+	var ip = args.get("ip", DEFAULT_IP)
+	var port = args.get("port", DEFAULT_PORT)
+	var max_clients = args.get("max-clients", DEFAULT_MAX_CLIENTS)
+	
+	_host_server.call_deferred(ip, int(port), int(max_clients))
+
+func _parse_command_args() -> Dictionary:
+	var args = {}
+	var latest_key: String
+	for arg in OS.get_cmdline_args():
+		if arg.begins_with("--"):
+			latest_key = arg.right(-2) # Removes the "--"
+		else:
+			args[latest_key] = arg
+	return args
 
 #
 # Changing scene
