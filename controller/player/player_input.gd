@@ -40,7 +40,7 @@ func jump():
 func dash():
 	dashing = true
 
-@rpc("any_peer", "call_local", "reliable")
+@rpc("call_local", "reliable")
 func shoot():
 	shooting = true
 
