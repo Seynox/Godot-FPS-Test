@@ -37,7 +37,6 @@ func add_player(id: int):
 	print("Adding player %s" % id)
 	var player = PLAYER_SCENE.instantiate()
 	player.player_peer = id
-	print(str(id))
 	player.name = str(id) # Node name
 	$Players.add_child(player, true) # Needs "force_readable_name" for using rpc
 
