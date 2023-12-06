@@ -11,7 +11,7 @@ var current_scene: Node
 
 func _ready():
 	if DisplayServer.get_name() == "headless":
-		_host_server(DEFAULT_IP, DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
+		_host_server.call_deferred(DEFAULT_IP, DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
 		return
 	
 	_open_main_menu()
@@ -22,7 +22,7 @@ func _ready():
 
 func _start_multiplayer_game(peer: MultiplayerPeer):
 	multiplayer.multiplayer_peer = peer # Connect to multiplayer
-	_listen_multiplayer_signals()
+	_listen_connection_signals()
 	_change_level(FIRST_GAME_SCENE.instantiate())
 
 func quit_game():
@@ -49,13 +49,11 @@ func _change_scene(scene: Node):
 # Signals
 #
 
-func _listen_multiplayer_signals():
-	multiplayer.peer_connected.connect(_on_player_connect)
-	multiplayer.peer_disconnected.connect(_on_player_disconnect)
-	
+func _listen_connection_signals():
 	# Client-only signals
 	multiplayer.server_disconnected.connect(_on_server_disconnect)
 	multiplayer.connected_to_server.connect(_on_server_connect)
+	multiplayer.connection_failed.connect(_on_server_connection_failed)
 
 func _listen_main_menu_signals(menu: Node):
 	print("Registering menu signals")
@@ -63,7 +61,7 @@ func _listen_main_menu_signals(menu: Node):
 	menu.connect("connect_to_server", connect_to_server)
 	menu.connect("host_server", host_server_and_play)
 	
-func _listen_level_signals(level: Node):
+func _listen_level_signals(_level: Node):
 	pass
 
 #
@@ -97,19 +95,17 @@ func connect_to_server(ip: String, port: int):
 	print("Connected to server!")
 	_start_multiplayer_game(peer)
 
-#
-# Server players
-#
-
-func _on_server_connect(): # Client only
-	print("Joined lobby as %s" % multiplayer.get_unique_id())
-
-func _on_server_disconnect(): # Client only
-	print("Server disconnected")
+func _on_server_connection_failed():
+	print("Connection failed")
 	_open_main_menu()
 
-func _on_player_connect(id: int):
-	print("Player (%s) joined" % id)
-	
-func _on_player_disconnect(id: int):
-	print("Player (%s) left" % id)
+#
+# Server connection
+#
+
+func _on_server_connect():
+	print("Joined lobby as %s" % multiplayer.get_unique_id())
+
+func _on_server_disconnect():
+	print("Server disconnected")
+	_open_main_menu()

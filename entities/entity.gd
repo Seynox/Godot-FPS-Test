@@ -45,7 +45,7 @@ func is_dead() -> bool:
 
 func _die() -> void:
 	HEALTH = 0
-	self.queue_free() # Removes entity from scene
+	self.queue_free() # TODO Emit signal instead
 
 func take_hit_from(source: Entity, multiplicator: float = 1) -> void:
 	if CAN_BE_HIT:

@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cgwr8r183dsyd"]
+[gd_scene load_steps=9 format=3 uid="uid://cgwr8r183dsyd"]
 
+[ext_resource type="Script" path="res://levels/lobby.gd" id="1_57qj7"]
 [ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_y2w3n"]
+[ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="2_xc3ih"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nxfwf"]
 size = Vector3(30, 0.4, 30)
@@ -21,6 +23,8 @@ material = SubResource("StandardMaterial3D_hy2wl")
 size = Vector3(30, 7, 0.4)
 
 [node name="Lobby" type="Node3D"]
+script = ExtResource("1_57qj7")
+PLAYER_SCENE = ExtResource("1_y2w3n")
 
 [node name="Room" type="Node3D" parent="."]
 
@@ -92,4 +96,10 @@ light_energy = 10.0
 light_specular = 2.0
 omni_range = 25.0
 
-[node name="Player" parent="." instance=ExtResource("1_y2w3n")]
+[node name="Players" type="Node3D" parent="."]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://controller/player/player.tscn")
+spawn_path = NodePath("../Players")
+
+[node name="FpsInterface" parent="." instance=ExtResource("2_xc3ih")]
