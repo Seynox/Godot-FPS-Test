@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://73et67exp85a"]
+
+[ext_resource type="Script" path="res://abilities/dashes/forward_dash.gd" id="1_d4ecr"]
+
+[node name="FowardDash" type="Node"]
+script = ExtResource("1_d4ecr")
+DASH_DISTANCE = 6.0
+DASH_COOLDOWN = 1.0
+DASH_DURATION = 0.1

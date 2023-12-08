@@ -6,17 +6,41 @@ signal dash_ready
 signal dash_disabled
 signal dash_failed
 
-@export var DASH_DISTANCE: float = 6 # In meters
+@export var DASH_DISTANCE: float # In meters
+@export var DASH_COOLDOWN: float # In seconds
+@export var DASH_DURATION: float # In seconds
 
-@onready var cooldown: Timer = $Cooldown
-@onready var duration: Timer = $Duration
+var cooldown: Timer
+var duration: Timer
 
 var can_dash: bool = true
 var is_dashing: bool = false
 
 func _ready():
+	cooldown = _create_timer(DASH_COOLDOWN)
 	cooldown.timeout.connect(_enable_dash)
+	
+	duration = _create_timer(DASH_DURATION)
 	duration.timeout.connect(_stop_dash)
+
+func _create_timer(time: float) -> Timer:
+	var timer = Timer.new()
+	timer.one_shot = true
+	timer.wait_time = time
+	add_child(timer)
+	return timer
+
+func set_cooldown(seconds: float):
+	DASH_COOLDOWN = seconds
+	cooldown.wait_time = seconds
+
+func set_duration(seconds: float):
+	DASH_DURATION = seconds
+	duration.wait_time = seconds
+
+@rpc("call_local", "reliable")
+func set_distance(meters: float):
+	DASH_DISTANCE = meters
 
 func try_dash():
 	if can_dash:
@@ -25,15 +49,9 @@ func try_dash():
 	else:
 		dash_failed.emit()
 
+# Override this!
 func get_velocity(player: Player, _delta: float) -> Vector3:
-	if is_dashing:
-		return _calculate_dash_velocity(player.camera)
 	return player.velocity
-
-func _calculate_dash_velocity(camera: Camera3D) -> Vector3:
-	var dash_duration = duration.get_wait_time()
-	var dash_speed = DASH_DISTANCE / dash_duration
-	return camera.global_transform.basis * Vector3(0, 0, dash_speed * -1)
 
 func _enable_dash():
 	can_dash = true
