@@ -16,12 +16,10 @@ var gravity_velocity: Vector3
 
 # Movements
 
-func _physics_process(delta: float):
+func _physics_process(_delta: float):
 	if global_position.y <= -10:
-		set_health(0)
+		set_health(0) # TODO Emit falling signal instead
 	
-	gravity_velocity = _calculate_gravity_velocity(delta)
-	velocity += gravity_velocity
 	move_and_slide()
 
 func _calculate_gravity_velocity(delta: float) -> Vector3:

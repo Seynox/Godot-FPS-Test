@@ -7,20 +7,18 @@ signal jumping
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
 @export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # In meters
 @export var shooting_cooldown: float = 0.2 # In seconds
-
-@export var player_peer: int = 1:
+@export var player_peer: int = 1: # Multiplayer peer_id (Default to server id)
 	set(id):
 		player_peer = id
-		$PlayerInput.set_multiplayer_authority(id) # Multiplayer peer id (Default to server id)
+		$PlayerInput.set_multiplayer_authority(id)
 
 var can_shoot: bool = true
-
 var movement_velocity: Vector3
 var jump_velocity: Vector3
 
 @onready var camera: Camera3D = $Camera
 @onready var input := $PlayerInput
-@onready var dash: Dash = $Abilities/DashAbility
+@onready var dash: Dash = $Abilities/Dash
 
 func _ready() -> void:
 	var is_local_player: bool = player_peer == multiplayer.get_unique_id()
@@ -36,14 +34,27 @@ func _physics_process(delta: float):
 	camera.rotation.y = input.camera_rotation.y
 	
 	velocity = _calculate_velocity(delta)
+	gravity_velocity = _calculate_gravity_velocity(delta)
+	velocity += gravity_velocity
+	
 	if input.jumping:
 		jump()
 	if input.dashing:
 		dash.try_dash()
 		input.dashing = false
-	
+
 	velocity = dash.get_velocity(self, delta)
 	super._physics_process(delta)
+
+#
+# ABILITIES
+#
+
+@rpc("call_local", "reliable")
+func replace_dash(new_dash: Dash):
+	var current_dash = dash
+	current_dash.replace_by(new_dash)
+	current_dash.queue_free()
 
 #
 # PLAYER

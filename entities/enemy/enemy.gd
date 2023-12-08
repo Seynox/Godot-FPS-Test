@@ -42,6 +42,8 @@ func _physics_process(delta):
 	else:
 		velocity = Vector3(0, velocity.y, 0)
 	
+	gravity_velocity = _calculate_gravity_velocity(delta)
+	velocity += gravity_velocity
 	super._physics_process(delta)
 
 func _hit_target_in_range():

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
-[ext_resource type="PackedScene" uid="uid://cooiyh14n7k0n" path="res://abilities/dash_ability.tscn" id="3_30tku"]
+[ext_resource type="PackedScene" uid="uid://73et67exp85a" path="res://abilities/dashes/foward_dash.tscn" id="3_pnerw"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iow1f"]
 
@@ -30,7 +30,6 @@ properties/1/replication_mode = 2
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 collision_mask = 6
 script = ExtResource("1_xm53f")
-ATTACK_DISTANCE = 100.0
 
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0)
@@ -52,4 +51,4 @@ replication_config = SubResource("SceneReplicationConfig_v5sww")
 
 [node name="Abilities" type="Node" parent="."]
 
-[node name="DashAbility" parent="Abilities" instance=ExtResource("3_30tku")]
+[node name="Dash" parent="Abilities" instance=ExtResource("3_pnerw")]
