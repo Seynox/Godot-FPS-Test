@@ -2,6 +2,7 @@ class_name Entity extends CharacterBody3D
 
 signal health_update(old_health: int, new_health: int)
 signal death
+signal out_of_map
 
 @export_category("Entity")
 @export var HEALTH: float = 1.0
@@ -18,7 +19,7 @@ var gravity_velocity: Vector3
 
 func _physics_process(_delta: float):
 	if global_position.y <= -10:
-		set_health(0) # TODO Emit falling signal instead
+		out_of_map.emit()
 	
 	move_and_slide()
 
