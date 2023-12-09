@@ -8,14 +8,13 @@ func _ready():
 		return
 	
 	_listen_player_signals()
-	_spawn_current_players()
 	
 	if DisplayServer.get_name() != "headless":
 		var server_player_id = 1
 		add_player(server_player_id)
 
 func _exit_tree():
-	if multiplayer.is_server():
+	if multiplayer.has_multiplayer_peer() and multiplayer.is_server():
 		_remove_player_signals()
 #
 # Players
@@ -29,14 +28,9 @@ func _remove_player_signals():
 	multiplayer.peer_connected.disconnect(add_player)
 	multiplayer.peer_disconnected.disconnect(remove_player)
 
-func _spawn_current_players():
-	for id in multiplayer.get_peers():
-		add_player(id)
-
 func add_player(id: int):
 	print("Adding player %s" % id)
 	var player = PLAYER_SCENE.instantiate()
-	player.player_peer = id
 	player.name = str(id) # Node name
 	$Players.add_child(player, true) # Needs "force_readable_name" for using rpc
 

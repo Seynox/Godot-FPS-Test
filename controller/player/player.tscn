@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://hu7ojvfabj3c"]
+[gd_scene load_steps=7 format=3 uid="uid://hu7ojvfabj3c"]
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
@@ -10,19 +10,11 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4q6xg"]
 material = SubResource("StandardMaterial3D_manxs")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_fgueb"]
-properties/0/path = NodePath(".:movement_direction")
-properties/0/spawn = false
-properties/0/replication_mode = 2
-properties/1/path = NodePath(".:camera_rotation")
-properties/1/spawn = false
-properties/1/replication_mode = 2
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_v5sww"]
-properties/0/path = NodePath(".:player_peer")
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cabjf"]
+properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath(".:position")
+properties/1/path = NodePath(".:HEALTH")
 properties/1/spawn = true
 properties/1/replication_mode = 2
 
@@ -40,12 +32,10 @@ shape = SubResource("CapsuleShape3D_iow1f")
 [node name="Model" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_4q6xg")
 
-[node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath(".")
-replication_config = SubResource("SceneReplicationConfig_fgueb")
+[node name="PlayerInput" type="Node" parent="."]
 script = ExtResource("2_cbi6x")
 
-[node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_v5sww")
-
 [node name="Abilities" type="Node" parent="."]
+
+[node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_cabjf")

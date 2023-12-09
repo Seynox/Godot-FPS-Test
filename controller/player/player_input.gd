@@ -1,6 +1,6 @@
-extends MultiplayerSynchronizer
+extends Node
 
-@export var CAMERA_SENSITIVITY: float = 1 # Not sync
+@export var CAMERA_SENSITIVITY: float = 1
 
 @export var jumping: bool = false
 @export var dashing: bool = false
@@ -12,8 +12,10 @@ var look_direction: Vector2 # Input direction for look/aim
 
 func _ready():
 	# Enable processing for local player
-	var is_local_player: bool = get_multiplayer_authority() == multiplayer.get_unique_id()
+	var is_local_player: bool = is_multiplayer_authority()
 	set_process(is_local_player)
+	set_process_unhandled_input(is_local_player)
+
 	if is_local_player:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -26,24 +28,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta):
 	handle_camera_movements(delta)
 	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	if Input.is_action_just_pressed("jump"): jump.rpc()
-	if Input.is_action_just_pressed("dash"): dash.rpc()
-	if Input.is_action_just_pressed("attack"): attack.rpc()
-#
-# Movements
-#
-
-@rpc("call_local", "reliable")
-func jump():
-	jumping = true
-
-@rpc("call_local", "reliable")
-func dash():
-	dashing = true
-
-@rpc("call_local", "reliable")
-func attack():
-	attacking = true
+	if Input.is_action_just_pressed("jump"): jumping = true
+	if Input.is_action_just_pressed("dash"): dashing = true
+	if Input.is_action_just_pressed("attack"): attacking = true
 
 #
 # Camera

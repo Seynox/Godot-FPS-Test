@@ -1,12 +1,7 @@
 class_name Player extends Entity
-# TODO Fix multiplayer lag handling
 
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
-@export var player_peer: int = 1: # Multiplayer peer_id (Default to server id)
-	set(id):
-		player_peer = id
-		$PlayerInput.set_multiplayer_authority(id)
 
 @export_subgroup("Abilities")
 @export var DEFAULT_DASH: PackedScene
@@ -23,9 +18,18 @@ var dash: Dash
 var jump: Jump
 var weapon: Weapon
 
+func _enter_tree():
+	var player_peer = str(name).to_int()
+	set_multiplayer_authority(player_peer)
+
 func _ready() -> void:
-	var is_local_player: bool = player_peer == multiplayer.get_unique_id()
-	camera.current = is_local_player
+	var is_local_player: bool = is_multiplayer_authority()
+	$Camera.current = is_local_player
+	set_process(is_local_player)
+	set_physics_process(is_local_player)
+	
+	if !is_local_player:
+		return
 	
 	if DEFAULT_DASH != null:
 		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
@@ -87,6 +91,8 @@ func _process_abilities_physics(delta: float):
 func _put_ability(current: Node, new: Node) -> Node:
 	var old = current
 	if new != null:
+		var player_peer: int = get_multiplayer_authority()
+		new.set_multiplayer_authority(player_peer)
 		if current == null:
 			abilities.add_child(new)
 		else:
