@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cecxyk4l8vdyp"]
+
+[ext_resource type="Script" path="res://abilities/dashes/impulse_dash.gd" id="1_oh0dr"]
+
+[node name="ImpulseDash" type="Node"]
+script = ExtResource("1_oh0dr")
+DASH_SPEED = 30.0
+DASH_COOLDOWN = 2.0

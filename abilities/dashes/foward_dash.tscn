@@ -4,6 +4,6 @@
 
 [node name="FowardDash" type="Node"]
 script = ExtResource("1_d4ecr")
-DASH_DISTANCE = 6.0
-DASH_COOLDOWN = 1.0
 DASH_DURATION = 0.1
+DASH_SPEED = 60.0
+DASH_COOLDOWN = 1.0

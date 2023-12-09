@@ -28,6 +28,7 @@ func _process(_delta):
 	if input.shooting:
 		shoot()
 
+# TODO Make Dash nullable
 func _physics_process(delta: float):
 	# Apply camera rotation
 	camera.rotation.x = input.camera_rotation.x
