@@ -56,12 +56,21 @@ func _physics_process(delta: float):
 	camera.rotation.y = input.camera_rotation.y
 	
 	# Calculate forces
-	velocity = _calculate_velocity(delta)
+	velocity = _calculate_movement_velocity(delta)
 	gravity_velocity = _calculate_gravity_velocity(delta)
 	velocity += gravity_velocity
 		
 	_process_abilities_physics(delta)
 	super._physics_process(delta)
+
+func _calculate_movement_velocity(delta: float) -> Vector3:
+	var movement_direction: Vector3 = Vector3(input.movement_direction.x, 0, input.movement_direction.y)
+	var movement_vector_raw: Vector3 = camera.global_transform.basis * movement_direction
+	movement_vector_raw.y = 0
+	
+	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
+	movement_velocity = movement_velocity.move_toward(movement_vector, acceleration * delta)
+	return movement_velocity
 
 func _process_abilities_physics(delta: float):
 	if dash != null:
@@ -86,18 +95,3 @@ func _put_ability(current: Node, new: Node) -> Node:
 
 	old.queue_free()
 	return null
-
-#
-# MOVEMENTS
-#
-	
-
-func _calculate_velocity(delta: float) -> Vector3:
-	# Movements velocity
-	var movement_vector_raw: Vector3 = camera.global_transform.basis * Vector3(input.movement_direction.x, 0, input.movement_direction.y)
-	movement_vector_raw.y = 0
-	
-	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
-	movement_velocity = movement_velocity.move_toward(movement_vector, acceleration * delta)
-	
-	return movement_velocity
