@@ -1,4 +1,4 @@
-extends Jump
+class_name SimpleJump extends Jump
 
 var jump_velocity: Vector3
 
@@ -22,7 +22,12 @@ func get_velocity(entity: Entity, delta: float) -> Vector3:
 	return entity.velocity + jump_velocity
 
 func _get_jump_velocity(entity: Entity) -> Vector3:
-	return Vector3(0, sqrt(4 * JUMP_HEIGHT * entity.GRAVITY), 0)
+	var opposite_upward_velocity: float = entity.velocity.y * -1
+	var upward_velocity: float = sqrt(4 * JUMP_HEIGHT * entity.GRAVITY)
+	
+	# Cancels current upward velocity, then add jump velocity
+	var absolute_upward_velocity = opposite_upward_velocity + upward_velocity
+	return Vector3(0, absolute_upward_velocity, 0)
 
 func _calculate_jump_velocity(entity: Entity, delta: float) -> Vector3:
 	return jump_velocity.move_toward(Vector3.ZERO, entity.GRAVITY * delta)
