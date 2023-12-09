@@ -1,11 +1,8 @@
 class_name Player extends Entity
 # TODO Fix multiplayer lag handling
 
-signal shooting
-
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
-@export var shooting_cooldown: float = 0.2 # In seconds
 @export var player_peer: int = 1: # Multiplayer peer_id (Default to server id)
 	set(id):
 		player_peer = id
@@ -14,8 +11,8 @@ signal shooting
 @export_subgroup("Abilities")
 @export var DEFAULT_DASH: PackedScene
 @export var DEFAULT_JUMP: PackedScene
+@export var DEFAULT_WEAPON: PackedScene
 
-var can_shoot: bool = true
 var movement_velocity: Vector3
 
 @onready var camera: Camera3D = $Camera
@@ -24,6 +21,7 @@ var movement_velocity: Vector3
 
 var dash: Dash
 var jump: Jump
+var weapon: Weapon
 
 func _ready() -> void:
 	var is_local_player: bool = player_peer == multiplayer.get_unique_id()
@@ -33,10 +31,24 @@ func _ready() -> void:
 		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
 	if DEFAULT_JUMP != null:
 		jump = _put_ability(jump, DEFAULT_JUMP.instantiate())
+	if DEFAULT_WEAPON != null:
+		weapon = _put_ability(weapon, DEFAULT_WEAPON.instantiate())
 
-func _process(_delta):
-	if input.shooting:
-		shoot()
+func _process(delta: float):
+	_process_abilities_inputs(delta)
+
+func _process_abilities_inputs(delta: float):
+	if input.dashing and dash != null:
+		dash.try_dash()
+		input.dashing = false
+	
+	if input.jumping and jump != null:
+		jump.try_jump()
+		input.jumping = false
+	
+	if input.attacking and weapon != null:
+		weapon.try_attack(self, delta)
+		input.attacking = false
 
 func _physics_process(delta: float):
 	# Apply camera rotation
@@ -52,70 +64,28 @@ func _physics_process(delta: float):
 	super._physics_process(delta)
 
 func _process_abilities_physics(delta: float):
-	# Dash
 	if dash != null:
-		_process_dash_physics(delta)
+		velocity = dash.get_velocity(self, delta)
 	if jump != null:
-		_process_jump_physics(delta)
+		velocity = jump.get_velocity(self, delta)
+	if weapon != null:
+		velocity = weapon.get_velocity(self, delta)
 
 #
 # ABILITIES
 #
 
-func _process_dash_physics(delta: float):
-	if input.dashing:
-		dash.try_dash()
-		input.dashing = false
-	velocity = dash.get_velocity(self, delta)
-
-func _process_jump_physics(delta: float):
-	if input.jumping:
-		jump.try_jump()
-		input.jumping = false
-	velocity = jump.get_velocity(self, delta)
-
 func _put_ability(current: Node, new: Node) -> Node:
-	if current == null and new != null:
-		abilities.add_child(new)
-		return new
-	
-	var old = current	
+	var old = current
 	if new != null:
-		current.replace_by(new)
+		if current == null:
+			abilities.add_child(new)
+		else:
+			current.replace_by(new)
 		return new
 
 	old.queue_free()
 	return null
-#
-# PLAYER
-#
-
-func shoot_coolown() -> void:
-	can_shoot = false
-	get_tree().create_timer(shooting_cooldown).timeout.connect(func(): can_shoot = true)
-
-func shoot():
-	input.shooting = false
-	if !can_shoot:
-		return
-	
-	shooting.emit()
-	var mouse_position = get_viewport().get_mouse_position()
-	var ray_origin = camera.project_ray_origin(mouse_position)
-	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * self.ATTACK_DISTANCE
-	
-	var ray = PhysicsRayQueryParameters3D.create(ray_origin, ray_max)
-	ray.collide_with_areas = true
-	ray.exclude = [self]
-	
-	var space = get_world_3d().direct_space_state
-	var result = space.intersect_ray(ray)
-	var collidedNode = result.get("collider")
-	
-	if collidedNode != null && collidedNode is Entity:
-		collidedNode.take_hit_from(self)
-	
-	shoot_coolown()
 
 #
 # MOVEMENTS

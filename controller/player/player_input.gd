@@ -4,7 +4,7 @@ extends MultiplayerSynchronizer
 
 @export var jumping: bool = false
 @export var dashing: bool = false
-@export var shooting: bool = false
+@export var attacking: bool = false
 
 @export var movement_direction: Vector2 # Input direction for movement
 @export var camera_rotation: Vector2
@@ -28,7 +28,7 @@ func _process(delta):
 	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if Input.is_action_just_pressed("jump"): jump.rpc()
 	if Input.is_action_just_pressed("dash"): dash.rpc()
-	if Input.is_action_just_pressed("shoot"): shoot.rpc()
+	if Input.is_action_just_pressed("attack"): attack.rpc()
 #
 # Movements
 #
@@ -42,8 +42,8 @@ func dash():
 	dashing = true
 
 @rpc("call_local", "reliable")
-func shoot():
-	shooting = true
+func attack():
+	attacking = true
 
 #
 # Camera

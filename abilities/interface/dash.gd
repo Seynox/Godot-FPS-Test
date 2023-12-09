@@ -1,4 +1,5 @@
 class_name Dash extends Node
+# TODO Refactor
 
 signal dash_started
 signal dash_ended

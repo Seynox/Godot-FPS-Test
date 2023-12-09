@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://boeb2mdml1qwn"]
+
+[ext_resource type="Script" path="res://abilities/weapons/hitscan_weapon.gd" id="1_oim57"]
+
+[node name="HitscanWeapon" type="Node"]
+script = ExtResource("1_oim57")
+WEAPON_COOLDOWN = 0.2
+ATTACK_DAMAGE = 1.0
+ATTACK_RANGE = 50.0

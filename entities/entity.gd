@@ -50,6 +50,6 @@ func reduce_health(damages: float) -> void:
 func is_dead() -> bool:
 	return HEALTH <= 0
 
-func take_hit_from(source: Entity, multiplicator: float = 1) -> void:
+func take_hit_from(source: Entity, additional_damages: float = 0, multiplicator: float = 1) -> void:
 	if CAN_BE_HIT:
-		reduce_health(source.ATTACK_DAMAGE * multiplicator)
+		reduce_health((source.ATTACK_DAMAGE + additional_damages) * multiplicator)
