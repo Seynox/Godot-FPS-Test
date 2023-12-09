@@ -2,11 +2,9 @@ class_name Player extends Entity
 # TODO Fix multiplayer lag handling
 
 signal shooting
-signal jumping
 
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
-@export_range(0.1, 3.0, 0.1) var jump_height: float = 1 # In meters
 @export var shooting_cooldown: float = 0.2 # In seconds
 @export var player_peer: int = 1: # Multiplayer peer_id (Default to server id)
 	set(id):
@@ -15,23 +13,26 @@ signal jumping
 
 @export_subgroup("Abilities")
 @export var DEFAULT_DASH: PackedScene
+@export var DEFAULT_JUMP: PackedScene
 
 var can_shoot: bool = true
 var movement_velocity: Vector3
-var jump_velocity: Vector3
 
 @onready var camera: Camera3D = $Camera
 @onready var input := $PlayerInput
 @onready var abilities := $Abilities
 
 var dash: Dash
+var jump: Jump
 
 func _ready() -> void:
 	var is_local_player: bool = player_peer == multiplayer.get_unique_id()
 	camera.current = is_local_player
 	
 	if DEFAULT_DASH != null:
-		set_dash(DEFAULT_DASH.instantiate())
+		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
+	if DEFAULT_JUMP != null:
+		jump = _put_ability(jump, DEFAULT_JUMP.instantiate())
 
 func _process(_delta):
 	if input.shooting:
@@ -46,9 +47,6 @@ func _physics_process(delta: float):
 	velocity = _calculate_velocity(delta)
 	gravity_velocity = _calculate_gravity_velocity(delta)
 	velocity += gravity_velocity
-	
-	if input.jumping:
-		jump()
 		
 	_process_abilities_physics(delta)
 	super._physics_process(delta)
@@ -57,29 +55,37 @@ func _process_abilities_physics(delta: float):
 	# Dash
 	if dash != null:
 		_process_dash_physics(delta)
+	if jump != null:
+		_process_jump_physics(delta)
 
 #
 # ABILITIES
 #
 
-func _process_dash_physics(delta):
+func _process_dash_physics(delta: float):
 	if input.dashing:
 		dash.try_dash()
 		input.dashing = false
 	velocity = dash.get_velocity(self, delta)
 
-@rpc("call_local", "reliable")
-func set_dash(new_dash: Dash):
-	if dash == null and new_dash != null:
-		abilities.add_child(new_dash)
-		return
+func _process_jump_physics(delta: float):
+	if input.jumping:
+		jump.try_jump()
+		input.jumping = false
+	velocity = jump.get_velocity(self, delta)
+
+func _put_ability(current: Node, new: Node) -> Node:
+	if current == null and new != null:
+		abilities.add_child(new)
+		return new
 	
-	var current_dash = dash	
-	if new_dash != null:
-		current_dash.replace_by(new_dash)
+	var old = current	
+	if new != null:
+		current.replace_by(new)
+		return new
 
-	current_dash.queue_free()
-
+	old.queue_free()
+	return null
 #
 # PLAYER
 #
@@ -114,13 +120,7 @@ func shoot():
 #
 # MOVEMENTS
 #
-
-func jump():
-	input.jumping = false
-	if !is_on_floor():
-		return
-	jumping.emit()
-	jump_velocity = Vector3(0, sqrt(4 * jump_height * GRAVITY), 0)
+	
 
 func _calculate_velocity(delta: float) -> Vector3:
 	# Movements velocity
@@ -130,7 +130,4 @@ func _calculate_velocity(delta: float) -> Vector3:
 	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
 	movement_velocity = movement_velocity.move_toward(movement_vector, acceleration * delta)
 	
-	# Jump
-	jump_velocity = jump_velocity.move_toward(Vector3.ZERO, GRAVITY * delta)
-	
-	return movement_velocity + jump_velocity
+	return movement_velocity
