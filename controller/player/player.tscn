@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://hu7ojvfabj3c"]
+[gd_scene load_steps=8 format=3 uid="uid://hu7ojvfabj3c"]
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
-[ext_resource type="PackedScene" uid="uid://73et67exp85a" path="res://abilities/dashes/foward_dash.tscn" id="3_o1wav"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iow1f"]
 
@@ -50,5 +49,3 @@ script = ExtResource("2_cbi6x")
 replication_config = SubResource("SceneReplicationConfig_v5sww")
 
 [node name="Abilities" type="Node" parent="."]
-
-[node name="Dash" parent="Abilities" instance=ExtResource("3_o1wav")]

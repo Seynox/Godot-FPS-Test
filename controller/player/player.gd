@@ -1,4 +1,5 @@
 class_name Player extends Entity
+# TODO Fix multiplayer lag handling
 
 signal shooting
 signal jumping
@@ -12,49 +13,71 @@ signal jumping
 		player_peer = id
 		$PlayerInput.set_multiplayer_authority(id)
 
+@export_subgroup("Abilities")
+@export var DEFAULT_DASH: PackedScene
+
 var can_shoot: bool = true
 var movement_velocity: Vector3
 var jump_velocity: Vector3
 
 @onready var camera: Camera3D = $Camera
 @onready var input := $PlayerInput
-@onready var dash: Dash = $Abilities/Dash
+@onready var abilities := $Abilities
+
+var dash: Dash
 
 func _ready() -> void:
 	var is_local_player: bool = player_peer == multiplayer.get_unique_id()
 	camera.current = is_local_player
+	
+	if DEFAULT_DASH != null:
+		set_dash(DEFAULT_DASH.instantiate())
 
 func _process(_delta):
 	if input.shooting:
 		shoot()
 
-# TODO Make Dash nullable
 func _physics_process(delta: float):
 	# Apply camera rotation
 	camera.rotation.x = input.camera_rotation.x
 	camera.rotation.y = input.camera_rotation.y
 	
+	# Calculate forces
 	velocity = _calculate_velocity(delta)
 	gravity_velocity = _calculate_gravity_velocity(delta)
 	velocity += gravity_velocity
 	
 	if input.jumping:
 		jump()
-	if input.dashing:
-		dash.try_dash()
-		input.dashing = false
-
-	velocity = dash.get_velocity(self, delta)
+		
+	_process_abilities_physics(delta)
 	super._physics_process(delta)
+
+func _process_abilities_physics(delta: float):
+	# Dash
+	if dash != null:
+		_process_dash_physics(delta)
 
 #
 # ABILITIES
 #
 
+func _process_dash_physics(delta):
+	if input.dashing:
+		dash.try_dash()
+		input.dashing = false
+	velocity = dash.get_velocity(self, delta)
+
 @rpc("call_local", "reliable")
-func replace_dash(new_dash: Dash):
-	var current_dash = dash
-	current_dash.replace_by(new_dash)
+func set_dash(new_dash: Dash):
+	if dash == null and new_dash != null:
+		abilities.add_child(new_dash)
+		return
+	
+	var current_dash = dash	
+	if new_dash != null:
+		current_dash.replace_by(new_dash)
+
 	current_dash.queue_free()
 
 #
