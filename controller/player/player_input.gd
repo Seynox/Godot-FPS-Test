@@ -15,22 +15,25 @@ func _ready():
 	var is_local_player: bool = is_multiplayer_authority()
 	set_process(is_local_player)
 	set_process_unhandled_input(is_local_player)
+	set_process_unhandled_key_input(is_local_player)
 
 	if is_local_player:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-
-func _unhandled_input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseMotion:
 		look_direction = event.relative * 0.001
 		update_camera_rotation()
 
+func _unhandled_key_input(event):
+	if event.is_action_pressed("jump"): jumping = true
+	if event.is_action_pressed("dash"): dashing = true
+	if event.is_action_pressed("attack"): attacking = true
+	if event.is_action_pressed("exit"): get_tree().quit() # TODO Temporary
+
 func _process(delta):
 	handle_camera_movements(delta)
 	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	if Input.is_action_just_pressed("jump"): jumping = true
-	if Input.is_action_just_pressed("dash"): dashing = true
-	if Input.is_action_just_pressed("attack"): attacking = true
 
 #
 # Camera

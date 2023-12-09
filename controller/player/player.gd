@@ -24,7 +24,7 @@ func _enter_tree():
 
 func _ready() -> void:
 	var is_local_player: bool = is_multiplayer_authority()
-	$Camera.current = is_local_player
+	camera.current = is_local_player
 	set_process(is_local_player)
 	set_physics_process(is_local_player)
 	
