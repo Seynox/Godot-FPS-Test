@@ -1,4 +1,4 @@
-class_name ToggledDash extends Dash
+class_name ToggledDash extends CooldownDash
 
 @export var DASH_DURATION: float # In seconds
 

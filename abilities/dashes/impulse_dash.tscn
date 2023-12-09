@@ -4,5 +4,5 @@
 
 [node name="ImpulseDash" type="Node"]
 script = ExtResource("1_oh0dr")
-DASH_SPEED = 30.0
 DASH_COOLDOWN = 2.0
+DASH_SPEED = 30.0

@@ -1,4 +1,4 @@
-class_name ImpulseDash extends Dash
+class_name ImpulseDash extends CooldownDash
 # Gives a speed impulse to the player
 
 var dash_velocity: Vector3
@@ -17,7 +17,6 @@ func get_velocity(player: Player, delta: float) -> Vector3:
 	if is_dashing:
 		dash_velocity = _get_impulse_velocity(player.camera)
 		_stop_dash()
-		_disable_dash()
 	else:
 		dash_velocity = _calculate_dash_velocity(delta)
 	return player.velocity + dash_velocity
@@ -28,6 +27,6 @@ func _get_impulse_velocity(camera: Camera3D) -> Vector3:
 func _calculate_dash_velocity(delta: float) -> Vector3:
 	return dash_velocity.move_toward(Vector3.ZERO, DASH_SPEED * delta)
 
-func _disable_dash():
+func _start_cooldown():
 	can_dash = false
-	super._disable_dash()
+	super._start_cooldown()
