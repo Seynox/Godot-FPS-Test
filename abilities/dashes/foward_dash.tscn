@@ -5,5 +5,8 @@
 [node name="FowardDash" type="Node"]
 script = ExtResource("1_d4ecr")
 DASH_DURATION = 0.1
-DASH_SPEED = 60.0
 DASH_COOLDOWN = 1.0
+DASH_SPEED = 60.0
+NAME = "Forward Dash"
+DESCRIPTION = "Dash in the direction you are looking"
+RARITY = 1

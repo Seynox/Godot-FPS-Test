@@ -1,4 +1,4 @@
-class_name Weapon extends Node
+class_name Weapon extends Ability
 
 signal attack_started
 signal attack_ended

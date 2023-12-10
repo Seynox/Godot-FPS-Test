@@ -1,4 +1,4 @@
-class_name Jump extends Node
+class_name Jump extends Ability
 
 signal jump_ready
 signal jump_disabled

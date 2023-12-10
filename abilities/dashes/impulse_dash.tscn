@@ -6,3 +6,6 @@
 script = ExtResource("1_oh0dr")
 DASH_COOLDOWN = 2.0
 DASH_SPEED = 30.0
+NAME = "Impulse Dash"
+DESCRIPTION = "Gives you a speed impulse in the direction you're facing"
+RARITY = 2

@@ -1,4 +1,4 @@
-class_name Dash extends Node
+class_name Dash extends Ability
 
 signal dash_started
 signal dash_ended

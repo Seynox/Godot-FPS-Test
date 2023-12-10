@@ -15,6 +15,10 @@ run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://assets/icon.svg"
 
+[autoload]
+
+AbilityRegistry="*res://autoloaded/ability_registry.gd"
+
 [display]
 
 window/vsync/vsync_mode=0

@@ -5,3 +5,6 @@
 [node name="MultiJump" type="Node"]
 script = ExtResource("1_untn8")
 JUMP_HEIGHT = 1.0
+NAME = "Double Jump"
+DESCRIPTION = "Gives you a second jump"
+RARITY = 2

@@ -1,4 +1,5 @@
 class_name HitscanWeapon extends CooldownWeapon
+# TODO Add ammos
 
 func _attack(player: Player, _delta: float):
 	attack_started.emit()
