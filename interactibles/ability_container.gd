@@ -18,7 +18,7 @@ func _ready():
 	elif GENERATE_ABILITY != null:
 		ability_contained = GENERATE_ABILITY.instantiate()
 	
-	print("null") if ability_contained == null else print(ability_contained.NAME)
+	print("null") if ability_contained == null else print(ability_contained.NAME) # TODO Remove debug print
 	is_empty = ability_contained == null
 
 func _get_random_ability(rarity: Rarity.Level) -> Ability:
