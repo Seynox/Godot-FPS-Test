@@ -1,7 +1,7 @@
 class_name Rarity extends Node
 
 const PROBABILITIES: Dictionary = {
-	Level.COMMON: 65,
+	Level.COMMON: 60,
 	Level.UNCOMMON: 30,
 	Level.RARE: 9,
 	Level.SECRET: 1,
@@ -16,15 +16,21 @@ enum Level {
 	SECRET
 }
 
-static func get_random_rarity() -> Rarity.Level:
-	var random: int = randi_range(1, 101)
-	var levels = Rarity.Level.values()
-	levels.erase(Level.NONE)
+static func get_random_rarity() -> Level:
+	var max_range: int = 0
+	var level_ranges: Dictionary = {}
 	
-	var result: Rarity.Level = Rarity.Level.COMMON
-	for rarity in levels:
-		var probability: int = Rarity.PROBABILITIES.get(rarity)
-		if random <= probability:
-			result = rarity
+	for level in PROBABILITIES.keys():
+		var probability: int = PROBABILITIES.get(level)
+		max_range += probability
+		level_ranges[level] = max_range
 	
-	return result
+	var random: int = randi_range(0, max_range - 1)
+	
+	for level: Level in level_ranges.keys():
+		var range: int = level_ranges[level]
+		if random < range:
+			return level
+	
+	# Should not be possible to get here
+	return Level.NONE
