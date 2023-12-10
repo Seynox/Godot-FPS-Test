@@ -88,6 +88,15 @@ func _process_abilities_physics(delta: float):
 # ABILITIES
 #
 
+func set_ability(ability: Ability):
+	# TODO Can be a match statement?
+	if ability is Dash:
+		dash = _put_ability(dash, ability)
+	elif ability is Jump:
+		jump = _put_ability(jump, ability)
+	elif ability is Weapon:
+		weapon = _put_ability(weapon, ability)
+
 func _put_ability(current: Node, new: Node) -> Node:
 	var old = current
 	if new != null:
