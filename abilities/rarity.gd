@@ -28,8 +28,8 @@ static func get_random_rarity() -> Level:
 	var random: int = randi_range(0, max_range - 1)
 	
 	for level: Level in level_ranges.keys():
-		var range: int = level_ranges[level]
-		if random < range:
+		var level_range: int = level_ranges[level]
+		if random < level_range:
 			return level
 	
 	# Should not be possible to get here
