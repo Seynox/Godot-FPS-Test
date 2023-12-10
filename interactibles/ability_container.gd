@@ -56,7 +56,7 @@ func _interact(entity: Entity):
 ## to the [param player][br]
 ## Makes the container empty
 func _give_ability(player: Player):
-	player.add_ability(ability_contained)
+	player.set_ability(ability_contained)
 	is_empty = true
 
 ## Interaction fails if the container is empty.

@@ -6,7 +6,7 @@ signal interaction_failed ## Emitted when the interaction failed
 
 ## If the entity can be interacted with or not.
 ## Setting it to false will fail [method Interactible.try_interact]
-@export var CAN_BE_INTERACTED_WITH: bool
+@export var CAN_BE_INTERACTED_WITH: bool = true
 
 ## The message that should be displayed when the entity is prompted
 ## to interact with the object.
