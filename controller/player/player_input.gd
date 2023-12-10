@@ -5,6 +5,7 @@ extends Node
 @export var jumping: bool = false
 @export var dashing: bool = false
 @export var attacking: bool = false
+@export var interacting: bool = false
 
 @export var movement_direction: Vector2 # Input direction for movement
 @export var camera_rotation: Vector2
@@ -30,11 +31,36 @@ func _unhandled_input(event: InputEvent):
 func _unhandled_key_input(event):
 	if event.is_action_pressed("jump"): jumping = true
 	if event.is_action_pressed("dash"): dashing = true
+	if event.is_action_pressed("interact"): interacting = true
 	if event.is_action_pressed("exit"): get_tree().quit() # TODO Temporary
 
 func _process(delta):
 	handle_camera_movements(delta)
 	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+
+#
+# Input handling
+#
+
+func consume_jumping() -> bool:
+	var is_jumping = jumping
+	jumping = false
+	return is_jumping
+
+func consume_dashing() -> bool:
+	var is_dashing = dashing
+	dashing = false
+	return is_dashing
+
+func consume_interacting() -> bool:
+	var is_interacting = interacting
+	interacting = false
+	return is_interacting
+
+func consume_attacking() -> bool:
+	var is_attacking = attacking
+	attacking = false
+	return is_attacking
 
 #
 # Camera

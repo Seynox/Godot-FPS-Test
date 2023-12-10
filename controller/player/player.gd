@@ -2,6 +2,7 @@ class_name Player extends Entity
 
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
+@export var INTERACTION_RANGE: float = 3 # In meters
 
 @export_subgroup("Abilities")
 @export var DEFAULT_DASH: PackedScene
@@ -42,17 +43,17 @@ func _process(delta: float):
 	_process_abilities_inputs(delta)
 
 func _process_abilities_inputs(delta: float):
-	if input.dashing and dash != null:
+	if input.consume_dashing() and dash != null:
 		dash.try_dash()
-		input.dashing = false
 	
-	if input.jumping and jump != null:
+	if input.consume_jumping() and jump != null:
 		jump.try_jump()
-		input.jumping = false
 	
-	if input.attacking and weapon != null:
+	if input.consume_attacking() and weapon != null:
 		weapon.try_attack(self, delta)
-		input.attacking = false
+	
+	if input.consume_interacting():
+		interact()
 
 func _physics_process(delta: float):
 	# Apply camera rotation
@@ -83,6 +84,28 @@ func _process_abilities_physics(delta: float):
 		velocity = jump.get_velocity(self, delta)
 	if weapon != null:
 		velocity = weapon.get_velocity(self, delta)
+
+#
+# ACTIONS
+#
+
+func get_aimed_object(range_in_meters: float) -> Node3D:
+	var mouse_position = get_viewport().get_mouse_position() # TODO Check if it works in multiplayer
+	var ray_origin = camera.project_ray_origin(mouse_position)
+	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * range_in_meters
+	
+	var ray = PhysicsRayQueryParameters3D.create(ray_origin, ray_max)
+	ray.collide_with_areas = true
+	ray.exclude = [self]
+	
+	var space = camera.get_world_3d().direct_space_state
+	var result = space.intersect_ray(ray)
+	return result.get("collider")
+
+func interact():
+	var interacting_object: Node3D = get_aimed_object(INTERACTION_RANGE)
+	if interacting_object != null and interacting_object is Interactible:
+		interacting_object.try_interact(self)
 
 #
 # ABILITIES
