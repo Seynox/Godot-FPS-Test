@@ -24,11 +24,12 @@ func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseMotion:
 		look_direction = event.relative * 0.001
 		update_camera_rotation()
+	
+	if event.is_action_pressed("attack"): attacking = true
 
 func _unhandled_key_input(event):
 	if event.is_action_pressed("jump"): jumping = true
 	if event.is_action_pressed("dash"): dashing = true
-	if event.is_action_pressed("attack"): attacking = true
 	if event.is_action_pressed("exit"): get_tree().quit() # TODO Temporary
 
 func _process(delta):
