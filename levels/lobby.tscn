@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://cgwr8r183dsyd"]
+[gd_scene load_steps=9 format=3 uid="uid://cgwr8r183dsyd"]
 
 [ext_resource type="Script" path="res://levels/lobby.gd" id="1_57qj7"]
 [ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_y2w3n"]
-[ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="2_xc3ih"]
 [ext_resource type="PackedScene" uid="uid://dvbw7aiyi1smw" path="res://interactibles/ability_container.tscn" id="3_17q3k"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nxfwf"]
@@ -113,8 +112,6 @@ omni_range = 25.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -7.17973)
 
 [node name="Players" type="Node3D" parent="."]
-
-[node name="FpsInterface" parent="." instance=ExtResource("2_xc3ih")]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://controller/player/player.tscn")

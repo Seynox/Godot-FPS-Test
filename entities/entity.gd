@@ -1,11 +1,12 @@
 class_name Entity extends CharacterBody3D
 
-signal health_update(old_health: int, new_health: int)
+signal health_update(old_health: float, new_health: float, max_health: float)
 signal death
 signal out_of_map
 
 @export_category("Entity")
 @export var HEALTH: float = 1.0
+@export var MAX_HEALTH: float = 1.0
 @export var SPEED: float = 10 # In meters per second
 @export var ATTACK_DISTANCE: float = 1.5
 @export var ATTACK_DAMAGE: float = 1.0
@@ -35,7 +36,7 @@ func _calculate_gravity_velocity(delta: float) -> Vector3:
 func set_health(new_health: float) -> void:	
 	var current_health = HEALTH
 	HEALTH = new_health
-	health_update.emit(current_health, new_health)
+	health_update.emit(current_health, new_health, MAX_HEALTH)
 	
 	if new_health <= 0:
 		_die()

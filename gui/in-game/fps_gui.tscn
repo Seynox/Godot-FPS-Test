@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://mwljs7b5v7ss"]
+[gd_scene load_steps=3 format=3 uid="uid://mwljs7b5v7ss"]
 
-[node name="FpsInterface" type="Control"]
+[ext_resource type="Script" path="res://gui/in-game/fps_gui.gd" id="1_ijjjf"]
+[ext_resource type="PackedScene" uid="uid://ylko5n8t7462" path="res://gui/in-game/elements/crosshair.tscn" id="1_onr3l"]
+
+[node name="FirstPersonUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -8,29 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+script = ExtResource("1_ijjjf")
 
-[node name="Reticle" type="CenterContainer" parent="."]
+[node name="Reticle" parent="." instance=ExtResource("1_onr3l")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-auto_translate = false
-localize_numeral_system = false
-
-[node name="x" type="Line2D" parent="Reticle"]
-position = Vector2(20, 20)
-points = PackedVector2Array(-10, 0, 10, 0)
-width = 1.0
-
-[node name="y" type="Line2D" parent="Reticle"]
-position = Vector2(20, 20)
-points = PackedVector2Array(0, -10, 0, 10)
-width = 1.0
