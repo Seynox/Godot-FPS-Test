@@ -4,9 +4,9 @@ class_name ImpulseDash extends CooldownDash
 var dash_velocity: Vector3
 var can_dash: bool = true # Disallow dashing mutliple times in the air
 
-func try_dash():
+func try_dash(entity: Entity):
 	if can_dash:
-		super.try_dash()
+		super.try_dash(entity)
 	else:
 		dash_failed.emit()
 

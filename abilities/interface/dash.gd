@@ -12,7 +12,7 @@ var is_dashing: bool = false
 func set_speed(meters_per_sec: float):
 	DASH_SPEED = meters_per_sec
 
-func try_dash():
+func try_dash(_entity: Entity):
 	pass
 
 # Override this! (Called everytime in player's _physics_process)

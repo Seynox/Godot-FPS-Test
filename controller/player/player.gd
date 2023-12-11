@@ -44,10 +44,10 @@ func _process(delta: float):
 
 func _process_abilities_inputs(delta: float):
 	if input.consume_dashing() and dash != null:
-		dash.try_dash()
+		dash.try_dash(self)
 	
 	if input.consume_jumping() and jump != null:
-		jump.try_jump()
+		jump.try_jump(self)
 	
 	if input.consume_attacking() and weapon != null:
 		weapon.try_attack(self, delta)

@@ -2,8 +2,8 @@ class_name SimpleJump extends Jump
 
 var jump_velocity: Vector3
 
-func try_jump():
-	if can_jump:
+func try_jump(entity: Entity):
+	if can_jump and entity.is_on_floor():
 		_start_jump()
 		_disable_jump()
 	else:

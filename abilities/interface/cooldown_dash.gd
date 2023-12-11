@@ -23,7 +23,7 @@ func set_cooldown(seconds: float):
 	DASH_COOLDOWN = seconds
 	cooldown.wait_time = seconds
 
-func try_dash():
+func try_dash(_entity: Entity):
 	if !is_on_cooldown:
 		_start_dash()
 		_start_cooldown()
