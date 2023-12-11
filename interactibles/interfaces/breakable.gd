@@ -14,7 +14,7 @@ signal broken(source: Entity)
 ## Try hitting the object.[br]
 ## Calls [method BreakableInteractible._take_hit] if successfull[br]
 ## Emit [signal BreakableInteractible.hit_failed] if it cannot be hit.
-func try_hitting(source: Entity) -> bool:
+func try_getting_hit_by(source: Entity) -> bool:
 	if CAN_BE_HIT:
 		_take_hit(source)
 	else:
@@ -22,7 +22,7 @@ func try_hitting(source: Entity) -> bool:
 	return CAN_BE_HIT
 
 ## Called when the object takes a hit, even if it's already broken.[br]
-## Don't call directly. Use [method BreakableInteractible.try_hitting] instead.[br]
+## Don't call directly. Use [method BreakableInteractible.try_getting_hit_by] instead.[br]
 ## Will not call [method BreakableInteractible.break] if it's already broken
 func _take_hit(source: Entity):
 	damaged.emit(HITS_TAKEN, source)

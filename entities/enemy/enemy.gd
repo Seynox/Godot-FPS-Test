@@ -49,7 +49,7 @@ func _physics_process(delta):
 func _hit_target_in_range():
 	var distance = global_position.distance_to(TARGET.global_position)
 	if distance <= self.ATTACK_DISTANCE:
-		TARGET.try_hitting(self)
+		TARGET.try_getting_hit_by(self)
 
 func get_closest_target() -> Entity:
 	var all_targets = get_tree().get_nodes_in_group(TARGET_GROUP)

@@ -50,7 +50,7 @@ func _interact(entity: Entity):
 	if IS_BROKEN and entity is Player:
 		_give_ability(entity)
 	else:
-		try_hitting(entity)
+		try_getting_hit_by(entity)
 
 ## Give the ability contained in [member AbilityContainer.ability_contained]
 ## to the [param player][br]
