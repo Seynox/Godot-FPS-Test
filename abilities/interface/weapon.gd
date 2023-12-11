@@ -13,3 +13,13 @@ func try_attack(_player: Player, _delta: float):
 
 func get_velocity(player: Player, _delta: float) -> Vector3:
 	return player.velocity
+
+func hit_target(attacker: Player, target: Node3D):
+	if target is Entity:
+		attacked.emit(target)
+	if target.has_method("try_hitting"):
+		var is_successfull = target.try_hitting(attacker)
+		if !is_successfull:
+			attack_failed.emit()
+		elif target is Entity:
+			attacked.emit(target)
