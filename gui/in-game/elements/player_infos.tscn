@@ -44,15 +44,3 @@ offset_bottom = 20.0
 grow_horizontal = 0
 grow_vertical = 2
 alignment = 1
-
-[node name="Jump" type="Label" parent="Abilities"]
-layout_mode = 2
-text = "Jump"
-
-[node name="Dash" type="Label" parent="Abilities"]
-layout_mode = 2
-text = "Dash"
-
-[node name="Weapon" type="Label" parent="Abilities"]
-layout_mode = 2
-text = "Weapon"

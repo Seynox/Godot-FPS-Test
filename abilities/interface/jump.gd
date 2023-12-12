@@ -11,6 +11,9 @@ signal jump_failed
 var is_jumping: bool = false
 var can_jump: bool = true
 
+func get_ability_type() -> String:
+	return str(Jump)
+
 func try_jump(_entity: Entity):
 	pass
 

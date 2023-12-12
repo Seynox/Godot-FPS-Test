@@ -8,6 +8,9 @@ signal dash_failed
 
 var is_dashing: bool = false
 
+func get_ability_type() -> String:
+	return str(Dash)
+
 @rpc("call_local", "reliable")
 func set_speed(meters_per_sec: float):
 	DASH_SPEED = meters_per_sec
@@ -26,4 +29,3 @@ func _start_dash():
 func _stop_dash():
 	is_dashing = false
 	dash_ended.emit()
-

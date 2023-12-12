@@ -1,5 +1,7 @@
 class_name Player extends Entity
 
+signal ability_changed(player: Player, ability_type: String, ability: Ability)
+
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
 @export var INTERACTION_RANGE: float = 3 # In meters
@@ -15,6 +17,7 @@ var movement_velocity: Vector3
 @onready var input := $PlayerInput
 @onready var abilities := $Abilities
 
+# A dictionary would be cleaner but a bit slower
 var dash: Dash
 var jump: Jump
 var weapon: Weapon
@@ -120,16 +123,25 @@ func set_ability(ability: Ability):
 	elif ability is Weapon:
 		weapon = _put_ability(weapon, ability)
 
-func _put_ability(current: Node, new: Node) -> Node:
-	var old = current
-	if new != null:
-		var player_peer: int = get_multiplayer_authority()
-		new.set_multiplayer_authority(player_peer)
-		if current == null:
-			abilities.add_child(new)
-		else:
-			current.replace_by(new)
-		return new
-
-	old.queue_free()
-	return null
+func _put_ability(current: Ability, new: Ability) -> Ability:
+	# Remove the current if new is null
+	if new == null:
+		if current != null:
+			ability_changed.emit(self, current.get_ability_type(), null)
+			current.queue_free()
+		return null
+	
+	# Copy our authority to child
+	var player_peer: int = get_multiplayer_authority()
+	new.set_multiplayer_authority(player_peer)
+	
+	# Add the new ability or replace the current one
+	if current == null:
+		abilities.add_child(new)
+	else:
+		var old: Node = current
+		current.replace_by(new)
+		old.queue_free()
+		
+	ability_changed.emit(self, new.get_ability_type(), new)
+	return new

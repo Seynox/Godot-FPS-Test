@@ -50,6 +50,4 @@ replication_config = SubResource("SceneReplicationConfig_cabjf")
 layout_mode = 1
 offset_top = -100.0
 
-[connection signal="death" from="." to="FirstPersonUI" method="_on_player_death"]
-[connection signal="health_update" from="." to="FirstPersonUI" method="_on_player_health_update"]
-[connection signal="health_update" from="." to="FirstPersonUI/PlayerInfos" method="_on_player_health_update"]
+[connection signal="ability_changed" from="." to="FirstPersonUI/PlayerInfos" method="_on_player_ability_changed"]

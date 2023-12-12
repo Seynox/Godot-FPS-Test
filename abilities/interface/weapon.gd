@@ -8,6 +8,9 @@ signal attacked(enemy: Entity)
 @export var ATTACK_DAMAGE: float
 @export var ATTACK_RANGE: float
 
+func get_ability_type() -> String:
+	return str(Weapon)
+
 func try_attack(_player: Player, _delta: float):
 	pass
 
