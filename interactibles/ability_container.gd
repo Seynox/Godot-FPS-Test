@@ -1,5 +1,7 @@
 class_name AbilityContainer extends BreakableInteractible
 
+signal emptied
+
 ## The ability to put inside the container.[br]
 ## Ignored if [member AbilityContainer.GENERATE_RANDOM_ABILITY] is true
 @export var GENERATE_ABILITY: PackedScene
@@ -19,14 +21,14 @@ class_name AbilityContainer extends BreakableInteractible
 var ability_contained: Ability
 
 ## If the container contains an ability
-var is_empty: bool
+var is_empty: bool = false
 
 func _ready():
 	ability_contained = _generate_container_ability()
-	is_empty = ability_contained == null
-	
-	# Common = 1 hit, Uncommon = 2 hits etc..
-	if ability_contained != null:
+	if ability_contained == null:
+		_set_empty()
+	else:
+		# Common = 1 hit, Uncommon = 2 hits etc..
 		HITS_NEEDED = ability_contained.RARITY
 		print(ability_contained.NAME) # TODO Remove
 
@@ -51,13 +53,14 @@ func _interact(entity: Entity):
 		_give_ability(entity)
 	else:
 		try_getting_hit_by(entity)
+	super._interact(entity)
 
 ## Give the ability contained in [member AbilityContainer.ability_contained]
 ## to the [param player][br]
 ## Makes the container empty
 func _give_ability(player: Player):
 	player.set_ability(ability_contained)
-	is_empty = true
+	_set_empty()
 
 ## Interaction fails if the container is empty.
 func try_interact(entity: Entity):
@@ -65,3 +68,7 @@ func try_interact(entity: Entity):
 		super.try_interact(entity)
 	else:
 		interaction_failed.emit()
+
+func _set_empty():
+	is_empty = true
+	emptied.emit()

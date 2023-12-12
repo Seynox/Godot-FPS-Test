@@ -1,10 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dvbw7aiyi1smw"]
+[gd_scene load_steps=6 format=3 uid="uid://dvbw7aiyi1smw"]
 
 [ext_resource type="Script" path="res://interactibles/ability_container.gd" id="1_ussmo"]
+[ext_resource type="Script" path="res://interactibles/ability_container_model_debug.gd" id="2_0qga2"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cakiv"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eed8t"]
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_hx4cl"]
+material = SubResource("StandardMaterial3D_eed8t")
 
 [node name="AbilityContainer" type="StaticBody3D"]
 collision_layer = 4
@@ -17,3 +21,8 @@ shape = SubResource("CylinderShape3D_cakiv")
 [node name="Model" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CylinderMesh_hx4cl")
+script = ExtResource("2_0qga2")
+
+[connection signal="broken" from="." to="Model" method="_on_ability_container_broken"]
+[connection signal="damaged" from="." to="Model" method="_on_ability_container_damaged"]
+[connection signal="emptied" from="." to="Model" method="_on_ability_container_emptied"]
