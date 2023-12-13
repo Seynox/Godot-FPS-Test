@@ -20,6 +20,17 @@ func _on_player_death():
 	pass
 
 #
+# Interactible signals
+#
+
+func _on_player_interactible_hover_started(interactible: Interactible):
+	print(interactible.INTERACTION_PROMPT_MESSAGE)
+
+
+func _on_player_interactible_hover_ended():
+	print("Stopped hovering")
+
+#
 # TODO Effects
 #
 
@@ -28,3 +39,5 @@ func play_heal_effect():
 
 func play_damage_effect():
 	pass
+
+

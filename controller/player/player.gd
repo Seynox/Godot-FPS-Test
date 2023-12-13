@@ -1,19 +1,19 @@
 class_name Player extends Entity
 
 signal ability_changed(player: Player, ability_type: String, ability: Ability)
+signal interactible_hover_started(interactible: Interactible)
+signal interactible_hover_ended
 
 @export_category("Player")
 @export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
-@export var INTERACTION_RANGE: float = 3 # In meters
 
 @export_subgroup("Abilities")
 @export var DEFAULT_DASH: PackedScene
 @export var DEFAULT_JUMP: PackedScene
 @export var DEFAULT_WEAPON: PackedScene
 
-var movement_velocity: Vector3
-
 @onready var camera: Camera3D = $Camera
+@onready var interaction_ray: RayCast3D = $Camera/InteractionRay
 @onready var input := $PlayerInput
 @onready var abilities := $Abilities
 
@@ -21,6 +21,9 @@ var movement_velocity: Vector3
 var dash: Dash
 var jump: Jump
 var weapon: Weapon
+
+var movement_velocity: Vector3
+var interactible_hovered: Interactible
 
 func _enter_tree():
 	var player_peer = str(name).to_int()
@@ -54,14 +57,14 @@ func _process_abilities_inputs(delta: float):
 	
 	if input.consume_attacking() and weapon != null:
 		weapon.try_attack(self, delta)
-	
-	if input.consume_interacting():
-		interact()
 
 func _physics_process(delta: float):
 	# Apply camera rotation
 	camera.rotation.x = input.camera_rotation.x
 	camera.rotation.y = input.camera_rotation.y
+	
+	# Get aimed interactible
+	_update_aimed_interactible()
 	
 	# Calculate forces
 	velocity = _calculate_movement_velocity(delta)
@@ -105,10 +108,24 @@ func get_aimed_object(range_in_meters: float) -> Node3D:
 	var result = space.intersect_ray(ray)
 	return result.get("collider")
 
-func interact():
-	var interacting_object: Node3D = get_aimed_object(INTERACTION_RANGE)
-	if interacting_object != null and interacting_object is Interactible:
-		interacting_object.try_interact(self)
+func _update_aimed_interactible():
+	var currently_hovered: Node3D = interaction_ray.get_collider()
+	
+	if not currently_hovered is Interactible:
+		currently_hovered = null
+	
+	# Interact with interactible if the player tries to
+	if currently_hovered != null and input.consume_interacting():
+		currently_hovered.try_interact(self)
+	
+	# Send signals when starting or stopping hover
+	if interactible_hovered == null and currently_hovered != null:
+		interactible_hover_started.emit(currently_hovered)
+	elif interactible_hovered != null and currently_hovered == null:
+		interactible_hover_ended.emit()
+	
+	# Update last hovered
+	interactible_hovered = currently_hovered
 
 #
 # ABILITIES

@@ -13,6 +13,7 @@ material = SubResource("StandardMaterial3D_eed8t")
 [node name="AbilityContainer" type="StaticBody3D"]
 collision_layer = 4
 script = ExtResource("1_ussmo")
+INTERACTION_PROMPT_MESSAGE = "Break the glass"
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

@@ -30,6 +30,10 @@ MAX_HEALTH = 5.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0)
 fov = 90.0
 
+[node name="InteractionRay" type="RayCast3D" parent="Camera"]
+target_position = Vector3(0, 0, -3)
+collision_mask = 6
+
 [node name="Hitbox" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_iow1f")
 
@@ -51,3 +55,5 @@ layout_mode = 1
 offset_top = -100.0
 
 [connection signal="ability_changed" from="." to="FirstPersonUI/PlayerInfos" method="_on_player_ability_changed"]
+[connection signal="interactible_hover_ended" from="." to="FirstPersonUI" method="_on_player_interactible_hover_ended"]
+[connection signal="interactible_hover_started" from="." to="FirstPersonUI" method="_on_player_interactible_hover_started"]
