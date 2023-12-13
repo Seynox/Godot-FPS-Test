@@ -30,7 +30,10 @@ func _get_jump_velocity(entity: Entity) -> Vector3:
 	return Vector3(0, absolute_upward_velocity, 0)
 
 func _calculate_jump_velocity(entity: Entity, delta: float) -> Vector3:
-	return jump_velocity.move_toward(Vector3.ZERO, entity.GRAVITY * delta)
+	if entity.is_on_floor():
+		return Vector3.ZERO
+	var gravity_force: float = entity.GRAVITY * entity.GRAVITY_MULTIPLIER
+	return jump_velocity.move_toward(Vector3.ZERO, gravity_force * delta)
 
 func _start_jump():
 	is_jumping = true

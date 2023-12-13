@@ -10,7 +10,6 @@ func try_jump(entity: Entity):
 	elif can_jump:
 		_start_jump()
 		_disable_jump()
-		
 
 func get_velocity(entity: Entity, delta: float) -> Vector3:
 	if jumps_remaining <= 0 and entity.is_on_floor():
