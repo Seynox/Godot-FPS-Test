@@ -1,5 +1,7 @@
 extends Control
 
+@onready var interaction_prompt: Label = $InteractionPrompt
+
 func _ready():
 	# Hide other players UI
 	visible = is_multiplayer_authority()
@@ -23,12 +25,13 @@ func _on_player_death():
 # Interactible signals
 #
 
-func _on_player_interactible_hover_started(interactible: Interactible):
-	print(interactible.INTERACTION_PROMPT_MESSAGE)
 
+func _on_player_interactible_hovering(interactible: Interactible):
+	interaction_prompt.text = interactible.INTERACTION_PROMPT_MESSAGE
+	interaction_prompt.visible = self.visible and interactible.CAN_BE_INTERACTED_WITH
 
 func _on_player_interactible_hover_ended():
-	print("Stopped hovering")
+	interaction_prompt.visible = false
 
 #
 # TODO Effects
@@ -39,5 +42,3 @@ func play_heal_effect():
 
 func play_damage_effect():
 	pass
-
-

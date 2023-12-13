@@ -34,4 +34,5 @@ func _take_hit(source: Entity):
 ## Automatically called when taking enough hits with [method BreakableInteractible._take_hit]
 func _break(source: Entity):
 	IS_BROKEN = true
+	CAN_BE_HIT = false
 	broken.emit(source)

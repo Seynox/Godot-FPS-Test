@@ -56,4 +56,4 @@ offset_top = -100.0
 
 [connection signal="ability_changed" from="." to="FirstPersonUI/PlayerInfos" method="_on_player_ability_changed"]
 [connection signal="interactible_hover_ended" from="." to="FirstPersonUI" method="_on_player_interactible_hover_ended"]
-[connection signal="interactible_hover_started" from="." to="FirstPersonUI" method="_on_player_interactible_hover_started"]
+[connection signal="interactible_hovering" from="." to="FirstPersonUI" method="_on_player_interactible_hovering"]

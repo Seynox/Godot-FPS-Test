@@ -1,7 +1,7 @@
 class_name Player extends Entity
 
 signal ability_changed(player: Player, ability_type: String, ability: Ability)
-signal interactible_hover_started(interactible: Interactible)
+signal interactible_hovering(interactible: Interactible)
 signal interactible_hover_ended
 
 @export_category("Player")
@@ -118,10 +118,10 @@ func _update_aimed_interactible():
 	if currently_hovered != null and input.consume_interacting():
 		currently_hovered.try_interact(self)
 	
-	# Send signals when starting or stopping hover
-	if interactible_hovered == null and currently_hovered != null:
-		interactible_hover_started.emit(currently_hovered)
-	elif interactible_hovered != null and currently_hovered == null:
+	# Send signals when hovering or stopping hovering
+	if currently_hovered != null:
+		interactible_hovering.emit(currently_hovered)
+	elif interactible_hovered != null:
 		interactible_hover_ended.emit()
 	
 	# Update last hovered

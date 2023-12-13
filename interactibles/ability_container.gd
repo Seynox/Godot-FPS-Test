@@ -2,6 +2,8 @@ class_name AbilityContainer extends BreakableInteractible
 
 signal emptied
 
+@export var BROKEN_INTERACTION_PROMPT_MESSAGE: String
+
 ## The ability to put inside the container.[br]
 ## Ignored if [member AbilityContainer.GENERATE_RANDOM_ABILITY] is true
 @export var GENERATE_ABILITY: PackedScene
@@ -62,13 +64,12 @@ func _give_ability(player: Player):
 	player.set_ability(ability_contained)
 	_set_empty()
 
-## Interaction fails if the container is empty.
-func try_interact(entity: Entity):
-	if !is_empty:
-		super.try_interact(entity)
-	else:
-		interaction_failed.emit()
-
 func _set_empty():
 	is_empty = true
+	CAN_BE_INTERACTED_WITH = false
 	emptied.emit()
+
+func _break(source: Entity):
+	var item_prompt = "%s %s" % [BROKEN_INTERACTION_PROMPT_MESSAGE, ability_contained.NAME]
+	INTERACTION_PROMPT_MESSAGE = item_prompt
+	super._break(source)
