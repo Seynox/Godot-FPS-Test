@@ -97,3 +97,7 @@ interact={
 3d_physics/layer_1="player"
 3d_physics/layer_2="enemy"
 3d_physics/layer_3="world"
+
+[physics]
+
+3d/default_gravity=14.0
