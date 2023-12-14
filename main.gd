@@ -23,7 +23,7 @@ func _ready():
 	var port = args.get("port", DEFAULT_PORT)
 	var max_clients = args.get("max-clients", DEFAULT_MAX_CLIENTS)
 	
-	_host_server.call_deferred(ip, int(port), int(max_clients))
+	host_server.call_deferred(ip, int(port), int(max_clients))
 
 func _parse_command_args() -> Dictionary:
 	var args = {}
@@ -45,7 +45,7 @@ func _start_multiplayer_game(peer: MultiplayerPeer):
 	_change_level(FIRST_GAME_SCENE.instantiate())
 
 func quit_game():
-	print("Quitting")
+	print("[Game] Quitting")
 	get_tree().quit()
 
 func _change_level(level: GameLevel):
@@ -76,14 +76,12 @@ func _change_scene(scene: Node):
 func _listen_connection_signals():
 	# Client-only signals
 	multiplayer.server_disconnected.connect(_on_server_disconnect)
-	multiplayer.connected_to_server.connect(_on_server_connect)
 	multiplayer.connection_failed.connect(_on_server_connection_failed)
 
 func _listen_main_menu_signals(menu: Node):
-	print("Registering menu signals")
 	menu.connect("quit_game", quit_game)
 	menu.connect("connect_to_server", connect_to_server)
-	menu.connect("host_server", host_server_and_play)
+	menu.connect("host_server", host_server)
 	
 func _listen_level_signals(level: GameLevel):
 	level.level_finished.connect(on_level_finished)
@@ -96,7 +94,7 @@ func on_level_finished():
 # Server connection/hosting
 #
 
-func _host_server(ip: String, port: int, max_clients: int):
+func host_server(ip: String, port: int, max_clients: int):
 	var peer = ENetMultiplayerPeer.new()
 	peer.set_bind_ip(ip)
 	var error = peer.create_server(port, max_clients)
@@ -107,20 +105,14 @@ func _host_server(ip: String, port: int, max_clients: int):
 	print("Hosting server on %s:%s" % [ip, port])
 	_start_multiplayer_game(peer)
 
-func host_server_and_play(ip: String, port: int, max_clients: int):
-	print("Host and play")
-	_host_server(ip, port, max_clients)
-	_on_server_connect()
-
 func connect_to_server(ip: String, port: int):	
-	print("Connecting to %s:%s" % [ip, port])
+	print("Connecting to %s:%s..." % [ip, port])
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_client(ip, port)
 	if error:
 		print("Could not connect to server")
 		return
 	
-	print("Connected to server!")
 	_start_multiplayer_game(peer)
 
 func _on_server_connection_failed():
@@ -131,9 +123,6 @@ func _on_server_connection_failed():
 # Server connection
 #
 
-func _on_server_connect():
-	print("Joined lobby as %s" % multiplayer.get_unique_id())
-
 func _on_server_disconnect():
-	print("Server disconnected")
+	print("[Multiplayer] Server disconnected")
 	_open_main_menu()

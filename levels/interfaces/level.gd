@@ -10,7 +10,5 @@ signal level_finished
 signal game_over
 
 func move_to_spawn(entity: Entity):
-	print("Moving %s to spawn" % entity.name)
 	var spawnpoint: Vector3 = PLAYER_SPAWN.global_position if PLAYER_SPAWN != null else Vector3.ZERO
-	print("Pos: ", spawnpoint)
 	entity.global_position = spawnpoint

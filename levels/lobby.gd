@@ -31,13 +31,13 @@ func _remove_player_signals():
 	multiplayer.peer_disconnected.disconnect(remove_player)
 
 func add_player(id: int):
-	print("Adding player %s" % id)
+	print("[Multiplayer] Player joined (%s)" % id)
 	var player = PLAYER_SCENE.instantiate()
 	player.name = str(id) # Node name
 	players.add_child(player, true) # Needs "force_readable_name" for using rpc
 
 func remove_player(id: int):
-	print("Removing player %s" % id)
+	print("[Multiplayer] Player left (%s)" % id)
 	var player_node_name = str(id)
 	if players.has_node(player_node_name):
 		var player = players.get_node(player_node_name)
