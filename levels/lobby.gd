@@ -1,6 +1,8 @@
-extends Node3D
+extends GameLevel
 
 @export var PLAYER_SCENE: PackedScene
+
+var players_ready: int = 0
 
 func _ready():
 	# Only need to spawn players on server thanks to PlayerSpawner
@@ -32,11 +34,29 @@ func add_player(id: int):
 	print("Adding player %s" % id)
 	var player = PLAYER_SCENE.instantiate()
 	player.name = str(id) # Node name
-	$Players.add_child(player, true) # Needs "force_readable_name" for using rpc
+	players.add_child(player, true) # Needs "force_readable_name" for using rpc
 
 func remove_player(id: int):
 	print("Removing player %s" % id)
 	var player_node_name = str(id)
-	if $Players.has_node(player_node_name):
-		var player = $Players.get_node(player_node_name)
+	if players.has_node(player_node_name):
+		var player = players.get_node(player_node_name)
 		player.queue_free()
+
+#
+# Signals
+#
+
+func _on_start_game_area_body_entered(body):
+	if not body is Player: return
+	players_ready += 1
+	
+	var players_count: int = players.get_child_count()
+	var everyone_ready: bool = players_ready == players_count
+	if everyone_ready:
+		level_finished.emit()
+	
+
+func _on_start_game_area_body_exited(body):
+	if not body is Player: return
+	players_ready -= 1

@@ -1,118 +1,56 @@
-[gd_scene load_steps=9 format=3 uid="uid://cgwr8r183dsyd"]
+[gd_scene load_steps=7 format=3 uid="uid://cgwr8r183dsyd"]
 
 [ext_resource type="Script" path="res://levels/lobby.gd" id="1_57qj7"]
 [ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_y2w3n"]
-[ext_resource type="PackedScene" uid="uid://dvbw7aiyi1smw" path="res://interactibles/ability_container.tscn" id="3_17q3k"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_nxfwf"]
-size = Vector3(30, 0.4, 30)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hy2wl"]
-albedo_color = Color(0.239216, 0.239216, 0.239216, 1)
-metallic = 1.0
+[ext_resource type="PackedScene" uid="uid://cgbjj2wp44alh" path="res://levels/level_one.tscn" id="3_82m6v"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ekqms"]
-material = SubResource("StandardMaterial3D_hy2wl")
-size = Vector3(30, 0.4, 30)
+flip_faces = true
+size = Vector3(30, 7, 30)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_11qyv"]
-size = Vector3(30, 7, 0)
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_n7gck"]
+data = PackedVector3Array(15, 3.5, 15, -15, 3.5, 15, -15, -3.5, 15, 15, -3.5, 15, 15, 3.5, 15, -15, -3.5, 15, -15, 3.5, -15, 15, 3.5, -15, 15, -3.5, -15, -15, -3.5, -15, -15, 3.5, -15, 15, -3.5, -15, 15, 3.5, -15, 15, 3.5, 15, 15, -3.5, 15, 15, -3.5, -15, 15, 3.5, -15, 15, -3.5, 15, -15, 3.5, 15, -15, 3.5, -15, -15, -3.5, -15, -15, -3.5, 15, -15, 3.5, 15, -15, -3.5, -15, -15, 3.5, 15, 15, 3.5, 15, 15, 3.5, -15, -15, 3.5, -15, -15, 3.5, 15, 15, 3.5, -15, 15, -3.5, 15, -15, -3.5, 15, -15, -3.5, -15, 15, -3.5, -15, 15, -3.5, 15, -15, -3.5, -15)
 
-[sub_resource type="BoxMesh" id="BoxMesh_pfoea"]
-material = SubResource("StandardMaterial3D_hy2wl")
-size = Vector3(30, 7, 0.4)
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_kb6dq"]
+radius = 2.0
 
-[node name="Lobby" type="Node3D"]
+[node name="Lobby" type="Node3D" node_paths=PackedStringArray("PLAYER_SPAWN")]
 script = ExtResource("1_57qj7")
 PLAYER_SCENE = ExtResource("1_y2w3n")
+LEVEL_NAME = "Lobby"
+PLAYER_SPAWN = NodePath("Spawnpoint")
+NEXT_LEVEL = ExtResource("3_82m6v")
 
-[node name="Room" type="Node3D" parent="."]
-
-[node name="Ground" type="StaticBody3D" parent="Room"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+[node name="Room" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 collision_layer = 4
 collision_mask = 0
 
-[node name="Collision" type="CollisionShape3D" parent="Room/Ground"]
-shape = SubResource("BoxShape3D_nxfwf")
-
-[node name="Model" type="MeshInstance3D" parent="Room/Ground"]
+[node name="Model" type="MeshInstance3D" parent="Room"]
 mesh = SubResource("BoxMesh_ekqms")
 
-[node name="Ceiling" type="StaticBody3D" parent="Room"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
-collision_layer = 4
-collision_mask = 0
+[node name="Collisions" type="CollisionShape3D" parent="Room"]
+shape = SubResource("ConcavePolygonShape3D_n7gck")
 
-[node name="Collision" type="CollisionShape3D" parent="Room/Ceiling"]
-shape = SubResource("BoxShape3D_nxfwf")
+[node name="Light" type="OmniLight3D" parent="Room"]
+omni_range = 26.955
 
-[node name="Model" type="MeshInstance3D" parent="Room/Ceiling"]
-mesh = SubResource("BoxMesh_ekqms")
+[node name="Spawnpoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 
-[node name="WallNorth" type="StaticBody3D" parent="Room"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -15)
-collision_layer = 4
-collision_mask = 0
+[node name="StartGameArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 11)
+collision_layer = 0
+monitorable = false
 
-[node name="Collision" type="CollisionShape3D" parent="Room/WallNorth"]
-shape = SubResource("BoxShape3D_11qyv")
+[node name="Collision" type="CollisionShape3D" parent="StartGameArea"]
+shape = SubResource("CylinderShape3D_kb6dq")
 
-[node name="Model" type="MeshInstance3D" parent="Room/WallNorth"]
-mesh = SubResource("BoxMesh_pfoea")
+[node name="Light" type="SpotLight3D" parent="StartGameArea"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2, 0)
+light_energy = 3.0
+spot_range = 4.0
+spot_angle = 30.0
 
-[node name="WallSouth" type="StaticBody3D" parent="Room"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 15)
-collision_layer = 4
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="Room/WallSouth"]
-shape = SubResource("BoxShape3D_11qyv")
-
-[node name="Model" type="MeshInstance3D" parent="Room/WallSouth"]
-mesh = SubResource("BoxMesh_pfoea")
-
-[node name="WallEast" type="StaticBody3D" parent="Room"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 15, 2.5, 0)
-collision_layer = 4
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="Room/WallEast"]
-shape = SubResource("BoxShape3D_11qyv")
-
-[node name="Model" type="MeshInstance3D" parent="Room/WallEast"]
-mesh = SubResource("BoxMesh_pfoea")
-
-[node name="WallWest" type="StaticBody3D" parent="Room"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -15, 2.5, 0)
-collision_layer = 4
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="Room/WallWest"]
-shape = SubResource("BoxShape3D_11qyv")
-
-[node name="Model" type="MeshInstance3D" parent="Room/WallWest"]
-mesh = SubResource("BoxMesh_pfoea")
-
-[node name="BlueLight" type="OmniLight3D" parent="Room"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 3, 5)
-light_color = Color(0.235294, 0.796078, 0.839216, 1)
-light_energy = 10.0
-light_specular = 2.0
-omni_range = 25.0
-
-[node name="PinkLight" type="OmniLight3D" parent="Room"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 3, -2)
-light_color = Color(1, 0, 1, 1)
-light_energy = 10.0
-light_specular = 2.0
-omni_range = 25.0
-
-[node name="AbilityContainer" parent="Room" instance=ExtResource("3_17q3k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -7.17973)
-
-[node name="Players" type="Node3D" parent="."]
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://controller/player/player.tscn")
-spawn_path = NodePath("../Players")
+[connection signal="body_entered" from="StartGameArea" to="." method="_on_start_game_area_body_entered"]
+[connection signal="body_exited" from="StartGameArea" to="." method="_on_start_game_area_body_exited"]

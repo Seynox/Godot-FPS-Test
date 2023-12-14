@@ -4,8 +4,11 @@ const DEFAULT_IP: String = "*" # All interfaces
 const DEFAULT_PORT: int = 8000
 const DEFAULT_MAX_CLIENTS: int = 20
 
+# TODO Refactor
 @export var MAIN_MENU_SCENE: PackedScene
 @export var FIRST_GAME_SCENE: PackedScene 
+
+@onready var players_container: Node3D = $Players
 
 var current_scene: Node
 
@@ -45,9 +48,14 @@ func quit_game():
 	print("Quitting")
 	get_tree().quit()
 
-func _change_level(level: Node):
+func _change_level(level: GameLevel):
 	_change_scene(level)
 	_listen_level_signals(level)
+	
+	# Set players spawn to level spawnpoint
+	players_container.global_position = level.PLAYER_SPAWN.global_position
+	for player: Player in players_container.get_children():
+		player.position = Vector3.ZERO
 
 func _open_main_menu():
 	multiplayer.multiplayer_peer = null # Disconnect from multiplayer
@@ -77,8 +85,12 @@ func _listen_main_menu_signals(menu: Node):
 	menu.connect("connect_to_server", connect_to_server)
 	menu.connect("host_server", host_server_and_play)
 	
-func _listen_level_signals(_level: Node):
-	pass
+func _listen_level_signals(level: GameLevel):
+	level.level_finished.connect(on_level_finished)
+
+func on_level_finished():
+	var next_level: GameLevel = current_scene.NEXT_LEVEL.instantiate()
+	_change_level(next_level)
 
 #
 # Server connection/hosting
