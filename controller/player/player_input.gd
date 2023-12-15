@@ -32,7 +32,7 @@ func _unhandled_key_input(event):
 	if event.is_action_pressed("jump"): jumping = true
 	if event.is_action_pressed("dash"): dashing = true
 	if event.is_action_pressed("interact"): interacting = true
-	if event.is_action_pressed("exit"): get_tree().quit() # TODO Temporary
+	if event.is_action_pressed("exit"): get_tree().quit()
 
 func _process(delta):
 	handle_camera_movements(delta)

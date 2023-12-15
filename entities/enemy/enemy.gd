@@ -15,7 +15,7 @@ func _ready():
 		_start_target_finding_loop()
 
 func _die():
-	super._die()
+	super()
 	queue_free()
 
 func _start_target_finding_loop():
@@ -44,7 +44,7 @@ func _physics_process(delta):
 	
 	gravity_velocity = _calculate_gravity_velocity(delta)
 	velocity += gravity_velocity
-	super._physics_process(delta)
+	super(delta)
 
 func _hit_target_in_range():
 	var distance = global_position.distance_to(TARGET.global_position)

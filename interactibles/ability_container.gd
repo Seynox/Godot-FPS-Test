@@ -55,7 +55,7 @@ func _interact(player: Player):
 		_ability_taken_by(player)
 	else:
 		try_getting_hit_by(player)
-	super._interact(player)
+	super(player)
 
 ## Give the ability contained in [member AbilityContainer.ability_contained]
 ## to the [param player][br]
@@ -68,9 +68,10 @@ func _ability_taken_by(player: Player):
 func set_empty():
 	is_empty = true
 	CAN_BE_INTERACTED_WITH = false
+	CAN_BE_HIT = false
 	emptied.emit()
 
 func set_broken():
 	var item_prompt = "%s %s" % [BROKEN_INTERACTION_PROMPT_MESSAGE, ability_contained.NAME]
 	INTERACTION_PROMPT_MESSAGE = item_prompt
-	super.set_broken()
+	super()

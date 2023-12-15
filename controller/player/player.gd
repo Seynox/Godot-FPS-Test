@@ -72,7 +72,7 @@ func _physics_process(delta: float):
 	velocity += gravity_velocity
 		
 	_process_abilities_physics(delta)
-	super._physics_process(delta)
+	super(delta)
 
 func _calculate_movement_velocity(delta: float) -> Vector3:
 	var movement_direction: Vector3 = Vector3(input.movement_direction.x, 0, input.movement_direction.y)
@@ -96,7 +96,7 @@ func _process_abilities_physics(delta: float):
 #
 
 func get_aimed_object(range_in_meters: float) -> Node3D:
-	var mouse_position = get_viewport().get_mouse_position() # TODO Check if it works in multiplayer
+	var mouse_position = get_viewport().get_mouse_position()
 	var ray_origin = camera.project_ray_origin(mouse_position)
 	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * range_in_meters
 	
@@ -132,13 +132,14 @@ func _update_aimed_interactible():
 #
 
 func set_ability(ability: Ability):
-	# TODO Can be a match statement?
-	if ability is Dash:
-		dash = _put_ability(dash, ability)
-	elif ability is Jump:
-		jump = _put_ability(jump, ability)
-	elif ability is Weapon:
-		weapon = _put_ability(weapon, ability)
+	var ability_type: String = ability.get_ability_type()
+	match ability_type:
+		Dash.TYPE:
+			dash = _put_ability(dash, ability)
+		Jump.TYPE:
+			jump = _put_ability(jump, ability)
+		Weapon.TYPE:
+			weapon = _put_ability(weapon, ability)
 
 func _put_ability(current: Ability, new: Ability) -> Ability:
 	# Remove the current if new is null

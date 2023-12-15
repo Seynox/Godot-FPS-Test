@@ -6,7 +6,7 @@ var can_dash: bool = true # Disallow dashing mutliple times in the air
 
 func try_dash(entity: Entity):
 	if can_dash:
-		super.try_dash(entity)
+		super(entity)
 	else:
 		dash_failed.emit()
 
@@ -29,4 +29,4 @@ func _calculate_dash_velocity(delta: float) -> Vector3:
 
 func _start_cooldown():
 	can_dash = false
-	super._start_cooldown()
+	super()

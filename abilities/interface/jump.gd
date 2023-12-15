@@ -1,5 +1,7 @@
 class_name Jump extends Ability
 
+const TYPE: String = "Jump"
+
 signal jump_ready
 signal jump_disabled
 signal jump_started
@@ -12,7 +14,7 @@ var is_jumping: bool = false
 var can_jump: bool = true
 
 func get_ability_type() -> String:
-	return str(Jump)
+	return TYPE
 
 func try_jump(_entity: Entity):
 	pass

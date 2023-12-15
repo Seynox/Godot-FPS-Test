@@ -1,5 +1,7 @@
 class_name Dash extends Ability
 
+const TYPE: String = "Dash"
+
 signal dash_started
 signal dash_ended
 signal dash_failed
@@ -9,7 +11,7 @@ signal dash_failed
 var is_dashing: bool = false
 
 func get_ability_type() -> String:
-	return str(Dash)
+	return TYPE
 
 @rpc("call_local", "reliable")
 func set_speed(meters_per_sec: float):

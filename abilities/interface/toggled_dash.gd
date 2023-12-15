@@ -7,7 +7,7 @@ var duration: Timer
 func _ready():
 	duration = _create_timer(DASH_DURATION)
 	duration.timeout.connect(_stop_dash)
-	super._ready()
+	super()
 
 func set_duration(seconds: float):
 	DASH_DURATION = seconds
@@ -15,4 +15,4 @@ func set_duration(seconds: float):
 
 func _start_dash():
 	duration.start()
-	super._start_dash()
+	super()

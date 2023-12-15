@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://hu7ojvfabj3c"]
+[gd_scene load_steps=10 format=3 uid="uid://hu7ojvfabj3c"]
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
+[ext_resource type="PackedScene" uid="uid://boeb2mdml1qwn" path="res://abilities/weapons/hitscan_weapon.tscn" id="2_1l6p0"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="3_2bvf4"]
 [ext_resource type="PackedScene" uid="uid://imjypsavad40" path="res://gui/in-game/elements/player_infos.tscn" id="4_0bd1c"]
@@ -23,6 +24,7 @@ properties/1/replication_mode = 2
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 collision_mask = 6
 script = ExtResource("1_xm53f")
+DEFAULT_WEAPON = ExtResource("2_1l6p0")
 HEALTH = 5.0
 MAX_HEALTH = 5.0
 

@@ -13,7 +13,6 @@ const ALL_ABILITY_SCENES: Array = [
 ]
 
 func _ready():
-	# TODO Do it in another thread?
 	_sort_abilities()
 
 func _sort_abilities():
