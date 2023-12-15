@@ -104,7 +104,7 @@ func on_seed_refresh():
 
 @rpc("call_local", "reliable")
 func spread_seed(new_seed: int):
-	print("New seed: ", new_seed)
+	print("[Peer %s] Received seed: %s" % [multiplayer.get_unique_id(), new_seed])
 	seed(new_seed)
 
 #

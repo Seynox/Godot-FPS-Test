@@ -28,11 +28,11 @@ var is_empty: bool = false
 func _ready():
 	ability_contained = _generate_container_ability()
 	if ability_contained == null:
-		_set_empty()
+		set_empty()
 	else:
 		# Common = 1 hit, Uncommon = 2 hits etc..
 		HITS_NEEDED = ability_contained.RARITY
-		print(ability_contained.NAME) # TODO Remove
+		print("[Peer %s] Ability: %s" % [multiplayer.get_unique_id(), ability_contained.NAME]) # TODO Remove
 
 ## Generate an ability inside the container.[br]
 ## Uses [AbilityContainer] members to determine the ability to generate.
@@ -50,26 +50,27 @@ func _generate_container_ability() -> Ability:
 
 ## Interacting hits the object if it is not broken.
 ## Otherwise, take the contained ability.[br]
-func _interact(entity: Entity):
-	if IS_BROKEN and entity is Player:
-		_give_ability(entity)
+func _interact(player: Player):
+	if IS_BROKEN:
+		_ability_taken_by(player)
 	else:
-		try_getting_hit_by(entity)
-	super._interact(entity)
+		try_getting_hit_by(player)
+	super._interact(player)
 
 ## Give the ability contained in [member AbilityContainer.ability_contained]
 ## to the [param player][br]
 ## Makes the container empty
-func _give_ability(player: Player):
+func _ability_taken_by(player: Player):
 	player.set_ability(ability_contained)
-	_set_empty()
+	set_empty.rpc()
 
-func _set_empty():
+@rpc("any_peer", "call_local", "reliable")
+func set_empty():
 	is_empty = true
 	CAN_BE_INTERACTED_WITH = false
 	emptied.emit()
 
-func _break(source: Entity):
+func set_broken():
 	var item_prompt = "%s %s" % [BROKEN_INTERACTION_PROMPT_MESSAGE, ability_contained.NAME]
 	INTERACTION_PROMPT_MESSAGE = item_prompt
-	super._break(source)
+	super.set_broken()
