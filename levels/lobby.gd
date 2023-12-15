@@ -1,5 +1,7 @@
 extends GameLevel
 
+signal seed_refresh
+
 @export var PLAYER_SCENE: PackedScene
 
 var players_ready: int = 0
@@ -54,9 +56,11 @@ func _on_start_game_area_body_entered(body):
 	var players_count: int = players.get_child_count()
 	var everyone_ready: bool = players_ready == players_count
 	if everyone_ready:
+		seed_refresh.emit()
 		level_finished.emit()
 	
 
 func _on_start_game_area_body_exited(body):
 	if not body is Player: return
 	players_ready -= 1
+

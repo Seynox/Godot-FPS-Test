@@ -85,10 +85,27 @@ func _listen_main_menu_signals(menu: Node):
 	
 func _listen_level_signals(level: GameLevel):
 	level.level_finished.connect(on_level_finished)
+	if level.has_signal("seed_refresh"):
+		level.seed_refresh.connect(on_seed_refresh)
 
 func on_level_finished():
 	var next_level: GameLevel = current_scene.NEXT_LEVEL.instantiate()
 	_change_level(next_level)
+
+func on_seed_refresh():
+	# Server only
+	if not multiplayer.is_server(): return
+	var new_seed: int = randi()
+	spread_seed.rpc(new_seed)
+
+#
+# Game
+#
+
+@rpc("call_local", "reliable")
+func spread_seed(new_seed: int):
+	print("New seed: ", new_seed)
+	seed(new_seed)
 
 #
 # Server connection/hosting
@@ -118,10 +135,6 @@ func connect_to_server(ip: String, port: int):
 func _on_server_connection_failed():
 	print("Connection failed")
 	_open_main_menu()
-
-#
-# Server connection
-#
 
 func _on_server_disconnect():
 	print("[Multiplayer] Server disconnected")
