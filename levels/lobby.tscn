@@ -19,7 +19,7 @@ script = ExtResource("1_57qj7")
 PLAYER_SCENE = ExtResource("1_y2w3n")
 LEVEL_NAME = "Lobby"
 PLAYER_SPAWN = NodePath("Spawnpoint")
-NEXT_LEVEL = ExtResource("3_82m6v")
+NEXT_SCENE = ExtResource("3_82m6v")
 
 [node name="Room" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)

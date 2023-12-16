@@ -4,7 +4,7 @@ var ABILITIES: Dictionary = {
 	# Rarity = [PackedScene...]
 }
 
-const ALL_ABILITY_SCENES: Array = [
+const ALL_ABILITY_SCENES: Array = [ # TODO Optimize memory
 	preload("res://abilities/dashes/foward_dash.tscn"),
 	preload("res://abilities/dashes/impulse_dash.tscn"),
 	preload("res://abilities/jumps/multi_jump.tscn"),

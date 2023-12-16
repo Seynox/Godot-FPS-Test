@@ -4,20 +4,26 @@ const DEFAULT_IP: String = "*" # All interfaces
 const DEFAULT_PORT: int = 8000
 const DEFAULT_MAX_CLIENTS: int = 20
 
-# TODO Refactor
-@export var MAIN_MENU_SCENE: PackedScene
-@export var FIRST_GAME_SCENE: PackedScene 
+## The scene to put when the game is started
+@export var FIRST_SCENE: PackedScene
 
-@onready var players_container: Node3D = $Players
+## The scene to put when receiving a game over signal
+@export var GAME_OVER_SCENE: PackedScene
 
-var current_scene: Node
+## The node containing the players
+@export var PLAYERS_NODE: Node3D
+
+## The current displayed scene
+var current_scene: SceneChanger
 
 func _ready():
-	if DisplayServer.get_name() != "headless":
-		_open_main_menu()
-		return
-	
 	# Host server if started as headless
+	if DisplayServer.get_name() == "headless":
+		_host_headless()
+	
+	_change_scene(FIRST_SCENE.instantiate())
+
+func _host_headless():
 	var args := _parse_command_args()
 	var ip = args.get("ip", DEFAULT_IP)
 	var port = args.get("port", DEFAULT_PORT)
@@ -39,38 +45,39 @@ func _parse_command_args() -> Dictionary:
 # Changing scene
 #
 
-func _start_multiplayer_game(peer: MultiplayerPeer):
-	multiplayer.multiplayer_peer = peer # Connect to multiplayer
-	_listen_connection_signals()
-	_change_level(FIRST_GAME_SCENE.instantiate())
+func _change_scene(scene: SceneChanger):
+	if current_scene != null:
+		current_scene.queue_free()
+	
+	# Connect scene signals
+	scene.change_scene.connect(_change_scene)
+	if scene is GameLevel:
+		scene.PLAYERS = PLAYERS_NODE # Gives a reference to the players node
+		_listen_level_signals(scene)
+	elif scene is MainMenu:
+		_listen_main_menu_signals(scene)
+	
+	current_scene = scene
+	add_child(scene, true)
 
 func quit_game():
 	print("[Game] Quitting")
 	get_tree().quit()
 
-func _change_level(level: GameLevel):
-	_change_scene(level)
-	_listen_level_signals(level)
-	
-	# Set players spawn to level spawnpoint
-	players_container.global_position = level.PLAYER_SPAWN.global_position
-	for player: Player in players_container.get_children():
-		player.position = Vector3.ZERO
+#
+# Multiplayer
+#
 
-func _open_main_menu():
-	multiplayer.multiplayer_peer = null # Disconnect from multiplayer
-	var menu = MAIN_MENU_SCENE.instantiate()
-	_change_scene(menu)
-	_listen_main_menu_signals(menu)
+func set_multiplayer(peer: MultiplayerPeer):
+	multiplayer.multiplayer_peer = peer # Connect to multiplayer
+	_listen_connection_signals()
 
-func _change_scene(scene: Node):
-	if current_scene != null:
-		current_scene.queue_free()
-	current_scene = scene
-	add_child(scene)
+func _quit_multiplayer():
+	multiplayer.multiplayer_peer = null
+	_change_scene(FIRST_SCENE.instantiate())
 
 #
-# Signals
+# Signals listeners
 #
 
 func _listen_connection_signals():
@@ -78,34 +85,32 @@ func _listen_connection_signals():
 	multiplayer.server_disconnected.connect(_on_server_disconnect)
 	multiplayer.connection_failed.connect(_on_server_connection_failed)
 
-func _listen_main_menu_signals(menu: Node):
-	menu.connect("quit_game", quit_game)
-	menu.connect("connect_to_server", connect_to_server)
-	menu.connect("host_server", host_server)
+func _listen_main_menu_signals(menu: MainMenu):
+	menu.quit_game.connect(quit_game)
+	menu.connect_to_server.connect(connect_to_server)
+	menu.host_server.connect(host_server)
 	
 func _listen_level_signals(level: GameLevel):
-	level.level_finished.connect(on_level_finished)
-	if level.has_signal("seed_refresh"):
-		level.seed_refresh.connect(on_seed_refresh)
-
-func on_level_finished():
-	var next_level: GameLevel = current_scene.NEXT_LEVEL.instantiate()
-	_change_level(next_level)
-
-func on_seed_refresh():
-	# Server only
-	if not multiplayer.is_server(): return
-	var new_seed: int = randi()
-	spread_seed.rpc(new_seed)
+	level.game_over.connect(_on_game_over)
+	if level.has_signal("lobby_ready"):
+		level.lobby_ready.connect(_on_lobby_ready)
 
 #
 # Game
 #
 
+func _on_lobby_ready(rng_seed: int):
+	start_run.rpc(rng_seed)
+
 @rpc("call_local", "reliable")
-func spread_seed(new_seed: int):
-	print("[Peer %s] Received seed: %s" % [multiplayer.get_unique_id(), new_seed])
-	seed(new_seed)
+func start_run(rng_seed: int):
+	print("[Peer %s] Received seed: %s" % [multiplayer.get_unique_id(), rng_seed])
+	seed(rng_seed)
+	_change_scene(current_scene.NEXT_SCENE.instantiate())
+
+func _on_game_over():
+	print("[GAME] Game over!")
+	_change_scene(GAME_OVER_SCENE.instantiate())
 
 #
 # Server connection/hosting
@@ -120,22 +125,22 @@ func host_server(ip: String, port: int, max_clients: int):
 		return
 	
 	print("Hosting server on %s:%s" % [ip, port])
-	_start_multiplayer_game(peer)
+	set_multiplayer(peer)
 
-func connect_to_server(ip: String, port: int):	
-	print("Connecting to %s:%s..." % [ip, port])
+func connect_to_server(ip: String, port: int):
+	print("[Multiplayer] Connecting to %s:%s..." % [ip, port])
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_client(ip, port)
 	if error:
 		print("Could not connect to server")
 		return
 	
-	_start_multiplayer_game(peer)
+	set_multiplayer(peer)
 
 func _on_server_connection_failed():
-	print("Connection failed")
-	_open_main_menu()
+	print("[Multiplayer] Connection to server failed")
+	_quit_multiplayer()
 
 func _on_server_disconnect():
 	print("[Multiplayer] Server disconnected")
-	_open_main_menu()
+	_quit_multiplayer()

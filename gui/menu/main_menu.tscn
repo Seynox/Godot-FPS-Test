@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://cb31f55b7luof"]
+[gd_scene load_steps=3 format=3 uid="uid://cb31f55b7luof"]
 
 [ext_resource type="Script" path="res://gui/menu/main_menu.gd" id="1_dycj3"]
+[ext_resource type="PackedScene" uid="uid://cgwr8r183dsyd" path="res://levels/lobby.tscn" id="2_rnt7q"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("SERVER_IP_FIELD", "SERVER_PORT_FIELD")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +11,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dycj3")
+SERVER_IP_FIELD = NodePath("ContentContainer/ConnectionContainer/HostField")
+SERVER_PORT_FIELD = NodePath("ContentContainer/ConnectionContainer/PortField")
+NEXT_SCENE = ExtResource("2_rnt7q")
 
 [node name="ContentContainer" type="BoxContainer" parent="."]
 layout_mode = 1
@@ -62,3 +66,7 @@ text = "Host server"
 [node name="QuitButton" type="Button" parent="ContentContainer"]
 layout_mode = 2
 text = "Quit game"
+
+[connection signal="pressed" from="ContentContainer/ConnectionContainer/ConnectButton" to="." method="on_connect_press"]
+[connection signal="pressed" from="ContentContainer/HostButton" to="." method="on_host_press"]
+[connection signal="pressed" from="ContentContainer/QuitButton" to="." method="on_quit_press"]

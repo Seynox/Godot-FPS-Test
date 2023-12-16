@@ -5,7 +5,7 @@ signal interactible_hovering(interactible: Interactible)
 signal interactible_hover_ended
 
 @export_category("Player")
-@export_range(10, 400, 1) var acceleration: float = 100 # m/s^2
+@export var ACCELERATION: float = 100 # m/s^2
 
 @export_subgroup("Abilities")
 @export var DEFAULT_DASH: PackedScene
@@ -14,8 +14,8 @@ signal interactible_hover_ended
 
 @onready var camera: Camera3D = $Camera
 @onready var interaction_ray: RayCast3D = $Camera/InteractionRay
-@onready var input := $PlayerInput
-@onready var abilities := $Abilities
+@onready var input: Node = $PlayerInput
+@onready var abilities: Node = $Abilities
 
 # A dictionary would be cleaner but a bit slower
 var dash: Dash
@@ -34,9 +34,6 @@ func _ready() -> void:
 	camera.current = is_local_player
 	set_process(is_local_player)
 	set_physics_process(is_local_player)
-	
-	if !is_local_player:
-		return
 	
 	if DEFAULT_DASH != null:
 		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
@@ -80,7 +77,7 @@ func _calculate_movement_velocity(delta: float) -> Vector3:
 	movement_vector_raw.y = 0
 	
 	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
-	movement_velocity = movement_velocity.move_toward(movement_vector, acceleration * delta)
+	movement_velocity = movement_velocity.move_toward(movement_vector, ACCELERATION * delta)
 	return movement_velocity
 
 func _process_abilities_physics(delta: float):
