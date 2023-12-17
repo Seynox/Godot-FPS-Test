@@ -1,5 +1,7 @@
 class_name GameLevel extends Node3D
 
+const LEVEL_INITIALIZATION_GROUP: String = "initializable"
+
 ## The signal sent to change the current level. Only works for server
 signal change_level(new_level: PackedScene)
 
@@ -21,19 +23,17 @@ signal game_over
 @export var PLAYERS: Node3D
 
 ## If the level has already been initialized
-var level_initialized: bool
+@export var level_initialized: bool
 var loaded_players: int
 
 func _ready():
 	_listen_multiplayer_signals()
-	
 	PLAYERS.global_position = get_spawnpoint()
-	_initialize_player.call_deferred()
 	
 	var server_peer: int = 1
 	player_loaded.rpc_id(server_peer)
 
-func _initialize_player():
+func _initialize():
 	var player_name: String = str(multiplayer.get_unique_id())
 	var local_player: Player = PLAYERS.get_node_or_null(player_name)
 	if local_player == null:
@@ -64,24 +64,29 @@ func _exit_tree():
 #
 
 @rpc("any_peer", "call_local", "reliable")
-func player_loaded():
+func player_loaded(): # Server only
 	if not multiplayer.is_server(): return
 	loaded_players += 1
 	
-	var player_count: int = PLAYERS.get_child_count()
-	if loaded_players == player_count:
-		initialize_level.rpc()
+	# If joining level after it has been initialized
+	if level_initialized:
+		var loaded_peer_id: int = multiplayer.get_remote_sender_id()
+		initialize_level.rpc_id(loaded_peer_id)
+	else:
+		var player_count: int = PLAYERS.get_child_count()
+		if loaded_players == player_count:
+			initialize_level.rpc()
 
+## Called to initialize the level when all players finished loading the level.
+## Calls "initialize" method on all nodes with group [member GameLevel.LEVEL_INITIALIZATION_GROUP]
 @rpc("call_local", "reliable")
 func initialize_level():
 	if level_initialized: return
 	print("[%s] All players loaded!" % LEVEL_NAME)
-	_initialize_level()
+	
+	get_tree().call_group(LEVEL_INITIALIZATION_GROUP, "initialize")
+	_initialize()
 	level_initialized = true
-
-## Called to initialize the level when all players finished loading the level
-func _initialize_level():
-	pass
 
 #
 # Multiplayer signals

@@ -1,51 +1,53 @@
 extends Node
 
 var ABILITIES: Dictionary = {
-	# Rarity = [PackedScene...]
+	# Rarity = [String...]
 }
 
-const ALL_ABILITY_SCENES: Array = [ # TODO Optimize memory
-	preload("res://abilities/dashes/foward_dash.tscn"),
-	preload("res://abilities/dashes/impulse_dash.tscn"),
-	preload("res://abilities/jumps/multi_jump.tscn"),
-	preload("res://abilities/jumps/simple_jump.tscn"),
-	preload("res://abilities/weapons/hitscan_weapon.tscn")
+const ALL_ABILITY_SCENES: Array = [
+	"res://abilities/dashes/foward_dash.tscn",
+	"res://abilities/dashes/impulse_dash.tscn",
+	"res://abilities/jumps/multi_jump.tscn",
+	"res://abilities/jumps/simple_jump.tscn",
+	"res://abilities/weapons/hitscan_weapon.tscn"
 ]
 
 func _ready():
 	_sort_abilities()
 
 func _sort_abilities():
-	for ability_scene: PackedScene in ALL_ABILITY_SCENES:
+	for ability_path: String in ALL_ABILITY_SCENES:
+		var ability_scene: PackedScene = load(ability_path)
 		var ability: Ability = ability_scene.instantiate()
 		var rarity: Rarity.Level = ability.RARITY
 		
-		_append_ability(rarity, ability_scene)
+		_append_ability(rarity, ability_path)
 		ability.queue_free()
 
-func _append_ability(rarity: Rarity.Level, ability: PackedScene):
+func _append_ability(rarity: Rarity.Level, ability: String):
 	var abilities_list: Array = ABILITIES.get(rarity, [])
 	abilities_list.append(ability)
 	ABILITIES[rarity] = abilities_list
 
-func get_random_ability(rarity: Rarity.Level, maximum_level: int = 0) -> Ability:
+func get_random_ability(rarity: Rarity.Level, maximum_level: int = 0) -> String:
 	var abilities: Array = AbilityRegistry.ABILITIES.get(rarity, [])
-	abilities = abilities.filter(
-		func(ability):
-			return _can_ability_be_generated(ability, maximum_level)
+	var generatable_abilities = abilities.filter(
+		func(ability_path):
+			return _can_ability_be_generated(ability_path, maximum_level)
 	)
 	
-	if abilities.is_empty():
-		return null
+	if generatable_abilities.is_empty():
+		return ""
 	
-	var possibilities: int = abilities.size() - 1
+	var possibilities: int = generatable_abilities.size() - 1
 	var random_index: int = randi_range(0, possibilities)
 	
-	var ability_scene: PackedScene = abilities[random_index]
-	return ability_scene.instantiate()
+	return generatable_abilities[random_index]
 
-func _can_ability_be_generated(scene: PackedScene, maximum_level: int) -> bool:
-	var ability: Ability = scene.instantiate()
+func _can_ability_be_generated(ability_path: String, maximum_level: int) -> bool:
+	var ability_scene: PackedScene = load(ability_path)
+	var ability: Ability = ability_scene.instantiate()
 	var is_at_valid_level: bool = maximum_level >= ability.GENERATE_SINCE_LEVEL
+	
 	ability.queue_free()
 	return is_at_valid_level

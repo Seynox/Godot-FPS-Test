@@ -76,7 +76,7 @@ func on_host_press():
 	var max_clients: int = DEFAULT_MAX_CLIENTS
 	host_server(ip, port, max_clients)
 
-func on_quit_press(): # TODO Test
+func on_quit_press():
 	print("[Game] Quitting")
 	multiplayer.multiplayer_peer = null
 	get_tree().quit()

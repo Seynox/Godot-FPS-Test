@@ -13,7 +13,6 @@ func _ready():
 		var server_player_id = multiplayer.get_unique_id()
 		_add_player(server_player_id)
 
-
 #
 # Players
 #
