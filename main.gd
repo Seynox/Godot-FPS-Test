@@ -24,7 +24,7 @@ func _ready():
 
 func _host_headless():
 	var args : Dictionary = _parse_command_args()
-	var ip = args.get("ip", DEFAULT_IP)
+	var ip = args.get("ip", "*")
 	var port = args.get("port", DEFAULT_PORT)
 	var max_clients = args.get("max-clients", DEFAULT_MAX_CLIENTS)
 	
