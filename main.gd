@@ -61,6 +61,8 @@ func _change_scene(scene: SceneChanger):
 
 func quit_game():
 	print("[Game] Quitting")
+	_quit_multiplayer()
+	queue_free()
 	get_tree().quit()
 
 #
@@ -72,6 +74,7 @@ func set_multiplayer(peer: MultiplayerPeer):
 	_listen_connection_signals()
 
 func _quit_multiplayer():
+	_disconnect_connection_signals()
 	multiplayer.multiplayer_peer = null
 	_change_scene(FIRST_SCENE.instantiate())
 
@@ -83,6 +86,10 @@ func _listen_connection_signals():
 	# Client-only signals
 	multiplayer.server_disconnected.connect(_on_server_disconnect)
 	multiplayer.connection_failed.connect(_on_server_connection_failed)
+
+func _disconnect_connection_signals():
+	multiplayer.server_disconnected.disconnect(_on_server_disconnect)
+	multiplayer.connection_failed.disconnect(_on_server_connection_failed)
 
 func _listen_main_menu_signals(menu: MainMenu):
 	menu.quit_game.connect(quit_game)

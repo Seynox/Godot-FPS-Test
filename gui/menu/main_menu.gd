@@ -21,14 +21,14 @@ func _ready():
 #
 
 func on_connect_press():
-	var ip = _get_ip()
+	var ip = _get_ip(false)
 	var port = _get_port()
 	
 	connect_to_server.emit(ip, port)
 	_change_to_next_scene()
 
 func on_host_press():
-	var ip = _get_ip()
+	var ip = _get_ip(true)
 	var port: int = _get_port()
 	var max_clients: int = Main.DEFAULT_MAX_CLIENTS
 	
@@ -48,9 +48,9 @@ func _get_port() -> int:
 		return int(input)
 	return Main.DEFAULT_PORT
 
-func _get_ip() -> String:
+func _get_ip(is_hosting: bool) -> String:
 	var input: String = SERVER_IP_FIELD.text
-	if input.is_valid_ip_address():
+	if not input.is_empty():
 		return input
-	return Main.DEFAULT_IP
+	return "*" if is_hosting else Main.DEFAULT_IP
 	
