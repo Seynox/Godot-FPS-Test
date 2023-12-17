@@ -1,4 +1,4 @@
-class_name AbilityContainer extends BreakableInteractible
+class_name AbilityContainer extends BreakableInteractible # TODO Sync
 
 signal emptied
 

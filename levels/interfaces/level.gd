@@ -1,7 +1,7 @@
-class_name GameLevel extends SceneChanger
+class_name GameLevel extends Node3D
 
-## The signal emitted when a player finished loading the level (TODO)
-signal loaded
+## The signal sent to change the current level. Only works for server
+signal change_level(new_level: PackedScene)
 
 ## The signal emitted when the game is lost.
 signal game_over
@@ -13,13 +13,21 @@ signal game_over
 @export var PLAYER_SPAWN: Node3D
 
 ## The node containing all players.[br]
-## Automatically assigned when changing scene. Should be done manually in sub-levels.
+## Automatically assigned when changing scene.
 @export var PLAYERS: Node3D
 
+## If the level has already been initialized
+var level_initialized: bool
+var loaded_players: int
+
 func _ready():
+	_listen_multiplayer_signals()
+	
 	PLAYERS.global_position = get_spawnpoint()
 	_initialize_player.call_deferred()
-	loaded.emit()
+	
+	var server_peer: int = 1
+	player_loaded.rpc_id(server_peer)
 
 func _initialize_player():
 	var player_name: String = str(multiplayer.get_unique_id())
@@ -36,6 +44,59 @@ func get_spawnpoint() -> Vector3:
 	
 	return PLAYER_SPAWN.global_position
 
+func _exit_tree():
+	if multiplayer.has_multiplayer_peer():
+		_disconnect_multiplayer_signals()
+
+#
+# Level initialization
+#
+
+@rpc("any_peer", "call_local", "reliable")
+func player_loaded():
+	if not multiplayer.is_server(): return
+	loaded_players += 1
+	
+	var player_count: int = PLAYERS.get_child_count()
+	if loaded_players == player_count:
+		initialize_level.rpc()
+
+@rpc("call_local", "reliable")
+func initialize_level():
+	if level_initialized: return
+	print("[%s] All players loaded!" % LEVEL_NAME)
+	_initialize_level()
+	level_initialized = true
+
+## Called to initialize the level when all players finished loading the level
+func _initialize_level():
+	pass
+
+#
+# Multiplayer signals
+#
+
+func _listen_multiplayer_signals():
+	if multiplayer.is_server():
+		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+		multiplayer.peer_connected.connect(_on_peer_connected)
+
+func _disconnect_multiplayer_signals():
+	if multiplayer.is_server():
+		multiplayer.peer_disconnected.disconnect(_on_peer_disconnected)
+		multiplayer.peer_connected.disconnect(_on_peer_connected)
+
+func _on_peer_connected(_peer_id: int):
+	pass
+
+func _on_peer_disconnected(peer_id: int):
+	if multiplayer.is_server():
+		print("[Server] Player left (%s)" % peer_id)
+		var player = PLAYERS.get_node_or_null(str(peer_id))
+		if player != null:
+			_disconnect_player_signals(player)
+			player.queue_free()
+
 #
 # Player signals
 #
@@ -43,6 +104,10 @@ func get_spawnpoint() -> Vector3:
 func _listen_player_signals(player: Player):
 	player.death.connect(on_player_death.bind(player))
 	player.out_of_map.connect(on_player_out_of_map.bind(player))
+
+func _disconnect_player_signals(player: Player):
+	player.death.disconnect(on_player_death)
+	player.out_of_map.disconnect(on_player_out_of_map)
 
 ## Called when a player dies.[br]
 ## By default, emit [signal GameLevel.game_over] if everyone is dead.
@@ -60,15 +125,5 @@ func on_player_death(_dead_player: Player):
 ## Called when a player gets out of the map.[br]
 ## Teleports the player to spawn by default.
 func on_player_out_of_map(player: Player):
-	teleport_to_player_spawn(player)
-
-#
-# Players
-#
-
-## Teleport the entity to the player spawn.[br]
-## Player spawn is set by [member GameLevel.PLAYER_SPAWN] node position.[br]
-## If [member GameLevel.PLAYER_SPAWN] is null, spawn will be [member Vector3.ZERO].
-func teleport_to_player_spawn(entity: Entity):
-	var spawnpoint: Vector3 = PLAYER_SPAWN.global_position if PLAYER_SPAWN != null else Vector3.ZERO
-	entity.global_position = spawnpoint
+	if player.is_multiplayer_authority():
+		player.global_position = get_spawnpoint()

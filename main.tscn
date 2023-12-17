@@ -4,14 +4,18 @@
 [ext_resource type="PackedScene" uid="uid://cb31f55b7luof" path="res://gui/menu/main_menu.tscn" id="2_khp6u"]
 [ext_resource type="PackedScene" uid="uid://cgwr8r183dsyd" path="res://levels/lobby.tscn" id="3_207h3"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("PLAYERS_NODE")]
+[node name="Game" type="Node" node_paths=PackedStringArray("PLAYERS_NODE", "MENU")]
 script = ExtResource("1_73t00")
-FIRST_SCENE = ExtResource("2_khp6u")
-GAME_OVER_SCENE = ExtResource("3_207h3")
+LOBBY_SCENE = ExtResource("3_207h3")
 PLAYERS_NODE = NodePath("Players")
+MENU = NodePath("Menu")
+
+[node name="Menu" parent="." instance=ExtResource("2_khp6u")]
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://controller/player/player.tscn")
 spawn_path = NodePath("../Players")
 
 [node name="Players" type="Node3D" parent="."]
+
+[connection signal="visibility_changed" from="Menu" to="Menu" method="_on_visibility_changed"]

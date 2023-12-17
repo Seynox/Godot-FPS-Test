@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://gui/menu/main_menu.gd" id="1_dycj3"]
 [ext_resource type="PackedScene" uid="uid://cgwr8r183dsyd" path="res://levels/lobby.tscn" id="2_rnt7q"]
 
-[node name="MainMenu" type="Control" node_paths=PackedStringArray("SERVER_IP_FIELD", "SERVER_PORT_FIELD")]
+[node name="Menu" type="Control" node_paths=PackedStringArray("SERVER_IP_FIELD", "SERVER_PORT_FIELD")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
