@@ -11,14 +11,14 @@ func _ready():
 	# Add the server as a player if server isn't headless
 	if multiplayer.is_server() and DisplayServer.get_name() != "headless":
 		var server_player_id = multiplayer.get_unique_id()
-		_on_peer_connected(server_player_id)
+		_add_player(server_player_id)
 
 
 #
 # Players
 #
 
-func _on_peer_connected(peer_id: int):
+func _add_player(peer_id: int):
 	print("[Server] Player joined (%s)" % peer_id)
 	var player: Player = PLAYER_SCENE.instantiate()
 	player.name = str(peer_id) # Set player node name as peer id

@@ -9,6 +9,10 @@ signal game_over
 ## The current level name
 @export var LEVEL_NAME: String
 
+## If new players can join the game.
+## If false, new player will be spectators.
+@export var CAN_PLAYERS_JOIN: bool
+
 ## The node to use as a player spawnpoint
 @export var PLAYER_SPAWN: Node3D
 
@@ -32,9 +36,16 @@ func _ready():
 func _initialize_player():
 	var player_name: String = str(multiplayer.get_unique_id())
 	var local_player: Player = PLAYERS.get_node_or_null(player_name)
-	if local_player != null:
+	if local_player == null:
+		_spectate_random()
+	else:
 		local_player.global_position = get_spawnpoint()
 		_listen_player_signals(local_player)
+
+func _spectate_random():
+	var player: Player = PLAYERS.get_children().pick_random()
+	if player != null:
+		player.camera.current = true
 
 ## Get the level's [member GameLevel.PLAYER_SPAWN] position.[br]
 ## Return [member Vector3.ZERO] if [member GameLevel.PLAYER_SPAWN] is not set
@@ -77,25 +88,37 @@ func _initialize_level():
 #
 
 func _listen_multiplayer_signals():
-	if multiplayer.is_server():
-		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
-		multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	multiplayer.peer_connected.connect(_on_peer_connected)
 
 func _disconnect_multiplayer_signals():
-	if multiplayer.is_server():
-		multiplayer.peer_disconnected.disconnect(_on_peer_disconnected)
-		multiplayer.peer_connected.disconnect(_on_peer_connected)
+	multiplayer.peer_disconnected.disconnect(_on_peer_disconnected)
+	multiplayer.peer_connected.disconnect(_on_peer_connected)
 
-func _on_peer_connected(_peer_id: int):
-	pass
+func _on_peer_connected(peer_id: int):
+	if not multiplayer.is_server():
+		return
+	print("[Server] Player joined (%s)" % peer_id)
+	if CAN_PLAYERS_JOIN:
+		_add_player(peer_id)
 
 func _on_peer_disconnected(peer_id: int):
 	if multiplayer.is_server():
 		print("[Server] Player left (%s)" % peer_id)
-		var player = PLAYERS.get_node_or_null(str(peer_id))
-		if player != null:
-			_disconnect_player_signals(player)
-			player.queue_free()
+		_delete_player(peer_id)
+
+#
+# Player management
+#
+
+func _add_player(_peer_id: int):
+	pass
+
+func _delete_player(peer_id: int):
+	var player = PLAYERS.get_node_or_null(str(peer_id))
+	if player != null:
+		_disconnect_player_signals(player)
+		player.queue_free()
 
 #
 # Player signals
