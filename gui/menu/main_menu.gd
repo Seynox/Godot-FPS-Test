@@ -21,19 +21,36 @@ func _ready():
 #
 
 func on_connect_press():
-	var ip = SERVER_IP_FIELD.text
-	var port_str = SERVER_PORT_FIELD.text
-	var port = int(port_str)
+	var ip = _get_ip()
+	var port = _get_port()
+	
 	connect_to_server.emit(ip, port)
 	_change_to_next_scene()
 
 func on_host_press():
-	# TODO Make it editable
-	var ip = Main.DEFAULT_IP
-	var port = Main.DEFAULT_PORT
-	var max_clients = Main.DEFAULT_MAX_CLIENTS
+	var ip = _get_ip()
+	var port: int = _get_port()
+	var max_clients: int = Main.DEFAULT_MAX_CLIENTS
+	
 	host_server.emit(ip, port, max_clients)
 	_change_to_next_scene()
 
 func on_quit_press():
 	quit_game.emit()
+
+#
+# Inputs
+#
+
+func _get_port() -> int:
+	var input: String = SERVER_PORT_FIELD.text
+	if input.is_valid_int():
+		return int(input)
+	return Main.DEFAULT_PORT
+
+func _get_ip() -> String:
+	var input: String = SERVER_IP_FIELD.text
+	if input.is_valid_ip_address():
+		return input
+	return Main.DEFAULT_IP
+	

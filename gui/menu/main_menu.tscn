@@ -11,8 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dycj3")
-SERVER_IP_FIELD = NodePath("ContentContainer/ConnectionContainer/HostField")
-SERVER_PORT_FIELD = NodePath("ContentContainer/ConnectionContainer/PortField")
+SERVER_IP_FIELD = NodePath("ContentContainer/FieldContainer/HostField")
+SERVER_PORT_FIELD = NodePath("ContentContainer/FieldContainer/PortField")
 NEXT_SCENE = ExtResource("2_rnt7q")
 
 [node name="ContentContainer" type="BoxContainer" parent="."]
@@ -31,18 +31,18 @@ grow_vertical = 2
 alignment = 1
 vertical = true
 
-[node name="ConnectionContainer" type="BoxContainer" parent="ContentContainer"]
+[node name="FieldContainer" type="BoxContainer" parent="ContentContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="HostField" type="LineEdit" parent="ContentContainer/ConnectionContainer"]
+[node name="HostField" type="LineEdit" parent="ContentContainer/FieldContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "The server hostname or ip address (e.x: 127.0.0.1)"
 placeholder_text = "Server host"
 max_length = 30
 
-[node name="PortField" type="LineEdit" parent="ContentContainer/ConnectionContainer"]
+[node name="PortField" type="LineEdit" parent="ContentContainer/FieldContainer"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 tooltip_text = "The server hostname or ip address (e.x: 127.0.0.1)"
@@ -50,23 +50,24 @@ placeholder_text = "Port"
 max_length = 5
 select_all_on_focus = true
 
-[node name="ConnectButton" type="Button" parent="ContentContainer/ConnectionContainer"]
+[node name="PlayButtonContainer" type="HBoxContainer" parent="ContentContainer"]
 layout_mode = 2
+alignment = 1
+
+[node name="ConnectButton" type="Button" parent="ContentContainer/PlayButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Connect"
 
-[node name="OrText" type="Label" parent="ContentContainer"]
+[node name="HostButton" type="Button" parent="ContentContainer/PlayButtonContainer"]
 layout_mode = 2
-text = "OR"
-horizontal_alignment = 1
-
-[node name="HostButton" type="Button" parent="ContentContainer"]
-layout_mode = 2
+size_flags_horizontal = 3
 text = "Host server"
 
 [node name="QuitButton" type="Button" parent="ContentContainer"]
 layout_mode = 2
 text = "Quit game"
 
-[connection signal="pressed" from="ContentContainer/ConnectionContainer/ConnectButton" to="." method="on_connect_press"]
-[connection signal="pressed" from="ContentContainer/HostButton" to="." method="on_host_press"]
+[connection signal="pressed" from="ContentContainer/PlayButtonContainer/ConnectButton" to="." method="on_connect_press"]
+[connection signal="pressed" from="ContentContainer/PlayButtonContainer/HostButton" to="." method="on_host_press"]
 [connection signal="pressed" from="ContentContainer/QuitButton" to="." method="on_quit_press"]

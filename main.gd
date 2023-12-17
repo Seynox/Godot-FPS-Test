@@ -1,6 +1,6 @@
 class_name Main extends Node
 
-const DEFAULT_IP: String = "*" # All interfaces
+const DEFAULT_IP: String = "127.0.0.1" # All interfaces
 const DEFAULT_PORT: int = 8000
 const DEFAULT_MAX_CLIENTS: int = 20
 
@@ -20,11 +20,10 @@ func _ready():
 	# Host server if started as headless
 	if DisplayServer.get_name() == "headless":
 		_host_headless()
-	
 	_change_scene(FIRST_SCENE.instantiate())
 
 func _host_headless():
-	var args := _parse_command_args()
+	var args : Dictionary = _parse_command_args()
 	var ip = args.get("ip", DEFAULT_IP)
 	var port = args.get("port", DEFAULT_PORT)
 	var max_clients = args.get("max-clients", DEFAULT_MAX_CLIENTS)
@@ -92,6 +91,7 @@ func _listen_main_menu_signals(menu: MainMenu):
 	
 func _listen_level_signals(level: GameLevel):
 	level.game_over.connect(_on_game_over)
+	
 	if level.has_signal("lobby_ready"):
 		level.lobby_ready.connect(_on_lobby_ready)
 
