@@ -11,17 +11,23 @@ func _ready():
 	# Add the server as a player if server isn't headless
 	if multiplayer.is_server() and DisplayServer.get_name() != "headless":
 		var server_player_id = multiplayer.get_unique_id()
-		_add_player(server_player_id)
+		_player_joined(server_player_id)
 
 #
 # Players
 #
 
-func _add_player(peer_id: int):
+func _player_joined(peer_id: int):
 	print("[Server] Player joined (%s)" % peer_id)
 	var player: Player = PLAYER_SCENE.instantiate()
 	player.name = str(peer_id) # Set player node name as peer id
 	PLAYERS.add_child(player, true) # Needs "force_readable_name" for using rpc
+
+func _player_left(peer_id: int):
+	var player = PLAYERS.get_node_or_null(str(peer_id))
+	if player != null:
+		_disconnect_player_signals(player)
+		player.queue_free()
 
 #
 # Signals
@@ -33,7 +39,7 @@ func _on_start_game_area_body_entered(body):
 	
 	var players_count: int = PLAYERS.get_child_count()
 	var everyone_ready: bool = players_ready == players_count
-	if everyone_ready and multiplayer.is_server():
+	if everyone_ready and is_multiplayer_authority():
 		change_level.emit(LEVEL_SCENE)
 
 func _on_start_game_area_body_exited(body):

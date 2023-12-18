@@ -2,7 +2,7 @@ class_name GameLevel extends Node3D
 
 const LEVEL_INITIALIZATION_GROUP: String = "initializable"
 
-## The signal sent to change the current level. Only works for server
+## The signal sent to change the current level. Only works for authority
 signal change_level(new_level: PackedScene)
 
 ## The signal emitted when the game is lost.
@@ -23,24 +23,17 @@ signal game_over
 @export var PLAYERS: Node3D
 
 ## If the level has already been initialized
-@export var level_initialized: bool
+var level_initialized: bool
 var loaded_players: int
 
 func _ready():
 	_listen_multiplayer_signals()
 	PLAYERS.global_position = get_spawnpoint()
-	
-	var server_peer: int = 1
-	player_loaded.rpc_id(server_peer)
+	_set_loaded.call_deferred()
 
-func _initialize():
-	var player_name: String = str(multiplayer.get_unique_id())
-	var local_player: Player = PLAYERS.get_node_or_null(player_name)
-	if local_player == null:
-		_spectate_random()
-	else:
-		local_player.global_position = get_spawnpoint()
-		_listen_player_signals(local_player)
+func _set_loaded():
+	var authority_peer: int = get_multiplayer_authority()
+	player_loaded.rpc_id(authority_peer)
 
 func _spectate_random():
 	var player: Player = PLAYERS.get_children().pick_random()
@@ -63,9 +56,18 @@ func _exit_tree():
 # Level initialization
 #
 
+func _initialize():
+	var player_name: String = str(multiplayer.get_unique_id())
+	var local_player: Player = PLAYERS.get_node_or_null(player_name)
+	if local_player == null:
+		_spectate_random()
+	else:
+		local_player.global_position = get_spawnpoint()
+		_listen_player_signals(local_player)
+
 @rpc("any_peer", "call_local", "reliable")
-func player_loaded(): # Server only
-	if not multiplayer.is_server(): return
+func player_loaded():
+	if not is_multiplayer_authority(): return
 	loaded_players += 1
 	
 	# If joining level after it has been initialized
@@ -82,7 +84,7 @@ func player_loaded(): # Server only
 @rpc("call_local", "reliable")
 func initialize_level():
 	if level_initialized: return
-	print("[%s] All players loaded!" % LEVEL_NAME)
+	print("[%s] %s initiliazed!" % [multiplayer.get_unique_id(), LEVEL_NAME])
 	
 	get_tree().call_group(LEVEL_INITIALIZATION_GROUP, "initialize")
 	_initialize()
@@ -101,29 +103,26 @@ func _disconnect_multiplayer_signals():
 	multiplayer.peer_connected.disconnect(_on_peer_connected)
 
 func _on_peer_connected(peer_id: int):
-	if not multiplayer.is_server():
+	if not is_multiplayer_authority():
 		return
 	print("[Server] Player joined (%s)" % peer_id)
 	if CAN_PLAYERS_JOIN:
-		_add_player(peer_id)
+		_player_joined(peer_id)
 
 func _on_peer_disconnected(peer_id: int):
-	if multiplayer.is_server():
+	if is_multiplayer_authority():
 		print("[Server] Player left (%s)" % peer_id)
-		_delete_player(peer_id)
+		_player_left(peer_id)
 
 #
 # Player management
 #
 
-func _add_player(_peer_id: int):
+func _player_joined(_peer_id: int):
 	pass
 
-func _delete_player(peer_id: int):
-	var player = PLAYERS.get_node_or_null(str(peer_id))
-	if player != null:
-		_disconnect_player_signals(player)
-		player.queue_free()
+func _player_left(_peer_id: int):
+	pass
 
 #
 # Player signals
@@ -138,8 +137,10 @@ func _disconnect_player_signals(player: Player):
 	player.out_of_map.disconnect(on_player_out_of_map)
 
 ## Called when a player dies.[br]
-## By default, emit [signal GameLevel.game_over] if everyone is dead.
+## By default, emit [signal GameLevel.game_over] from authority if everyone is dead.[br]
 func on_player_death(_dead_player: Player):
+	if not is_multiplayer_authority(): return
+	
 	# Check if everyone is dead
 	var someone_is_alive: bool = false
 	for player: Player in PLAYERS.get_children():
