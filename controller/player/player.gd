@@ -112,8 +112,9 @@ func _update_aimed_interactible():
 		currently_hovered = null
 	
 	# Interact with interactible if the player tries to
-	if currently_hovered != null and input.consume_interacting():
-		currently_hovered.try_interact(self)
+	if input.consume_interacting() and currently_hovered != null:
+		var authority_id: int = currently_hovered.get_multiplayer_authority()
+		currently_hovered.try_interact.rpc_id(authority_id)
 	
 	# Send signals when hovering or stopping hovering
 	if currently_hovered != null:

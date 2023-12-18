@@ -1,6 +1,4 @@
 class_name AbilityContainer extends BreakableInteractible
-# FIXME "ContainerSynchronizer" node being null when joining after initialization
-# Is container loaded before level?
 
 signal emptied
 
@@ -20,9 +18,6 @@ signal emptied
 
 ## The scene path of the ability inside the container. Empty string if empty.
 @export var ABILITY_CONTAINED: String
-
-# Local variables. Used to know if signals were already sent
-var locally_empty: bool
 
 func _ready():
 	super()
@@ -45,42 +40,10 @@ func _generate_contained_ability():
 	
 	var ability: Ability = _get_ability()
 	
-	print("[DEBUG] Server generated ability: ", ability.NAME)
-	
 	# Common = 1 hit, Uncommon = 2 hits etc
 	HITS_NEEDED = ability.RARITY
 	
 	ability.queue_free()
-
-func _update():
-	print("[Peer %s] Updating container! Ability path: %s" % [multiplayer.get_unique_id(), ABILITY_CONTAINED])
-	if ABILITY_CONTAINED.is_empty():
-		if not locally_empty:
-			emptied.emit()
-			locally_empty = true
-		return
-	
-	locally_empty = false
-	super()
-
-## Interacting hits the object if it is not broken.
-## Otherwise, take the contained ability.[br]
-func _interact(player: Player):
-	if IS_BROKEN:
-		_ability_taken_by(player)
-	else:
-		try_getting_hit_by(player)
-	super(player)
-
-## Give the ability contained in [member AbilityContainer.ABILITY_CONTAINED]
-## to the [param player][br]
-## Makes the container empty
-func _ability_taken_by(player: Player):
-	var ability: Ability = _get_ability()
-	player.set_ability(ability)
-	
-	var server_peer_id: int = 1
-	set_empty.rpc_id(server_peer_id)
 
 func _get_ability() -> Ability:
 	if ABILITY_CONTAINED.is_empty():
@@ -89,23 +52,56 @@ func _get_ability() -> Ability:
 	var ability_scene: PackedScene = load(ABILITY_CONTAINED)
 	return ability_scene.instantiate()
 
-@rpc("any_peer", "call_local", "reliable")
-func set_empty():
-	if not is_multiplayer_authority():
-		return
+## Interacting hits the object if it is not broken.
+## Otherwise, take the contained ability.[br]
+func interact(player: Player):
+	if IS_BROKEN:
+		_ability_taken_by(player)
+	else:
+		try_getting_hit_by(player)
 	
+	super(player)
+
+## Give the ability contained in [member AbilityContainer.ABILITY_CONTAINED]
+## to the [param player][br]
+## Makes the container empty.
+func _ability_taken_by(player: Player):
+	if player.is_multiplayer_authority():
+		var ability: Ability = _get_ability()
+		player.set_ability(ability)
+	
+	set_empty()
+
+func set_empty():
 	ABILITY_CONTAINED = ""
 	CAN_BE_INTERACTED_WITH = false
 	CAN_BE_HIT = false
-	_update()
+	emptied.emit()
 
 func set_broken():
-	if not is_multiplayer_authority():
-		return
-	
 	var ability: Ability = _get_ability()
 	var item_prompt = "%s %s" % [BROKEN_INTERACTION_PROMPT_MESSAGE, ability.NAME]
 	INTERACTION_PROMPT_MESSAGE = item_prompt
 	
 	ability.queue_free()
 	super()
+
+#
+# Synchronization
+#
+
+func _send_current_state(peer_id: int = 0, state: Dictionary = {}):
+	var current_state: Dictionary = {
+		"ABILITY_CONTAINED": ABILITY_CONTAINED
+	}
+	state.merge(current_state)
+	super(peer_id, state)
+
+func update_state(state: Dictionary):
+	var was_empty: bool = ABILITY_CONTAINED.is_empty()
+	ABILITY_CONTAINED = state.get("ABILITY_CONTAINED", ABILITY_CONTAINED)
+	
+	if ABILITY_CONTAINED.is_empty() and not was_empty:
+		emptied.emit()
+	
+	super(state)
