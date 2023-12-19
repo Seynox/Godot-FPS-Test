@@ -28,7 +28,8 @@ func _start_lobby():
 	set_new_level(LOBBY_SCENE)
 
 @rpc("reliable")
-func change_client_level(scene_path: String):
+func change_client_level(unsafe_scene_path: String):
+	var scene_path: String = Sanitizer.sanitize_scene_path(unsafe_scene_path)
 	var scene: PackedScene = load(scene_path)
 	_set_level.call_deferred(scene)
 

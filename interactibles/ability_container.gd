@@ -49,7 +49,8 @@ func _get_ability() -> Ability:
 	if ABILITY_CONTAINED.is_empty():
 		return null
 	
-	var ability_scene: PackedScene = load(ABILITY_CONTAINED)
+	var ability_scene_path: String = Sanitizer.sanitize_scene_path(ABILITY_CONTAINED)
+	var ability_scene: PackedScene = load(ability_scene_path)
 	return ability_scene.instantiate()
 
 ## Interacting hits the object if it is not broken.
