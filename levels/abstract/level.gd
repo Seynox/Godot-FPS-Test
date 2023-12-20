@@ -38,7 +38,7 @@ func _ready():
 	_send_loaded.call_deferred()
 
 func _exit_tree():
-	if multiplayer.has_multiplayer_peer():
+	if not multiplayer.has_multiplayer_peer():
 		_disconnect_multiplayer_signals()
 	for player: Player in players.get_children():
 		_disconnect_player_signals(player)
@@ -92,8 +92,7 @@ func _initialize_level():
 		var is_local_player: bool = player.is_multiplayer_authority()
 		if is_local_player:
 			player.global_position = get_spawnpoint()
-		else:
-			_listen_player_signals(player) # Already called for local player in _on_player_spawn
+		_listen_player_signals(player)
 
 #
 # Multiplayer signals
@@ -122,6 +121,7 @@ func _on_peer_disconnected(peer_id: int):
 # Player signals
 #
 
+
 ## Setup signal callbacks for [param player]. Called when initializating level.[br]
 ## Note: Not called for players joining after initialization
 func _listen_player_signals(player: Player):
@@ -137,9 +137,13 @@ func _disconnect_player_signals(player: Player):
 # Player management
 #
 
-## Called on clients when MultiplayerSpawner spawns a player
+## Called on server when adding a player.
+## Called on clients when MultiplayerSpawner spawns a player.[br]
+## Note: When called on server, the player might not be replicated on other peers yet.
 func _on_player_spawn(player: Player):
-	_listen_player_signals(player)
+	var is_local_player: bool = player.is_multiplayer_authority()
+	if not is_local_player: # Will be called for local player when initializing the level
+		_listen_player_signals(player)
 
 ## Called on clients when MutliplayerSpawner despawns a player
 func _on_player_despawn(player: Player):
