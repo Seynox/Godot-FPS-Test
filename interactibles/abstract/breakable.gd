@@ -12,7 +12,7 @@ signal broken
 func _ready():
 	add_to_group(GameLevel.LEVEL_INITIALIZATION_GROUP)
 
-func initialize():
+func on_level_initialization():
 	if not is_multiplayer_authority():
 		var authority_peer_id: int = get_multiplayer_authority()
 		_request_current_state.rpc_id(authority_peer_id)

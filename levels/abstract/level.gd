@@ -1,6 +1,6 @@
 class_name GameLevel extends Node3D
 
-const LEVEL_INITIALIZATION_GROUP: String = "initializable"
+const LEVEL_INITIALIZATION_GROUP: String = "level_initialized"
 
 ## The signal sent to change the current level. Only works for authority
 signal change_level(new_level: PackedScene)
@@ -81,7 +81,7 @@ func player_loaded():
 @rpc("call_local", "reliable")
 func initialize_all():
 	if level_initialized: return
-	get_tree().call_group(LEVEL_INITIALIZATION_GROUP, "initialize")
+	get_tree().call_group(LEVEL_INITIALIZATION_GROUP, "on_level_initialization")
 	_initialize_level()
 	level_initialized = true
 	print("[%s] %s initiliazed!" % [multiplayer.get_unique_id(), LEVEL_NAME])
