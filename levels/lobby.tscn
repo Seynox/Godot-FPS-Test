@@ -16,10 +16,10 @@ radius = 2.0
 
 [node name="Lobby" type="Node3D" node_paths=PackedStringArray("PLAYER_SPAWN")]
 script = ExtResource("1_57qj7")
-PLAYER_SCENE = ExtResource("1_y2w3n")
-LEVEL_SCENE = ExtResource("3_82m6v")
 LEVEL_NAME = "Lobby"
+NEXT_LEVEL_SCENE = ExtResource("3_82m6v")
 CAN_PLAYERS_JOIN = true
+PLAYER_SCENE = ExtResource("1_y2w3n")
 PLAYER_SPAWN = NodePath("Spawnpoint")
 
 [node name="Room" type="StaticBody3D" parent="."]

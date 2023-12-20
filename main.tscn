@@ -4,10 +4,11 @@
 [ext_resource type="PackedScene" uid="uid://cb31f55b7luof" path="res://gui/menu/main_menu.tscn" id="2_khp6u"]
 [ext_resource type="PackedScene" uid="uid://cgwr8r183dsyd" path="res://levels/lobby.tscn" id="3_207h3"]
 
-[node name="Game" type="Node" node_paths=PackedStringArray("PLAYERS_NODE", "MENU")]
+[node name="Game" type="Node" node_paths=PackedStringArray("PLAYERS_NODE", "PLAYER_SPAWNER", "MENU")]
 script = ExtResource("1_73t00")
 LOBBY_SCENE = ExtResource("3_207h3")
 PLAYERS_NODE = NodePath("Players")
+PLAYER_SPAWNER = NodePath("PlayerSpawner")
 MENU = NodePath("Menu")
 
 [node name="Menu" parent="." instance=ExtResource("2_khp6u")]

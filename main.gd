@@ -6,6 +6,9 @@ class_name Main extends Node
 ## The node containing the players
 @export var PLAYERS_NODE: Node3D
 
+## The multiplayer spawner spawning players
+@export var PLAYER_SPAWNER: MultiplayerSpawner
+
 ## The main menu
 @export var MENU: MainMenu
 
@@ -45,14 +48,17 @@ func set_new_level(level_scene: PackedScene):
 ## Set the current level. Must be called at the end of a frame with [method Callable.call_deferred]
 func _set_level(packed_scene: PackedScene):
 	if current_level != null:
+		_disconnect_level_signals(current_level)
+		_disconnect_spawner_signals(current_level)
 		current_level.free()
 	
-	var scene: GameLevel = packed_scene.instantiate()
-	scene.PLAYERS = PLAYERS_NODE # Gives a reference to the players node
-	_listen_level_signals(scene)
+	var level: GameLevel = packed_scene.instantiate()
+	level.players = PLAYERS_NODE # Gives a reference to the players node
+	_listen_spawner_signals(level)
+	_listen_level_signals(level)
 	
-	current_level = scene
-	add_child(scene, true)
+	current_level = level
+	add_child(level, true)
 
 #
 # Signals listeners
@@ -70,6 +76,18 @@ func _listen_connection_signals():
 func _listen_level_signals(level: GameLevel):
 	level.change_level.connect(set_new_level)
 	level.game_over.connect(_on_game_over)
+
+func _disconnect_level_signals(level: GameLevel):
+	level.change_level.disconnect(set_new_level)
+	level.game_over.disconnect(_on_game_over)
+
+func _listen_spawner_signals(level: GameLevel):
+	PLAYER_SPAWNER.spawned.connect(level._on_player_spawn)
+	PLAYER_SPAWNER.despawned.connect(level._on_player_despawn)
+
+func _disconnect_spawner_signals(level: GameLevel):
+	PLAYER_SPAWNER.spawned.disconnect(level._on_player_spawn)
+	PLAYER_SPAWNER.despawned.disconnect(level._on_player_despawn)
 
 #
 # Game
