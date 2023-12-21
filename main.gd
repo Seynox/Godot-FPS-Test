@@ -1,5 +1,7 @@
 class_name Main extends Node
 
+signal scene_changed
+
 ## The scene to put when the game is started
 @export var LOBBY_SCENE: PackedScene
 
@@ -29,6 +31,10 @@ func _ready():
 func _start_lobby():
 	MENU.hide()
 	set_new_level(LOBBY_SCENE)
+	if multiplayer.is_server() and DisplayServer.get_name() != "headless":
+		await scene_changed
+		var server_peer_id: int = multiplayer.get_unique_id()
+		current_level._on_peer_connected(server_peer_id)
 
 @rpc("reliable")
 func change_client_level(unsafe_scene_path: String):
@@ -59,6 +65,7 @@ func _set_level(packed_scene: PackedScene):
 	
 	current_level = level
 	add_child(level, true)
+	scene_changed.emit()
 
 #
 # Signals listeners

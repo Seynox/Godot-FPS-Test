@@ -2,14 +2,6 @@ extends GameLevel
 
 var players_ready: int = 0
 
-func _ready():
-	super()
-
-	# Add the server as a player if server isn't headless
-	if multiplayer.is_server() and DisplayServer.get_name() != "headless":
-		var server_player_id = multiplayer.get_unique_id()
-		_on_peer_connected(server_player_id)
-
 #
 # Signals
 #

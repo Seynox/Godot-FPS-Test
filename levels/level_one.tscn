@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cgbjj2wp44alh"]
+[gd_scene load_steps=9 format=3 uid="uid://cgbjj2wp44alh"]
 
 [ext_resource type="Script" path="res://levels/level_one.gd" id="1_s2fpf"]
 [ext_resource type="PackedScene" uid="uid://dvbw7aiyi1smw" path="res://interactibles/ability_container.tscn" id="2_3byy0"]
+[ext_resource type="Script" path="res://levels/DeathZone.gd" id="3_kxbfs"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_3yoc5"]
 flip_faces = true
@@ -9,6 +10,17 @@ size = Vector3(8, 4, 8)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_bbm7h"]
 data = PackedVector3Array(4, 2, 4, -4, 2, 4, -4, -2, 4, 4, -2, 4, 4, 2, 4, -4, -2, 4, -4, 2, -4, 4, 2, -4, 4, -2, -4, -4, -2, -4, -4, 2, -4, 4, -2, -4, 4, 2, -4, 4, 2, 4, 4, -2, 4, 4, -2, -4, 4, 2, -4, 4, -2, 4, -4, 2, 4, -4, 2, -4, -4, -2, -4, -4, -2, 4, -4, 2, 4, -4, -2, -4, -4, 2, 4, 4, 2, 4, 4, 2, -4, -4, 2, -4, -4, 2, 4, 4, 2, -4, 4, -2, 4, -4, -2, 4, -4, -2, -4, 4, -2, -4, 4, -2, 4, -4, -2, -4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n61cd"]
+size = Vector3(5, 5, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_usv6i"]
+blend_mode = 1
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bkygh"]
+material = SubResource("StandardMaterial3D_usv6i")
+size = Vector3(5, 5, 5)
 
 [node name="LevelOne" type="Node3D" node_paths=PackedStringArray("PLAYER_SPAWN")]
 script = ExtResource("1_s2fpf")
@@ -38,3 +50,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="AbilityContainer" parent="." instance=ExtResource("2_3byy0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.48951, 0, 0)
+
+[node name="DeathZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.9019, 2.1022, 0)
+collision_layer = 0
+monitorable = false
+script = ExtResource("3_kxbfs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeathZone"]
+shape = SubResource("BoxShape3D_n61cd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DeathZone"]
+mesh = SubResource("BoxMesh_bkygh")
+
+[connection signal="body_entered" from="DeathZone" to="DeathZone" method="_on_body_entered"]

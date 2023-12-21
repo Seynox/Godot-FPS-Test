@@ -89,10 +89,15 @@ func initialize_all():
 ## Initialize the current level.
 func _initialize_level():
 	for player: Player in players.get_children():
+		_listen_player_signals(player)
+		
+		# Respawn
+		# TODO
+		
+		# Move to spawn
 		var is_local_player: bool = player.is_multiplayer_authority()
 		if is_local_player:
 			player.global_position = get_spawnpoint()
-		_listen_player_signals(player)
 
 #
 # Multiplayer signals
@@ -120,7 +125,6 @@ func _on_peer_disconnected(peer_id: int):
 #
 # Player signals
 #
-
 
 ## Setup signal callbacks for [param player]. Called when initializating level.[br]
 ## Note: Not called for players joining after initialization
@@ -168,17 +172,19 @@ func _remove_player(peer_id: int):
 		player.queue_free()
 
 ## Called on all peers when a player dies.[br]
-## By default, emit [signal GameLevel.game_over] from authority if everyone is dead.[br]
-func on_player_death(_dead_player: Player):
+func on_player_death(dead_player: Player):
+	# TODO Disable player! Remove child?
+	dead_player.hide()
+	
+	# Authority check if everyone is dead for game over
 	if not is_multiplayer_authority(): return
 	
-	# Check if everyone is dead
 	var someone_is_alive: bool = false
 	for player: Player in players.get_children():
 		if not player.is_dead():
 			someone_is_alive = true
 			break
-	# Send game over if everyone is dead
+	
 	if not someone_is_alive:
 		game_over.emit()
 
