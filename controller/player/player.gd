@@ -15,6 +15,7 @@ signal interactible_hover_ended
 @onready var camera: Camera3D = $Camera
 @onready var interaction_ray: RayCast3D = $Camera/InteractionRay
 @onready var input: Node = $PlayerInput
+@onready var synchronizer: MultiplayerSynchronizer = $PlayerSynchronizer
 @onready var abilities: Node = $Abilities
 
 # A dictionary would be cleaner but a bit slower
@@ -25,15 +26,18 @@ var weapon: Weapon
 var movement_velocity: Vector3
 var interactible_hovered: Interactible
 
+var player_peer: int
+
 func _enter_tree():
-	var player_peer = str(name).to_int()
-	set_multiplayer_authority(player_peer)
+	player_peer = str(name).to_int()
+	$PlayerInput.set_multiplayer_authority(player_peer)
+	$PlayerSynchronizer.set_multiplayer_authority(player_peer)
+	$FirstPersonUI.set_multiplayer_authority(player_peer)
 
 func _ready() -> void:
-	var is_local_player: bool = is_multiplayer_authority()
-	camera.current = is_local_player
-	set_process(is_local_player)
-	set_physics_process(is_local_player)
+	var is_local: bool = is_local_player()
+	camera.current = is_local
+	set_process(is_local)
 	
 	if DEFAULT_DASH != null:
 		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
@@ -87,6 +91,14 @@ func _process_abilities_physics(delta: float):
 		velocity = jump.get_velocity(self, delta)
 	if weapon != null:
 		velocity = weapon.get_velocity(self, delta)
+
+#
+# Multiplayer
+#
+
+func is_local_player() -> bool:
+	var current_peer_id: int = multiplayer.get_unique_id()
+	return current_peer_id == player_peer
 
 #
 # ACTIONS
@@ -147,10 +159,6 @@ func _put_ability(current: Ability, new: Ability) -> Ability:
 			current.queue_free()
 		return null
 	
-	# Copy our authority to child
-	var player_peer: int = get_multiplayer_authority()
-	new.set_multiplayer_authority(player_peer)
-	
 	# Add the new ability or replace the current one
 	if current == null:
 		abilities.add_child(new)
@@ -161,3 +169,14 @@ func _put_ability(current: Ability, new: Ability) -> Ability:
 		
 	ability_changed.emit(self, new.get_ability_type(), new)
 	return new
+
+#
+# Death
+#
+
+func _die():
+	self.hide()
+	super()
+
+func resurrect():
+	self.show()

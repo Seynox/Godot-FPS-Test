@@ -26,6 +26,5 @@ func _on_player_ability_changed(_player: Player, ability_type: String, ability: 
 	if current == null:
 		abilities.add_child(label)
 	else:
-		var old: Control = current
 		current.replace_by(label)
-		old.queue_free()
+		current.queue_free()

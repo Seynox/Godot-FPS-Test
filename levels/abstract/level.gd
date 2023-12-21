@@ -92,11 +92,10 @@ func _initialize_level():
 		_listen_player_signals(player)
 		
 		# Respawn
-		# TODO
+		player.resurrect()
 		
 		# Move to spawn
-		var is_local_player: bool = player.is_multiplayer_authority()
-		if is_local_player:
+		if player.is_local_player():
 			player.global_position = get_spawnpoint()
 
 #
@@ -127,8 +126,8 @@ func _on_peer_disconnected(peer_id: int):
 #
 
 ## Setup signal callbacks for [param player]. Called when initializating level.[br]
-## Note: Not called for players joining after initialization
 func _listen_player_signals(player: Player):
+	print("%s listening to %s" % [multiplayer.get_unique_id(), player.name])
 	player.death.connect(on_player_death.bind(player))
 	player.out_of_map.connect(on_player_out_of_map.bind(player))
 
@@ -145,7 +144,7 @@ func _disconnect_player_signals(player: Player):
 ## Called on clients when MultiplayerSpawner spawns a player.[br]
 ## Note: When called on server, the player might not be replicated on other peers yet.
 func _on_player_spawn(player: Player):
-	var is_local_player: bool = player.is_multiplayer_authority()
+	var is_local_player: bool = player.is_local_player()
 	if not is_local_player: # Will be called for local player when initializing the level
 		_listen_player_signals(player)
 
@@ -172,10 +171,7 @@ func _remove_player(peer_id: int):
 		player.queue_free()
 
 ## Called on all peers when a player dies.[br]
-func on_player_death(dead_player: Player):
-	# TODO Disable player! Remove child?
-	dead_player.hide()
-	
+func on_player_death(_dead_player: Player):
 	# Authority check if everyone is dead for game over
 	if not is_multiplayer_authority(): return
 	

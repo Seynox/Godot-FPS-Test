@@ -11,10 +11,28 @@ signal out_of_map
 @export var ATTACK_DISTANCE: float = 1.5
 @export var ATTACK_DAMAGE: float = 1.0
 @export var CAN_BE_HIT: bool = true
+@export var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var GRAVITY_MULTIPLIER: float = 1.0
 
-var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var entity_synchronizer: MultiplayerSynchronizer
+
 var gravity_velocity: Vector3
+
+func _ready():
+	entity_synchronizer = MultiplayerSynchronizer.new()
+	var replication: SceneReplicationConfig = entity_synchronizer.get_replication_config()
+	replication.add_property(".:HEALTH")
+	replication.add_property(".:MAX_HEALTH")
+	replication.add_property(".:SPEED")
+	replication.add_property(".:ATTACK_DISTANCE")
+	replication.add_property(".:ATTACK_DAMAGE")
+	replication.add_property(".:CAN_BE_HIT")
+	
+	# Make replication mode to "ON_CHANGE"
+	for property in replication.get_properties():
+		replication.property_set_replication_mode(property, SceneReplicationConfig.REPLICATION_MODE_ON_CHANGE)
+	
+	add_child(entity_synchronizer)
 
 # Movements
 
@@ -32,6 +50,11 @@ func _calculate_gravity_velocity(delta: float) -> Vector3:
 	return gravity_velocity.move_toward(Vector3(0, velocity.y - gravity_force, 0), gravity_force * delta)
 
 # Health
+
+@rpc("call_local", "reliable")
+func kill():
+	if is_multiplayer_authority():
+		set_health(0)
 
 func set_health(new_health: float) -> void:
 	var current_health = HEALTH
