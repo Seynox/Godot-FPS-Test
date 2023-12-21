@@ -4,23 +4,18 @@ class_name MultiJump extends SimpleJump
 
 var jumps_remaining: int = JUMP_AMOUNT
 
-func try_jump(entity: Entity):
-	if entity.is_on_floor():
-		super(entity)
-	elif can_jump:
+func try_jump(_entity: Entity):
+	if can_jump:
 		_start_jump()
 		_disable_jump()
+	else:
+		jump_failed.emit()
 
-func get_velocity(entity: Entity, delta: float) -> Vector3:
-	if jumps_remaining <= 0 and entity.is_on_floor():
-		jumps_remaining = JUMP_AMOUNT
-	
-	return super(entity, delta)
-
-func _start_jump():
-	jumps_remaining -= 1
+func _enable_jump():
+	jumps_remaining = JUMP_AMOUNT
 	super()
 
 func _disable_jump():
+	jumps_remaining -= 1
 	if jumps_remaining <= 0:
 		super()

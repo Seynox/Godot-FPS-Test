@@ -10,18 +10,16 @@ func try_jump(entity: Entity):
 		jump_failed.emit()
 
 func get_velocity(entity: Entity, delta: float) -> Vector3:
-	if !can_jump and entity.is_on_floor():
+	if entity.is_on_floor():
 		_enable_jump()
 	
 	if is_jumping:
 		jump_velocity = _get_jump_velocity(entity)
+		entity.gravity_velocity = Vector3.ZERO
 		_stop_jump()
 		_disable_jump()
-		var final_velocity: Vector3 = entity.velocity
-		final_velocity.y = jump_velocity.y
-		return final_velocity
-	
-	jump_velocity = _calculate_jump_velocity(entity, delta)
+	else:
+		jump_velocity = _calculate_jump_velocity(entity, delta)
 	return entity.velocity + jump_velocity
 
 func _get_jump_velocity(entity: Entity) -> Vector3:
@@ -47,5 +45,6 @@ func _stop_jump():
 	jump_ended.emit()
 
 func _enable_jump():
+	if can_jump: return
 	can_jump = true
 	jump_ready.emit()
