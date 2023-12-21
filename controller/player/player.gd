@@ -4,9 +4,6 @@ signal ability_changed(player: Player, ability_type: String, ability: Ability)
 signal interactible_hovering(interactible: Interactible)
 signal interactible_hover_ended
 
-@export_category("Player")
-@export var ACCELERATION: float = 100 # m/s^2
-
 @export_subgroup("Abilities")
 @export var DEFAULT_DASH: PackedScene
 @export var DEFAULT_JUMP: PackedScene
@@ -77,14 +74,12 @@ func _physics_process(delta: float):
 	_process_abilities_physics(delta)
 	super(delta)
 
-func _calculate_movement_velocity(delta: float) -> Vector3:
+func _calculate_movement_velocity(_delta: float) -> Vector3:
 	var movement_direction: Vector3 = Vector3(input.movement_direction.x, 0, input.movement_direction.y)
 	var movement_vector_raw: Vector3 = camera.global_transform.basis * movement_direction
 	movement_vector_raw.y = 0
 	
-	var movement_vector: Vector3 = movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
-	movement_velocity = movement_velocity.move_toward(movement_vector, ACCELERATION * delta)
-	return movement_velocity
+	return movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
 
 func _process_abilities_physics(delta: float):
 	if dash != null:
