@@ -17,17 +17,14 @@ func get_velocity(entity: Entity, delta: float) -> Vector3:
 		jump_velocity = _get_jump_velocity(entity)
 		_stop_jump()
 		_disable_jump()
-	else:
-		jump_velocity = _calculate_jump_velocity(entity, delta)
+		return jump_velocity
+	
+	jump_velocity = _calculate_jump_velocity(entity, delta)
 	return entity.velocity + jump_velocity
 
 func _get_jump_velocity(entity: Entity) -> Vector3:
-	var opposite_upward_velocity: float = entity.velocity.y * -1
 	var upward_velocity: float = sqrt(4 * JUMP_HEIGHT * entity.GRAVITY)
-	
-	# Cancels current upward velocity, then add jump velocity
-	var absolute_upward_velocity = opposite_upward_velocity + upward_velocity
-	return Vector3(0, absolute_upward_velocity, 0)
+	return Vector3(0, upward_velocity, 0)
 
 func _calculate_jump_velocity(entity: Entity, delta: float) -> Vector3:
 	if entity.is_on_floor():
