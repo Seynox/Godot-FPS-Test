@@ -17,7 +17,9 @@ func get_velocity(entity: Entity, delta: float) -> Vector3:
 		jump_velocity = _get_jump_velocity(entity)
 		_stop_jump()
 		_disable_jump()
-		return jump_velocity
+		var final_velocity: Vector3 = entity.velocity
+		final_velocity.y = jump_velocity.y
+		return final_velocity
 	
 	jump_velocity = _calculate_jump_velocity(entity, delta)
 	return entity.velocity + jump_velocity
