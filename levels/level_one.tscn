@@ -63,4 +63,7 @@ shape = SubResource("BoxShape3D_n61cd")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DeathZone"]
 mesh = SubResource("BoxMesh_bkygh")
 
+[node name="AbilityContainer2" parent="." instance=ExtResource("2_3byy0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.19123, 0, 5.04057)
+
 [connection signal="body_entered" from="DeathZone" to="DeathZone" method="_on_body_entered"]

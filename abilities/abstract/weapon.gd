@@ -5,7 +5,6 @@ const TYPE: String = "Weapon"
 signal attack_started
 signal attack_ended
 signal attack_failed
-signal attacked(enemy: Entity)
 
 @export var ATTACK_DAMAGE: float
 @export var ATTACK_RANGE: float
@@ -20,10 +19,6 @@ func get_velocity(player: Player, _delta: float) -> Vector3:
 	return player.velocity
 
 func hit_target(target: Node3D):
-	if not is_multiplayer_authority(): return
-	
-	if target is Entity:
-		attacked.emit(target)
 	if target.has_method("try_hitting"):
 		var authority_id: int = target.get_multiplayer_authority()
 		target.try_hitting.rpc_id(authority_id)

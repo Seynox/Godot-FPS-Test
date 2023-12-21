@@ -23,7 +23,7 @@ signal interactible_hover_ended
 # A dictionary would be cleaner but a bit slower
 var dash: Dash
 var jump: Jump
-var weapon: Weapon # TODO Fix
+var weapon: Weapon
 
 var movement_velocity: Vector3
 var interactible_hovered: Interactible
