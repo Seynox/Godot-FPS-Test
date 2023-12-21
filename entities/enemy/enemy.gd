@@ -28,7 +28,7 @@ func _start_target_finding_loop():
 func _process(_delta: float):
 	if TARGET == null:
 		return
-	if TARGET.is_dead():
+	if TARGET.is_dead:
 		TARGET = null
 		return
 	

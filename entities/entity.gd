@@ -16,6 +16,8 @@ signal out_of_map
 
 var gravity_velocity: Vector3
 
+var is_dead: bool
+
 # Movements
 
 func _physics_process(_delta: float):
@@ -39,7 +41,8 @@ func set_health(new_health: float) -> void:
 	HEALTH = new_health
 	health_update.emit(current_health, new_health, MAX_HEALTH)
 	
-	if new_health <= 0:
+	is_dead = new_health <= 0
+	if is_dead:
 		_die()
 
 func _die():
@@ -49,9 +52,6 @@ func _die():
 func reduce_health(damages: float) -> void:
 	var new_health = HEALTH - damages
 	set_health(new_health)
-
-func is_dead() -> bool:
-	return HEALTH <= 0
 
 @rpc("any_peer", "call_local", "reliable")
 func try_hitting():

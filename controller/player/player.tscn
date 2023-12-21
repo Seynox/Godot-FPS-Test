@@ -16,12 +16,18 @@
 material = SubResource("StandardMaterial3D_manxs")
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cabjf"]
-properties/0/path = NodePath(".:position")
+properties/0/path = NodePath("PlayerInput:camera_rotation")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath("Camera:rotation")
+properties/1/path = NodePath("PlayerInput:movement_direction")
 properties/1/spawn = true
 properties/1/replication_mode = 2
+properties/2/path = NodePath(".:position")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:velocity")
+properties/3/spawn = true
+properties/3/replication_mode = 2
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 collision_mask = 6
@@ -40,6 +46,13 @@ fov = 90.0
 target_position = Vector3(0, 0, -3)
 collision_mask = 6
 
+[node name="UI" parent="Camera" instance=ExtResource("3_2bvf4")]
+visible = false
+
+[node name="PlayerInfos" parent="Camera/UI" instance=ExtResource("4_0bd1c")]
+layout_mode = 1
+offset_top = -100.0
+
 [node name="Hitbox" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_iow1f")
 
@@ -54,14 +67,9 @@ script = ExtResource("2_cbi6x")
 [node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_cabjf")
 
-[node name="FirstPersonUI" parent="." instance=ExtResource("3_2bvf4")]
-
-[node name="PlayerInfos" parent="FirstPersonUI" instance=ExtResource("4_0bd1c")]
-layout_mode = 1
-offset_top = -100.0
-
-[connection signal="ability_changed" from="." to="FirstPersonUI/PlayerInfos" method="_on_player_ability_changed"]
-[connection signal="health_update" from="." to="FirstPersonUI" method="_on_player_health_update"]
-[connection signal="health_update" from="." to="FirstPersonUI/PlayerInfos" method="_on_player_health_update"]
-[connection signal="interactible_hover_ended" from="." to="FirstPersonUI" method="_on_player_interactible_hover_ended"]
-[connection signal="interactible_hovering" from="." to="FirstPersonUI" method="_on_player_interactible_hovering"]
+[connection signal="ability_changed" from="." to="Camera/UI/PlayerInfos" method="_on_player_ability_changed"]
+[connection signal="health_update" from="." to="Camera/UI" method="_on_player_health_update"]
+[connection signal="health_update" from="." to="Camera/UI/PlayerInfos" method="_on_player_health_update"]
+[connection signal="interactible_hover_ended" from="." to="Camera/UI" method="_on_player_interactible_hover_ended"]
+[connection signal="interactible_hovering" from="." to="Camera/UI" method="_on_player_interactible_hovering"]
+[connection signal="delta_synchronized" from="PlayerSynchronizer" to="Camera" method="_on_player_synchronizer_delta_synchronized"]

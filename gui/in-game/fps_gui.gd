@@ -2,10 +2,6 @@ extends Control
 
 @onready var interaction_prompt: Label = $InteractionPrompt
 
-func _ready():
-	# Hide other players UI
-	visible = is_multiplayer_authority()
-
 #
 # Player signals
 #
@@ -42,3 +38,5 @@ func play_heal_effect():
 
 func play_damage_effect():
 	pass
+
+

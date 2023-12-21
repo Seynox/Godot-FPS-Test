@@ -82,17 +82,20 @@ func player_loaded():
 func initialize_all():
 	if level_initialized: return
 	get_tree().call_group(LEVEL_INITIALIZATION_GROUP, "on_level_initialization")
-	_initialize_level()
+	_initialize_players()
 	level_initialized = true
 	print("[%s] %s initiliazed!" % [multiplayer.get_unique_id(), LEVEL_NAME])
 
-## Initialize the current level.
-func _initialize_level():
+## Initialize the players.
+func _initialize_players():
 	for player: Player in players.get_children():
 		_listen_player_signals(player)
 		
-		# Respawn
-		player.resurrect()
+		# Respawn dead players
+		if player.is_dead:
+			player.resurrect()
+		# Make camera current for local player
+		player.show_camera(player.is_local_player)
 		
 		# Move to spawn
 		if player.is_local_player:
@@ -127,7 +130,6 @@ func _on_peer_disconnected(peer_id: int):
 
 ## Setup signal callbacks for [param player]. Called when initializating level.[br]
 func _listen_player_signals(player: Player):
-	print("%s listening to %s" % [multiplayer.get_unique_id(), player.name])
 	player.death.connect(on_player_death.bind(player))
 	player.out_of_map.connect(on_player_out_of_map.bind(player))
 
@@ -170,13 +172,24 @@ func _remove_player(peer_id: int):
 		player.queue_free()
 
 ## Called on all peers when a player dies.[br]
-func on_player_death(_dead_player: Player):
+func on_player_death(dead_player: Player):
+	var player_list: Array = players.get_children()
+	
+	# Make dead player spectate a player
+	if dead_player.is_local_player:
+		var alive_players: Array = player_list.filter(func(player): return not player.is_dead)
+		if not alive_players.is_empty():
+			var random_player: Player = alive_players.pick_random()
+			dead_player.show_camera(false)
+			random_player.show_camera(true)
+		
+	
 	# Authority check if everyone is dead for game over
 	if not is_multiplayer_authority(): return
 	
 	var someone_is_alive: bool = false
-	for player: Player in players.get_children():
-		if not player.is_dead():
+	for player: Player in player_list:
+		if not player.is_dead:
 			someone_is_alive = true
 			break
 	

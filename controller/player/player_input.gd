@@ -26,17 +26,37 @@ func _unhandled_input(event: InputEvent):
 		look_direction = event.relative * 0.001
 		update_camera_rotation()
 	
-	if event.is_action_pressed("attack"): attacking = true
+	if event.is_action_pressed("attack"): attack.rpc()
 
 func _unhandled_key_input(event):
-	if event.is_action_pressed("jump"): jumping = true
-	if event.is_action_pressed("dash"): dashing = true
-	if event.is_action_pressed("interact"): interacting = true
+	if event.is_action_pressed("jump"): jump.rpc()
+	if event.is_action_pressed("dash"): dash.rpc()
+	if event.is_action_pressed("interact"): interact.rpc()
 	if event.is_action_pressed("exit"): get_tree().quit()
 
 func _process(delta):
 	handle_camera_movements(delta)
 	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+
+#
+# Input RPCs
+#
+
+@rpc("call_local", "reliable")
+func jump():
+	jumping = true
+
+@rpc("call_local", "reliable")
+func dash():
+	dashing = true
+
+@rpc("call_local", "reliable")
+func interact():
+	interacting = true
+
+@rpc("call_local", "reliable")
+func attack():
+	attacking = true
 
 #
 # Input handling

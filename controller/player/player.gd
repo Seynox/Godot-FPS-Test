@@ -13,6 +13,8 @@ signal interactible_hover_ended
 @export var DEFAULT_WEAPON: PackedScene
 
 @onready var camera: Camera3D = $Camera
+@onready var camera_ui: Control = $Camera/UI
+
 @onready var interaction_ray: RayCast3D = $Camera/InteractionRay
 @onready var input: Node = $PlayerInput
 @onready var synchronizer: MultiplayerSynchronizer = $PlayerSynchronizer
@@ -21,7 +23,7 @@ signal interactible_hover_ended
 # A dictionary would be cleaner but a bit slower
 var dash: Dash
 var jump: Jump
-var weapon: Weapon
+var weapon: Weapon # TODO Fix
 
 var movement_velocity: Vector3
 var interactible_hovered: Interactible
@@ -32,13 +34,12 @@ var is_local_player: bool
 func _enter_tree():
 	player_peer = str(name).to_int()
 	$PlayerInput.set_multiplayer_authority(player_peer)
+	$Camera.set_multiplayer_authority(player_peer)
 	$PlayerSynchronizer.set_multiplayer_authority(player_peer)
-	$FirstPersonUI.set_multiplayer_authority(player_peer)
 
 func _ready() -> void:
 	is_local_player = multiplayer.get_unique_id() == player_peer
-	camera.current = is_local_player
-	set_process(is_local_player)
+	show_camera(is_local_player)
 	
 	if DEFAULT_DASH != null:
 		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
@@ -165,14 +166,27 @@ func _put_ability(current: Ability, new: Ability) -> Ability:
 	return new
 
 #
+# Camera
+#
+
+func show_camera(value: bool):
+	camera.current = value
+	camera_ui.visible = value
+
+#
 # Death
 #
 
+func _set_enabled(enable: bool):
+	set_visible(enable)
+	set_process(enable)
+	set_physics_process(enable)
+
 func _die():
-	hide()
+	_set_enabled(false)
 	super()
 
 @rpc("call_local", "reliable")
 func resurrect():
-	show()
 	set_health(MAX_HEALTH)
+	_set_enabled(true)
