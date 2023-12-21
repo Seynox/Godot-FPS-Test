@@ -27,6 +27,7 @@ var movement_velocity: Vector3
 var interactible_hovered: Interactible
 
 var player_peer: int
+var is_local_player: bool
 
 func _enter_tree():
 	player_peer = str(name).to_int()
@@ -35,9 +36,9 @@ func _enter_tree():
 	$FirstPersonUI.set_multiplayer_authority(player_peer)
 
 func _ready() -> void:
-	var is_local: bool = is_local_player()
-	camera.current = is_local
-	set_process(is_local)
+	is_local_player = multiplayer.get_unique_id() == player_peer
+	camera.current = is_local_player
+	set_process(is_local_player)
 	
 	if DEFAULT_DASH != null:
 		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
@@ -93,14 +94,6 @@ func _process_abilities_physics(delta: float):
 		velocity = weapon.get_velocity(self, delta)
 
 #
-# Multiplayer
-#
-
-func is_local_player() -> bool:
-	var current_peer_id: int = multiplayer.get_unique_id()
-	return current_peer_id == player_peer
-
-#
 # ACTIONS
 #
 
@@ -118,6 +111,7 @@ func get_aimed_object(range_in_meters: float) -> Node3D:
 	return result.get("collider")
 
 func _update_aimed_interactible():
+	if not is_local_player: return
 	var currently_hovered: Node3D = interaction_ray.get_collider()
 	
 	if not currently_hovered is Interactible:
@@ -175,8 +169,10 @@ func _put_ability(current: Ability, new: Ability) -> Ability:
 #
 
 func _die():
-	self.hide()
+	hide()
 	super()
 
+@rpc("call_local", "reliable")
 func resurrect():
-	self.show()
+	show()
+	set_health(MAX_HEALTH)

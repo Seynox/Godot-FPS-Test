@@ -95,7 +95,7 @@ func _initialize_level():
 		player.resurrect()
 		
 		# Move to spawn
-		if player.is_local_player():
+		if player.is_local_player:
 			player.global_position = get_spawnpoint()
 
 #
@@ -144,8 +144,7 @@ func _disconnect_player_signals(player: Player):
 ## Called on clients when MultiplayerSpawner spawns a player.[br]
 ## Note: When called on server, the player might not be replicated on other peers yet.
 func _on_player_spawn(player: Player):
-	var is_local_player: bool = player.is_local_player()
-	if not is_local_player: # Will be called for local player when initializing the level
+	if not player.is_local_player: # Will be called for local player when initializing the level
 		_listen_player_signals(player)
 
 ## Called on clients when MutliplayerSpawner despawns a player

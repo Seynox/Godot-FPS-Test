@@ -67,7 +67,7 @@ func interact(player: Player):
 ## to the [param player][br]
 ## Makes the container empty.
 func _ability_taken_by(player: Player):
-	if player.is_local_player():
+	if player.is_local_player:
 		var ability: Ability = _get_ability()
 		player.set_ability(ability)
 	
