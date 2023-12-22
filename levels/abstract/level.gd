@@ -183,7 +183,6 @@ func on_player_death(dead_player: Player):
 			dead_player.show_camera(false)
 			random_player.show_camera(true)
 		
-	
 	# Authority check if everyone is dead for game over
 	if not is_multiplayer_authority(): return
 	

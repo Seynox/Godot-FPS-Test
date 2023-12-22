@@ -28,6 +28,8 @@ var interactible_hovered: Interactible
 var player_peer: int
 var is_local_player: bool
 
+var local_spectator_node: Spectator
+
 func _enter_tree():
 	player_peer = str(name).to_int()
 	$PlayerInput.set_multiplayer_authority(player_peer)
@@ -161,12 +163,19 @@ func _put_ability(current: Ability, new: Ability) -> Ability:
 	return new
 
 #
-# Camera
+# Spectating
 #
 
 func show_camera(value: bool):
 	camera.current = value
 	camera_ui.visible = value
+
+## Client-only. Allow the client to spectate other players.[br]
+## Ignored if the player is already a spectator
+func _make_spectator():
+	if not is_local_player or local_spectator_node != null: return
+	local_spectator_node = Spectator.new()
+	add_child(local_spectator_node)
 
 #
 # Death
@@ -176,12 +185,18 @@ func _set_enabled(enable: bool):
 	set_visible(enable)
 	set_process(enable)
 	set_physics_process(enable)
+	input.set_enabled(enable and is_local_player)
 
 func _die():
 	_set_enabled(false)
+	_make_spectator()
 	super()
 
 @rpc("call_local", "reliable")
 func resurrect():
 	set_health(MAX_HEALTH)
 	_set_enabled(true)
+	
+	# Remove spectator node
+	if local_spectator_node != null:
+		local_spectator_node.queue_free()

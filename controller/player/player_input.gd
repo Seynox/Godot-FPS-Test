@@ -14,13 +14,16 @@ var look_direction: Vector2 # Input direction for look/aim
 func _ready():
 	# Enable processing for local player
 	var is_local_player: bool = is_multiplayer_authority()
-	set_process(is_local_player)
-	set_process_unhandled_input(is_local_player)
-	set_process_unhandled_key_input(is_local_player)
+	set_enabled(is_local_player)
 
 	if is_local_player:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
+
+func set_enabled(enable: bool):
+	set_process(enable)
+	set_process_unhandled_input(enable)
+	set_process_unhandled_key_input(enable)
+
 func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseMotion:
 		look_direction = event.relative * 0.001
@@ -32,7 +35,7 @@ func _unhandled_key_input(event):
 	if event.is_action_pressed("jump"): jump.rpc()
 	if event.is_action_pressed("dash"): dash.rpc()
 	if event.is_action_pressed("interact"): interact.rpc()
-	if event.is_action_pressed("exit"): get_tree().quit()
+	if event.is_action_pressed("exit"): get_tree().quit() # TODO Temporary, listen for it somewhere else
 
 func _process(delta):
 	handle_camera_movements(delta)
