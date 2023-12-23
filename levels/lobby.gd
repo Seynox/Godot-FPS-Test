@@ -10,7 +10,7 @@ func _ready():
 	super()
 
 func _exit_tree():
-	if not multiplayer.has_multiplayer_peer():
+	if multiplayer.has_multiplayer_peer():
 		_disconnect_multiplayer_signals()
 	super()
 

@@ -14,7 +14,6 @@ signal interactible_hover_ended
 
 @onready var interaction_ray: RayCast3D = $Camera/InteractionRay
 @onready var input: Node = $PlayerInput
-@onready var synchronizer: MultiplayerSynchronizer = $PlayerSynchronizer
 @onready var abilities: Node = $Abilities
 
 # A dictionary would be cleaner but a bit slower
@@ -39,7 +38,6 @@ func _enter_tree():
 func _ready() -> void:
 	is_local_player = multiplayer.get_unique_id() == player_peer
 	show_camera(is_local_player)
-	set_default_abilities()
 
 func _process(delta: float):
 	_process_abilities_inputs(delta)
