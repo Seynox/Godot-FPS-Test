@@ -175,8 +175,8 @@ func show_camera(value: bool):
 ## Client-only. Allow the client to spectate other players.[br]
 ## Ignored if the player is already a spectator
 func _make_spectator():
-	show_camera(false)
 	if not is_local_player or local_spectator_node != null: return
+	show_camera(false)
 	local_spectator_node = Spectator.new()
 	add_child(local_spectator_node)
 
