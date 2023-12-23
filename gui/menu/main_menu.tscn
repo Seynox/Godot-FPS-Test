@@ -1,9 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://cb31f55b7luof"]
 
 [ext_resource type="Script" path="res://gui/menu/main_menu.gd" id="1_dycj3"]
-[ext_resource type="PackedScene" uid="uid://cgwr8r183dsyd" path="res://levels/lobby.tscn" id="2_rnt7q"]
 
-[node name="Menu" type="Control" node_paths=PackedStringArray("SERVER_IP_FIELD", "SERVER_PORT_FIELD")]
+[sub_resource type="LabelSettings" id="LabelSettings_4rusx"]
+font_size = 26
+
+[node name="Menu" type="Control" node_paths=PackedStringArray("SERVER_IP_FIELD", "SERVER_PORT_FIELD", "MESSAGE_LABEL")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +15,7 @@ grow_vertical = 2
 script = ExtResource("1_dycj3")
 SERVER_IP_FIELD = NodePath("ContentContainer/FieldContainer/HostField")
 SERVER_PORT_FIELD = NodePath("ContentContainer/FieldContainer/PortField")
-NEXT_SCENE = ExtResource("2_rnt7q")
+MESSAGE_LABEL = NodePath("MessageLabel")
 
 [node name="ContentContainer" type="BoxContainer" parent="."]
 layout_mode = 1
@@ -67,6 +69,19 @@ text = "Host server"
 [node name="QuitButton" type="Button" parent="ContentContainer"]
 layout_mode = 2
 text = "Quit game"
+
+[node name="MessageLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -150.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_4rusx")
+horizontal_alignment = 1
 
 [connection signal="pressed" from="ContentContainer/PlayButtonContainer/ConnectButton" to="." method="on_connect_press"]
 [connection signal="pressed" from="ContentContainer/PlayButtonContainer/HostButton" to="." method="on_host_press"]

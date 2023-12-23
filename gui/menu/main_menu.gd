@@ -9,6 +9,8 @@ const DEFAULT_MAX_CLIENTS: int = 20
 @export var SERVER_IP_FIELD: LineEdit
 @export var SERVER_PORT_FIELD: LineEdit
 
+@export var MESSAGE_LABEL: Label
+
 func _ready():
 	# Host server if started as headless
 	if DisplayServer.get_name() == "headless":
@@ -16,6 +18,13 @@ func _ready():
 		return
 	
 	SERVER_PORT_FIELD.text = str(DEFAULT_PORT) # Set port to default value
+
+#
+# Display
+#
+
+func set_message(message: String):
+	MESSAGE_LABEL.text = message
 
 #
 # Connect to multiplayer
@@ -42,6 +51,7 @@ func connect_to_server(ip: String, port: int):
 		return
 	
 	multiplayer.multiplayer_peer = peer
+	set_message("Connecting...")
 
 func _host_headless():
 	var args : Dictionary = _parse_command_args()

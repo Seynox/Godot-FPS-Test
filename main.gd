@@ -107,19 +107,24 @@ func _on_game_over():
 # Server connection/hosting
 #
 
-func _quit_game():
+## Disconnect from multiplayer and display the main menu.[br]
+## If set, [param error_message] will be displayed on the menu.
+func _quit_game(error_message: String = ""):
+	if not error_message.is_empty():
+		print("[Multiplayer] ", error_message)
+	
 	multiplayer.multiplayer_peer = null
+	MENU.set_message(error_message)
 	MENU.show()
-	current_level.queue_free()
+	if current_level != null:
+		current_level.queue_free()
 
 func _on_server_connection_failed():
-	print("[Multiplayer] Connection to server failed")
-	_quit_game()
+	_quit_game("Connection to server failed")
 
 func _on_server_disconnect():
-	print("[Multiplayer] Server disconnected")
-	_quit_game()
+	_quit_game("Server disconnected")
 
 func _on_peer_connected(peer_id: int):
-	if multiplayer.is_server():
+	if multiplayer.is_server(): # Send current scene to new peer
 		change_client_level.rpc_id(peer_id, current_level_path)
