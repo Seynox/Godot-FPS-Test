@@ -1,11 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://hu7ojvfabj3c"]
+[gd_scene load_steps=10 format=3 uid="uid://hu7ojvfabj3c"]
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
-[ext_resource type="PackedScene" uid="uid://boeb2mdml1qwn" path="res://abilities/weapons/hitscan_weapon.tscn" id="2_1l6p0"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
-[ext_resource type="PackedScene" uid="uid://73et67exp85a" path="res://abilities/dashes/foward_dash.tscn" id="2_kgh6g"]
+[ext_resource type="PackedScene" uid="uid://cmgybnep2rv4j" path="res://abilities/jumps/simple_jump.tscn" id="2_gxt7g"]
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="3_2bvf4"]
-[ext_resource type="PackedScene" uid="uid://dykwdhyld31la" path="res://abilities/jumps/multi_jump.tscn" id="3_tlgyv"]
 [ext_resource type="PackedScene" uid="uid://imjypsavad40" path="res://gui/in-game/elements/player_infos.tscn" id="4_0bd1c"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iow1f"]
@@ -32,9 +30,7 @@ properties/3/replication_mode = 2
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 collision_mask = 6
 script = ExtResource("1_xm53f")
-DEFAULT_DASH = ExtResource("2_kgh6g")
-DEFAULT_JUMP = ExtResource("3_tlgyv")
-DEFAULT_WEAPON = ExtResource("2_1l6p0")
+DEFAULT_JUMP = ExtResource("2_gxt7g")
 HEALTH = 5.0
 MAX_HEALTH = 5.0
 

@@ -39,13 +39,7 @@ func _enter_tree():
 func _ready() -> void:
 	is_local_player = multiplayer.get_unique_id() == player_peer
 	show_camera(is_local_player)
-	
-	if DEFAULT_DASH != null:
-		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
-	if DEFAULT_JUMP != null:
-		jump = _put_ability(jump, DEFAULT_JUMP.instantiate())
-	if DEFAULT_WEAPON != null:
-		weapon = _put_ability(weapon, DEFAULT_WEAPON.instantiate())
+	set_default_abilities()
 
 func _process(delta: float):
 	_process_abilities_inputs(delta)
@@ -162,6 +156,16 @@ func _put_ability(current: Ability, new: Ability) -> Ability:
 	ability_changed.emit(self, new.get_ability_type(), new)
 	return new
 
+func set_default_abilities():
+	var default_dash = DEFAULT_DASH.instantiate() if DEFAULT_DASH != null else null
+	dash = _put_ability(dash, default_dash)
+	
+	var default_jump = DEFAULT_JUMP.instantiate() if DEFAULT_JUMP != null else null
+	jump = _put_ability(jump, default_jump)
+	
+	var default_weapon = DEFAULT_WEAPON.instantiate() if DEFAULT_WEAPON != null else null
+	weapon = _put_ability(weapon, default_weapon)
+
 #
 # Spectating
 #
@@ -173,6 +177,7 @@ func show_camera(value: bool):
 ## Client-only. Allow the client to spectate other players.[br]
 ## Ignored if the player is already a spectator
 func _make_spectator():
+	show_camera(false)
 	if not is_local_player or local_spectator_node != null: return
 	local_spectator_node = Spectator.new()
 	add_child(local_spectator_node)
@@ -200,3 +205,4 @@ func resurrect():
 	# Remove spectator node
 	if local_spectator_node != null:
 		local_spectator_node.queue_free()
+		show_camera(true)

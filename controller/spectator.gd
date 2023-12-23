@@ -23,6 +23,8 @@ func _unhandled_input(event: InputEvent):
 func _exit_tree():
 	if multiplayer.has_multiplayer_peer():
 		multiplayer.peer_disconnected.disconnect(_on_player_disconnect)
+	if spectated_player != null:
+		spectated_player.show_camera(false)
 
 #
 # Player Spectating
