@@ -102,10 +102,9 @@ func _send_current_state(peer_id: int = 0, state: Dictionary = {}):
 	super(peer_id, state)
 
 func update_state(state: Dictionary):
+	super(state)
 	ABILITY_CONTAINED = state.get("ABILITY_CONTAINED", ABILITY_CONTAINED)
-	
 	if not is_initialized and ABILITY_CONTAINED.is_empty():
 		emptied.emit()
 	
 	is_initialized = true
-	super(state)
