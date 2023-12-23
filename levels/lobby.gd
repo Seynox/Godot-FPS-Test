@@ -3,14 +3,6 @@ extends GameLevel
 var players_ready: int = 0
 
 #
-# Initialization
-#
-
-func _initialize_player(player: Player):
-	#player.set_default_abilities() TODO Recreate player instead
-	super(player)
-
-#
 # Signals
 #
 

@@ -109,8 +109,13 @@ func _disconnect_spawner_signals(level: GameLevel):
 
 func _on_game_over():
 	print("[GAME] Game over!")
+	if not is_multiplayer_authority(): return
 	# TODO Save game
+	
+	# Go back to first scene and reset players
 	set_new_level(LOBBY_SCENE)
+	await scene_changed
+	_recreate_all_players()
 
 #
 # Server connection/hosting
@@ -159,6 +164,19 @@ func _on_peer_disconnected(peer_id: int):
 # Player creation
 #
 
+## Remove all players and add players for all peers.[br]
+## Used to reset players and add spectators after a game-over.[br]
+## Don't use on client ! Changes are automatically replicated on clients thanks to PlayerSpawner
+func _recreate_all_players():
+	var peer_list: Array = multiplayer.get_peers()
+	if DisplayServer.get_name() != "headless": # Add server to list if server is not headless
+		var server_peer_id: int = multiplayer.get_unique_id()
+		peer_list.append(server_peer_id)
+	
+	for peer_id: int in peer_list:
+		_remove_player(peer_id)
+		_add_player(peer_id)
+
 @rpc("any_peer", "call_local", "reliable")
 func join_game():
 	if not is_multiplayer_authority(): return
@@ -180,6 +198,7 @@ func join_game():
 func _add_player(peer_id: int):
 	print("[Server] Player added (%s)" % peer_id)
 	var player: Player = PLAYER_SCENE.instantiate()
+	
 	player.name = str(peer_id) # Set player node name to peer id
 	PLAYERS_NODE.add_child(player, true)
 	
@@ -197,6 +216,7 @@ func _remove_player(peer_id: int):
 	if player != null:
 		if current_level != null:
 			current_level.on_player_despawn(player)
+		PLAYERS_NODE.remove_child(player)
 		player.queue_free()
 
 @rpc("reliable")
