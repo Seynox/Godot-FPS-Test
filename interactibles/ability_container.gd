@@ -19,6 +19,9 @@ signal emptied
 ## The scene path of the ability inside the container. Empty string if empty.
 @export var ABILITY_CONTAINED: String
 
+## If the container has been locally initialized. True after the first state update
+var is_initialized: bool
+
 func _ready():
 	super()
 	_generate_contained_ability()
@@ -99,10 +102,10 @@ func _send_current_state(peer_id: int = 0, state: Dictionary = {}):
 	super(peer_id, state)
 
 func update_state(state: Dictionary):
-	var was_empty: bool = ABILITY_CONTAINED.is_empty()
 	ABILITY_CONTAINED = state.get("ABILITY_CONTAINED", ABILITY_CONTAINED)
 	
-	if ABILITY_CONTAINED.is_empty() and not was_empty:
+	if not is_initialized and ABILITY_CONTAINED.is_empty():
 		emptied.emit()
 	
+	is_initialized = true
 	super(state)

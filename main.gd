@@ -101,6 +101,7 @@ func _disconnect_spawner_signals(level: GameLevel):
 
 func _on_game_over():
 	print("[GAME] Game over!")
+	# TODO Save game
 	set_new_level(LOBBY_SCENE)
 
 #

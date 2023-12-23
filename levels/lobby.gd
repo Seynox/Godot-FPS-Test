@@ -1,6 +1,6 @@
 extends GameLevel
 
-## The scene created and assigned to a player when joining
+## The scene created when a peer connects
 @export var PLAYER_SCENE: PackedScene
 
 var players_ready: int = 0
