@@ -59,7 +59,7 @@ func _host_headless():
 	var port = args.get("port", DEFAULT_PORT)
 	var max_clients = args.get("max-clients", DEFAULT_MAX_CLIENTS)
 	
-	host_server(ip, int(port), int(max_clients))
+	host_server.call_deferred(ip, int(port), int(max_clients))
 
 func _parse_command_args() -> Dictionary:
 	var args = {}

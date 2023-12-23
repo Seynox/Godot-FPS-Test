@@ -63,14 +63,13 @@ func peer_loaded():
 	if level_initialized:
 		var loaded_peer_id: int = multiplayer.get_remote_sender_id()
 		initialize_all.rpc_id(loaded_peer_id)
-	else:
-		# Check if all peers finished loading to initialize all
-		var peers_count: int = multiplayer.get_peers().size()
-		var server_is_player: bool = DisplayServer.get_name() != "headless"
-		if server_is_player: peers_count += 1
-		
-		if loaded_peers == peers_count:
-			initialize_all.rpc()
+		return
+
+	# Check if all peers finished loading to initialize all
+	var peers_count: int = multiplayer.get_peers().size() + 1 # The +1 is the authority peer
+	
+	if loaded_peers == peers_count:
+		initialize_all.rpc()
 
 ## Called to initialize the level when all players finished loading the level.[br]
 ## Calls "initialize" method on all nodes with group [member GameLevel.LEVEL_INITIALIZATION_GROUP][br]
@@ -81,7 +80,6 @@ func initialize_all():
 	get_tree().call_group(LEVEL_INITIALIZATION_GROUP, "on_level_initialization")
 	_initialize_level()
 	level_initialized = true
-	print("[%s] %s initiliazed!" % [multiplayer.get_unique_id(), LEVEL_NAME])
 
 ## Initialize the current level. Called after initializing everything.
 func _initialize_level():
@@ -128,7 +126,8 @@ func on_player_spawn(player: Player):
 ## Called on clients when MutliplayerSpawner despawns a player.
 ## Note: When called on client, the player might be already removed on other peers.
 func on_player_despawn(player: Player):
-	_disconnect_player_signals(player)
+	if level_initialized:
+		_disconnect_player_signals(player)
 
 ## Called on all peers when a player dies.[br]
 ## Check on authority if all players are dead to emit [signal GameLevel.game_over]
