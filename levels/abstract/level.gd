@@ -17,13 +17,16 @@ signal game_over
 ## The node to use as a player spawnpoint
 @export var PLAYER_SPAWN: Node3D
 
+## If peers joining should be added as players. Setting it to false will add them as spectators
+@export var SPAWN_NEW_PLAYERS: bool
+
 ## The node containing all players.[br]
 ## Automatically assigned when level is set as scene.
 var players: Node3D
 
 ## If the level has already been initialized
 var level_initialized: bool
-var loaded_players: int
+var loaded_peers: int
 
 func _ready():
 	players.global_position = get_spawnpoint()
@@ -35,7 +38,7 @@ func _exit_tree():
 
 func _send_loaded():
 	var authority_peer: int = get_multiplayer_authority()
-	player_loaded.rpc_id(authority_peer)
+	peer_loaded.rpc_id(authority_peer)
 
 ## Get the level's [member GameLevel.PLAYER_SPAWN] position.[br]
 ## Return 1 meter above level center if [member GameLevel.PLAYER_SPAWN] is not set
@@ -52,17 +55,21 @@ func get_spawnpoint() -> Vector3:
 ## Called on authority when a peer finished loading the current level.[br]
 ## Makes all peer initialize everything when all peers finished loading the level.
 @rpc("any_peer", "call_local", "reliable")
-func player_loaded():
+func peer_loaded():
 	if not is_multiplayer_authority(): return
-	loaded_players += 1
+	loaded_peers += 1
 	
 	# If joining level after it has been initialized
 	if level_initialized:
 		var loaded_peer_id: int = multiplayer.get_remote_sender_id()
 		initialize_all.rpc_id(loaded_peer_id)
 	else:
-		var player_count: int = players.get_child_count()
-		if loaded_players == player_count:
+		# Check if all peers finished loading to initialize all
+		var peers_count: int = multiplayer.get_peers().size()
+		var server_is_player: bool = DisplayServer.get_name() != "headless"
+		if server_is_player: peers_count += 1
+		
+		if loaded_peers == peers_count:
 			initialize_all.rpc()
 
 ## Called to initialize the level when all players finished loading the level.[br]
@@ -112,14 +119,15 @@ func _disconnect_player_signals(player: Player):
 ## Called on server when adding a player.[br]
 ## Called on clients when MultiplayerSpawner spawns a player.[br]
 ## Note: When called on server, the player might not be replicated on other peers yet.
-func _on_player_spawn(player: Player):
-	if not player.is_local_player: # Will be called for local player when initializing the level
+func on_player_spawn(player: Player):
+	# Listen to player signals (Will be called for local player when initializing the level)
+	if not player.is_local_player and level_initialized:
 		_listen_player_signals(player)
 
 ## Called on server when removing a player.[br]
 ## Called on clients when MutliplayerSpawner despawns a player.
 ## Note: When called on client, the player might be already removed on other peers.
-func _on_player_despawn(player: Player):
+func on_player_despawn(player: Player):
 	_disconnect_player_signals(player)
 
 ## Called on all peers when a player dies.[br]

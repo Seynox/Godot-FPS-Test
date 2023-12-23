@@ -39,6 +39,11 @@ func _ready():
 	super()
 	is_local_player = multiplayer.get_unique_id() == player_peer
 	show_camera(is_local_player)
+	_init_default_abilities()
+
+#
+# Player processing
+#
 
 func _process(delta: float):
 	_process_abilities_inputs(delta)
@@ -123,8 +128,16 @@ func _update_aimed_interactible():
 	interactible_hovered = currently_hovered
 
 #
-# ABILITIES
+# Abilities
 #
+
+func _init_default_abilities():
+	if DEFAULT_DASH != null:
+		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
+	if DEFAULT_JUMP != null:
+		jump = _put_ability(jump, DEFAULT_JUMP.instantiate())
+	if DEFAULT_WEAPON != null:
+		weapon = _put_ability(weapon, DEFAULT_WEAPON.instantiate())
 
 func set_ability(ability: Ability):
 	var ability_type: String = ability.get_ability_type()
@@ -154,16 +167,6 @@ func _put_ability(current: Ability, new: Ability) -> Ability:
 		
 	ability_changed.emit(self, new.get_ability_type(), new)
 	return new
-
-func set_default_abilities():
-	var default_dash = DEFAULT_DASH.instantiate() if DEFAULT_DASH != null else null
-	dash = _put_ability(dash, default_dash)
-	
-	var default_jump = DEFAULT_JUMP.instantiate() if DEFAULT_JUMP != null else null
-	jump = _put_ability(jump, default_jump)
-	
-	var default_weapon = DEFAULT_WEAPON.instantiate() if DEFAULT_WEAPON != null else null
-	weapon = _put_ability(weapon, default_weapon)
 
 #
 # Spectating

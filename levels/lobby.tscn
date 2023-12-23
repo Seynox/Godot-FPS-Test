@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://cgwr8r183dsyd"]
+[gd_scene load_steps=6 format=3 uid="uid://cgwr8r183dsyd"]
 
 [ext_resource type="Script" path="res://levels/lobby.gd" id="1_57qj7"]
-[ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="1_y2w3n"]
 [ext_resource type="PackedScene" uid="uid://cgbjj2wp44alh" path="res://levels/level_one.tscn" id="3_82m6v"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ekqms"]
@@ -18,9 +17,8 @@ radius = 2.0
 script = ExtResource("1_57qj7")
 LEVEL_NAME = "Lobby"
 NEXT_LEVEL_SCENE = ExtResource("3_82m6v")
-CAN_PLAYERS_JOIN = true
-PLAYER_SCENE = ExtResource("1_y2w3n")
 PLAYER_SPAWN = NodePath("Spawnpoint")
+SPAWN_NEW_PLAYERS = true
 
 [node name="Room" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)

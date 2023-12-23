@@ -1,14 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1ypj05nfhalo"]
+[gd_scene load_steps=6 format=3 uid="uid://b1ypj05nfhalo"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_73t00"]
 [ext_resource type="PackedScene" uid="uid://cb31f55b7luof" path="res://gui/menu/main_menu.tscn" id="2_khp6u"]
 [ext_resource type="PackedScene" uid="uid://cgwr8r183dsyd" path="res://levels/lobby.tscn" id="3_207h3"]
+[ext_resource type="PackedScene" uid="uid://hu7ojvfabj3c" path="res://controller/player/player.tscn" id="3_qh757"]
+[ext_resource type="PackedScene" uid="uid://dccg3crc768c1" path="res://controller/spectator/spectator.tscn" id="4_fdjiq"]
 
 [node name="Game" type="Node" node_paths=PackedStringArray("PLAYERS_NODE", "PLAYER_SPAWNER", "MENU")]
 script = ExtResource("1_73t00")
 LOBBY_SCENE = ExtResource("3_207h3")
 PLAYERS_NODE = NodePath("Players")
 PLAYER_SPAWNER = NodePath("PlayerSpawner")
+PLAYER_SCENE = ExtResource("3_qh757")
+SPECTATOR_SCENE = ExtResource("4_fdjiq")
 MENU = NodePath("Menu")
 
 [node name="Menu" parent="." instance=ExtResource("2_khp6u")]

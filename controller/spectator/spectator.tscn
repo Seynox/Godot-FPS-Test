@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dccg3crc768c1"]
+
+[ext_resource type="Script" path="res://controller/spectator/spectator.gd" id="1_nm04a"]
+
+[node name="Spectator" type="Node"]
+script = ExtResource("1_nm04a")
