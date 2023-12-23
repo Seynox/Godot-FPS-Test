@@ -63,9 +63,12 @@ func try_hitting():
 	
 	if player_hitting != null:
 		try_getting_hit_by(player_hitting)
-	
-func try_getting_hit_by(source: Entity, additional_damages: float = 0, multiplicator: float = 1) -> bool:
-	if CAN_BE_HIT:
-		var damages: float = source.ATTACK_DAMAGE + additional_damages
-		reduce_health.rpc(damages * multiplicator)
+
+func try_getting_hit_by(source: Entity, additional_damages: float = 0, multiplicator: float = 1):
+	if not is_multiplayer_authority() or not _can_be_hit(source): return
+	var damages: float = source.ATTACK_DAMAGE + additional_damages
+	reduce_health.rpc(damages * multiplicator)
+
+## Called on authority to determine if the entity can be hit by [param _hitting_entity].
+func _can_be_hit(_hitting_entity: Entity) -> bool:
 	return CAN_BE_HIT
