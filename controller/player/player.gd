@@ -36,8 +36,8 @@ func _enter_tree():
 	$PlayerSynchronizer.set_multiplayer_authority(player_peer)
 
 func _ready():
-	super()
 	is_local_player = multiplayer.get_unique_id() == player_peer
+	set_process(is_local_player)
 	show_camera(is_local_player)
 	_init_default_abilities()
 
@@ -46,6 +46,10 @@ func _ready():
 #
 
 func _process(delta: float):
+	# Apply camera rotation
+	camera.rotation.x = input.camera_rotation.x
+	camera.rotation.y = input.camera_rotation.y
+	
 	_process_abilities_inputs(delta)
 
 func _process_abilities_inputs(delta: float):
@@ -59,10 +63,6 @@ func _process_abilities_inputs(delta: float):
 		weapon.try_attack(self, delta)
 
 func _physics_process(delta: float):
-	# Apply camera rotation
-	camera.rotation.x = input.camera_rotation.x
-	camera.rotation.y = input.camera_rotation.y
-	
 	# Get aimed interactible
 	_update_aimed_interactible()
 	

@@ -6,6 +6,7 @@ signal out_of_map
 
 @export_category("Entity")
 @export var MAX_HEALTH: float = 4.0
+@export var CURRENT_HEALTH: float = MAX_HEALTH
 @export var SPEED: float = 10 # In meters per second
 @export var ATTACK_DISTANCE: float = 1.5
 @export var ATTACK_DAMAGE: float = 1.0
@@ -15,11 +16,7 @@ signal out_of_map
 var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var gravity_velocity: Vector3
 
-var health: float
 var is_dead: bool
-
-func _ready():
-	health = MAX_HEALTH
 
 # Movements
 
@@ -40,8 +37,8 @@ func _calculate_gravity_velocity(delta: float) -> Vector3:
 
 @rpc("call_local", "reliable")
 func set_health(new_health: float) -> void:
-	var previous_health = health
-	health = new_health
+	var previous_health = CURRENT_HEALTH
+	CURRENT_HEALTH = new_health
 	health_update.emit(previous_health, new_health, MAX_HEALTH)
 	
 	is_dead = new_health <= 0
@@ -53,7 +50,7 @@ func _die():
 
 @rpc("call_local", "reliable")
 func reduce_health(damages: float) -> void:
-	var new_health = health - damages
+	var new_health = CURRENT_HEALTH - damages
 	set_health(new_health)
 
 @rpc("any_peer", "call_local", "reliable")

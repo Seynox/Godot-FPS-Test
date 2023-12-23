@@ -14,18 +14,33 @@
 material = SubResource("StandardMaterial3D_manxs")
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cabjf"]
-properties/0/path = NodePath("PlayerInput:camera_rotation")
+properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath("PlayerInput:movement_direction")
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:velocity")
 properties/1/spawn = true
-properties/1/replication_mode = 2
-properties/2/path = NodePath(".:position")
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Camera:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath(".:velocity")
+properties/3/path = NodePath(".:MAX_HEALTH")
 properties/3/spawn = true
 properties/3/replication_mode = 2
+properties/4/path = NodePath(".:SPEED")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath(".:CAN_BE_HIT")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+properties/6/path = NodePath(".:GRAVITY_MULTIPLIER")
+properties/6/spawn = true
+properties/6/replication_mode = 2
+properties/7/path = NodePath(".:CURRENT_HEALTH")
+properties/7/spawn = true
+properties/7/replication_mode = 2
+properties/8/path = NodePath("Camera:position")
+properties/8/spawn = true
+properties/8/replication_mode = 2
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 collision_mask = 6

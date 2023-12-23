@@ -1,18 +1,18 @@
 class_name PlayerInfos extends Control
 
-@onready var healthbar: ProgressBar = $Healthbar
-@onready var abilities: HBoxContainer = $Abilities
+@export var HEALTHBAR: ProgressBar
+@export var ABILITIES: HBoxContainer
 
 #
 # Player signals
 #
 
 func _on_player_health_update(_old_health: float, new_health: float, max_health: float):
-	healthbar.max_value = max_health
-	healthbar.value = new_health
+	HEALTHBAR.max_value = max_health
+	HEALTHBAR.value = new_health
 
 func _on_player_ability_changed(_player: Player, ability_type: String, ability: Ability):
-	var current: Control = abilities.get_node_or_null(ability_type)
+	var current: Control = ABILITIES.get_node_or_null(ability_type)
 	if ability == null:
 		if current != null: current.queue_free()
 		return
@@ -24,7 +24,7 @@ func _on_player_ability_changed(_player: Player, ability_type: String, ability: 
 	
 	# Add or replace
 	if current == null:
-		abilities.add_child(label)
+		ABILITIES.add_child(label)
 	else:
 		current.replace_by(label)
 		current.queue_free()

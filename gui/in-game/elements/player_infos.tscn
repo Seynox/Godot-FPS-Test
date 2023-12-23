@@ -1,8 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://imjypsavad40"]
+[gd_scene load_steps=3 format=3 uid="uid://imjypsavad40"]
 
 [ext_resource type="Script" path="res://gui/in-game/elements/player_infos.gd" id="1_tifbv"]
 
-[node name="PlayerInfos" type="Control"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_m7xf0"]
+properties/0/path = NodePath("Healthbar:max_value")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("Healthbar:value")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="PlayerInfos" type="Control" node_paths=PackedStringArray("HEALTHBAR", "ABILITIES")]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 3
 anchors_preset = 12
@@ -13,6 +21,8 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 1
 script = ExtResource("1_tifbv")
+HEALTHBAR = NodePath("Healthbar")
+ABILITIES = NodePath("Abilities")
 
 [node name="Healthbar" type="ProgressBar" parent="."]
 custom_minimum_size = Vector2(300, 50)
@@ -44,3 +54,6 @@ offset_bottom = 20.0
 grow_horizontal = 0
 grow_vertical = 2
 alignment = 1
+
+[node name="InfosSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_m7xf0")
