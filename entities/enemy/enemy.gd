@@ -11,6 +11,7 @@ signal target_lost(entity: Entity)
 @export var TARGET: Entity
 
 func _ready():
+	super()
 	if ENABLE_TARGET_FINDING:
 		_start_target_finding_loop()
 

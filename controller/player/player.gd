@@ -35,7 +35,8 @@ func _enter_tree():
 	$Camera.set_multiplayer_authority(player_peer)
 	$PlayerSynchronizer.set_multiplayer_authority(player_peer)
 
-func _ready() -> void:
+func _ready():
+	super()
 	is_local_player = multiplayer.get_unique_id() == player_peer
 	show_camera(is_local_player)
 

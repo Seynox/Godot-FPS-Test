@@ -2,10 +2,10 @@ extends Node
 
 @export var CAMERA_SENSITIVITY: float = 1
 
-@export var jumping: bool = false
-@export var dashing: bool = false
-@export var attacking: bool = false
-@export var interacting: bool = false
+var jumping: bool
+var dashing: bool
+var attacking: bool
+var interacting: bool
 
 @export var movement_direction: Vector2 # Input direction for movement
 @export var camera_rotation: Vector2
