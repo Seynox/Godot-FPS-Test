@@ -128,10 +128,26 @@ func on_player_spawn(player: Player):
 func on_player_despawn(player: Player):
 	if level_initialized:
 		_disconnect_player_signals(player)
+		_check_for_game_over.call_deferred()
 
 ## Called on all peers when a player dies.[br]
 ## Check on authority if all players are dead to emit [signal GameLevel.game_over]
 func _on_player_death(_dead_player: Player):
+	_check_for_game_over()
+
+## Called on all peers when a player gets out of the map.[br]
+## Teleports the player to spawn by default.
+func _on_player_out_of_map(player: Player):
+	if player.is_multiplayer_authority():
+		player.global_position = get_spawnpoint()
+
+#
+# Game
+#
+
+## Only works on authority.[br]
+## Emit [signal GameLevel.game_over] if all players are dead.
+func _check_for_game_over():
 	if not is_multiplayer_authority(): return
 	
 	var player_list: Array = players.get_children()
@@ -143,9 +159,3 @@ func _on_player_death(_dead_player: Player):
 	
 	if not someone_is_alive:
 		game_over.emit()
-
-## Called on all peers when a player gets out of the map.[br]
-## Teleports the player to spawn by default.
-func _on_player_out_of_map(player: Player):
-	if player.is_multiplayer_authority():
-		player.global_position = get_spawnpoint()
