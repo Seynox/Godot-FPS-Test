@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://boeb2mdml1qwn"]
+[gd_scene load_steps=3 format=3 uid="uid://boeb2mdml1qwn"]
 
 [ext_resource type="Script" path="res://abilities/weapons/hitscan_weapon.gd" id="1_oim57"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xrekb"]
+top_radius = 0.01
+bottom_radius = 0.03
+height = 0.4
 
 [node name="Revolver" type="Node3D"]
 script = ExtResource("1_oim57")
@@ -10,3 +15,7 @@ ATTACK_RANGE = 50.0
 NAME = "Revolver"
 DESCRIPTION = "A 6 bullets revolver"
 RARITY = 2
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.5, 0, -0.45)
+mesh = SubResource("CylinderMesh_xrekb")
