@@ -1,14 +1,17 @@
-[gd_scene load_steps=10 format=3 uid="uid://hu7ojvfabj3c"]
+[gd_scene load_steps=11 format=3 uid="uid://hu7ojvfabj3c"]
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
 [ext_resource type="PackedScene" uid="uid://cmgybnep2rv4j" path="res://abilities/jumps/simple_jump.tscn" id="2_gxt7g"]
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="3_2bvf4"]
 [ext_resource type="PackedScene" uid="uid://imjypsavad40" path="res://gui/in-game/elements/player_infos.tscn" id="4_0bd1c"]
+[ext_resource type="Texture2D" uid="uid://b3enoam5p1vdl" path="res://assets/sprites/enemy.png" id="5_me18p"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iow1f"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_manxs"]
+albedo_texture = ExtResource("5_me18p")
+normal_scale = 5.53
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4q6xg"]
 material = SubResource("StandardMaterial3D_manxs")
@@ -66,6 +69,7 @@ offset_top = -100.0
 shape = SubResource("CapsuleShape3D_iow1f")
 
 [node name="Model" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_4q6xg")
 
 [node name="PlayerInput" type="Node" parent="."]
