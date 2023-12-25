@@ -1,4 +1,4 @@
-class_name Ability extends Node
+class_name Ability extends Node3D
 
 @export_category("Ability")
 @export var NAME: String

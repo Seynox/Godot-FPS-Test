@@ -71,7 +71,7 @@ mesh = SubResource("CapsuleMesh_4q6xg")
 [node name="PlayerInput" type="Node" parent="."]
 script = ExtResource("2_cbi6x")
 
-[node name="Abilities" type="Node" parent="."]
+[node name="Abilities" type="Node3D" parent="."]
 
 [node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_cabjf")

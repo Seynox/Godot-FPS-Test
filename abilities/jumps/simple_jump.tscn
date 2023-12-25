@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://abilities/jumps/simple_jump.gd" id="1_i2ggj"]
 
-[node name="SimpleJump" type="Node"]
+[node name="SimpleJump" type="Node3D"]
 script = ExtResource("1_i2ggj")
 JUMP_HEIGHT = 1.0
 NAME = "Jump"

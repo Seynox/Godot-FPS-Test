@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://abilities/jumps/multi_jump.gd" id="1_untn8"]
 
-[node name="MultiJump" type="Node"]
+[node name="MultiJump" type="Node3D"]
 script = ExtResource("1_untn8")
 JUMP_HEIGHT = 1.0
 NAME = "Double Jump"

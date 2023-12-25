@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://abilities/dashes/forward_dash.gd" id="1_d4ecr"]
 
-[node name="FowardDash" type="Node"]
+[node name="FowardDash" type="Node3D"]
 script = ExtResource("1_d4ecr")
 DASH_DURATION = 0.1
 DASH_COOLDOWN = 1.0
