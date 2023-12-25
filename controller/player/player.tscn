@@ -55,7 +55,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0)
 fov = 90.0
 
 [node name="InteractionRay" type="RayCast3D" parent="Camera"]
-target_position = Vector3(0, 0, -3)
+target_position = Vector3(0, 0, -4)
 collision_mask = 6
 
 [node name="UI" parent="Camera" instance=ExtResource("3_2bvf4")]
