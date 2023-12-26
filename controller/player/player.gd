@@ -9,10 +9,11 @@ signal interactible_hover_ended
 @export var DEFAULT_JUMP: PackedScene
 @export var DEFAULT_WEAPON: PackedScene
 
-@onready var camera: Camera3D = $Camera
-@onready var camera_ui: Control = $Camera/UI
+@onready var head: Node3D = $Head
+@onready var camera: Camera3D = $Head/Camera
+@onready var camera_ui: Control = $Head/Camera/UI
 
-@onready var interaction_ray: RayCast3D = $Camera/InteractionRay
+@onready var interaction_ray: RayCast3D = $Head/Camera/InteractionRay
 @onready var input: Node = $PlayerInput
 @onready var abilities: Node = $Abilities
 
@@ -32,12 +33,11 @@ var local_spectator_node: Spectator
 func _enter_tree():
 	player_peer = str(name).to_int()
 	$PlayerInput.set_multiplayer_authority(player_peer)
-	$Camera.set_multiplayer_authority(player_peer)
-	$PlayerSynchronizer.set_multiplayer_authority(player_peer)
+	$Head/Camera.set_multiplayer_authority(player_peer)
+	$ClientSynchronizer.set_multiplayer_authority(player_peer)
 
 func _ready():
 	is_local_player = multiplayer.get_unique_id() == player_peer
-	set_process(is_local_player)
 	show_camera(is_local_player)
 	_init_default_abilities()
 
@@ -46,9 +46,12 @@ func _ready():
 #
 
 func _process(delta: float):
-	# Apply camera rotation
-	camera.rotation.x = input.camera_rotation.x
-	camera.rotation.y = input.camera_rotation.y
+	# Apply rotation
+	self.basis = Basis() # Reset player rotation
+	rotate_object_local(Vector3(0, 1, 0), input.camera_rotation.y) # Rotate player
+	
+	head.basis = Basis() # Reset head rotation
+	head.rotate_object_local(Vector3(1, 0, 0), input.camera_rotation.x) # Rotate head
 	
 	_process_abilities_inputs(delta)
 
@@ -70,7 +73,7 @@ func _physics_process(delta: float):
 	velocity = _calculate_movement_velocity(delta)
 	gravity_velocity = _calculate_gravity_velocity(delta)
 	velocity += gravity_velocity
-		
+	
 	_process_abilities_physics(delta)
 	super(delta)
 

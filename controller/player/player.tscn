@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://hu7ojvfabj3c"]
+[gd_scene load_steps=12 format=3 uid="uid://hu7ojvfabj3c"]
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
 [ext_resource type="PackedScene" uid="uid://cmgybnep2rv4j" path="res://abilities/jumps/simple_jump.tscn" id="2_gxt7g"]
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="3_2bvf4"]
+[ext_resource type="PackedScene" uid="uid://boeb2mdml1qwn" path="res://abilities/weapons/hitscan_weapon.tscn" id="3_l8jlm"]
 [ext_resource type="PackedScene" uid="uid://imjypsavad40" path="res://gui/in-game/elements/player_infos.tscn" id="4_0bd1c"]
 [ext_resource type="Texture2D" uid="uid://b3enoam5p1vdl" path="res://assets/sprites/enemy.png" id="5_me18p"]
 
@@ -23,45 +24,45 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:velocity")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath("Camera:rotation")
+properties/2/path = NodePath(".:MAX_HEALTH")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath(".:MAX_HEALTH")
+properties/3/path = NodePath(".:SPEED")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath(".:SPEED")
+properties/4/path = NodePath(".:CAN_BE_HIT")
 properties/4/spawn = true
 properties/4/replication_mode = 2
-properties/5/path = NodePath(".:CAN_BE_HIT")
+properties/5/path = NodePath(".:GRAVITY_MULTIPLIER")
 properties/5/spawn = true
 properties/5/replication_mode = 2
-properties/6/path = NodePath(".:GRAVITY_MULTIPLIER")
+properties/6/path = NodePath(".:CURRENT_HEALTH")
 properties/6/spawn = true
 properties/6/replication_mode = 2
-properties/7/path = NodePath(".:CURRENT_HEALTH")
+properties/7/path = NodePath("PlayerInput:camera_rotation")
 properties/7/spawn = true
 properties/7/replication_mode = 2
-properties/8/path = NodePath("Camera:position")
-properties/8/spawn = true
-properties/8/replication_mode = 2
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 collision_mask = 6
 script = ExtResource("1_xm53f")
 DEFAULT_JUMP = ExtResource("2_gxt7g")
+DEFAULT_WEAPON = ExtResource("3_l8jlm")
 
-[node name="Camera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0)
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Camera" type="Camera3D" parent="Head"]
 fov = 90.0
 
-[node name="InteractionRay" type="RayCast3D" parent="Camera"]
+[node name="InteractionRay" type="RayCast3D" parent="Head/Camera"]
 target_position = Vector3(0, 0, -4)
 collision_mask = 6
 
-[node name="UI" parent="Camera" instance=ExtResource("3_2bvf4")]
+[node name="UI" parent="Head/Camera" instance=ExtResource("3_2bvf4")]
 visible = false
 
-[node name="PlayerInfos" parent="Camera/UI" instance=ExtResource("4_0bd1c")]
+[node name="PlayerInfos" parent="Head/Camera/UI" instance=ExtResource("4_0bd1c")]
 layout_mode = 1
 offset_top = -100.0
 
@@ -77,12 +78,12 @@ script = ExtResource("2_cbi6x")
 
 [node name="Abilities" type="Node3D" parent="."]
 
-[node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="ClientSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_cabjf")
 
-[connection signal="ability_changed" from="." to="Camera/UI/PlayerInfos" method="_on_player_ability_changed"]
-[connection signal="health_update" from="." to="Camera/UI" method="_on_player_health_update"]
-[connection signal="health_update" from="." to="Camera/UI/PlayerInfos" method="_on_player_health_update"]
-[connection signal="interactible_hover_ended" from="." to="Camera/UI" method="_on_player_interactible_hover_ended"]
-[connection signal="interactible_hovering" from="." to="Camera/UI" method="_on_player_interactible_hovering"]
-[connection signal="delta_synchronized" from="PlayerSynchronizer" to="Camera" method="_on_player_synchronizer_delta_synchronized"]
+[connection signal="ability_changed" from="." to="Head/Camera/UI/PlayerInfos" method="_on_player_ability_changed"]
+[connection signal="health_update" from="." to="Head/Camera/UI" method="_on_player_health_update"]
+[connection signal="health_update" from="." to="Head/Camera/UI/PlayerInfos" method="_on_player_health_update"]
+[connection signal="interactible_hover_ended" from="." to="Head/Camera/UI" method="_on_player_interactible_hover_ended"]
+[connection signal="interactible_hovering" from="." to="Head/Camera/UI" method="_on_player_interactible_hovering"]
+[connection signal="delta_synchronized" from="ClientSynchronizer" to="Head/Camera" method="_on_player_synchronizer_delta_synchronized"]
