@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://boeb2mdml1qwn"]
 
 [ext_resource type="Script" path="res://abilities/weapons/hitscan_weapon.gd" id="1_oim57"]
-[ext_resource type="PackedScene" uid="uid://bwgd88jpynm6s" path="res://assets/models/tmp_revolver/revolver.tscn" id="2_ldriw"]
+[ext_resource type="PackedScene" uid="uid://bwgd88jpynm6s" path="res://assets/models/tmp_revolver/revolver_model.tscn" id="2_ktgjo"]
 [ext_resource type="Script" path="res://abilities/weapons/weapon_animations.gd" id="2_trs36"]
 
 [sub_resource type="Animation" id="Animation_wi6hf"]
@@ -70,7 +70,7 @@ RARITY = 2
 [node name="Hand" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.5, 0, -0.45)
 
-[node name="Model" parent="Hand" instance=ExtResource("2_ldriw")]
+[node name="Model" parent="Hand" instance=ExtResource("2_ktgjo")]
 transform = Transform3D(0.03, 0, 0, 0, 0.0300001, 0, 0, 0, 0.0300001, 0, 0, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Hand/Model"]
