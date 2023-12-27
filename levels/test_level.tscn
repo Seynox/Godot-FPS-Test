@@ -57,9 +57,6 @@ omni_range = 25.0
 [node name="Spawnpoint" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 0)
 
-[node name="AbilityContainer" parent="." instance=ExtResource("3_64jln")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.48951, 0, 0)
-
 [node name="DeathZone" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.9019, 2.1022, 0)
 collision_layer = 0
@@ -72,7 +69,30 @@ shape = SubResource("BoxShape3D_n61cd")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DeathZone"]
 mesh = SubResource("BoxMesh_bkygh")
 
-[node name="AbilityContainer2" parent="." instance=ExtResource("3_64jln")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.19123, 0, 5.04057)
+[node name="AbilityContainers" type="Node3D" parent="."]
+
+[node name="AbilityContainer" parent="AbilityContainers" instance=ExtResource("3_64jln")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.48951, 0, 0)
+
+[node name="AbilityContainer2" parent="AbilityContainers" instance=ExtResource("3_64jln")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.1912, 8.3, -15.9594)
+GENERATE_WITH_RARITY = 2
+
+[node name="AbilityContainer3" parent="AbilityContainers" instance=ExtResource("3_64jln")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 8.3, -16)
+
+[node name="Ramp" type="CSGBox3D" parent="."]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 3.96593, 3.74118, 18)
+use_collision = true
+collision_layer = 4
+collision_mask = 0
+size = Vector3(32, 1, 4)
+
+[node name="Platform" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.4731, 7.79922, 0)
+use_collision = true
+collision_layer = 4
+collision_mask = 0
+size = Vector3(9, 1, 40)
 
 [connection signal="body_entered" from="DeathZone" to="DeathZone" method="_on_body_entered"]
