@@ -1,30 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://boeb2mdml1qwn"]
 
 [ext_resource type="Script" path="res://abilities/weapons/hitscan_weapon.gd" id="1_oim57"]
+[ext_resource type="PackedScene" uid="uid://bwgd88jpynm6s" path="res://assets/models/tmp_revolver/revolver.tscn" id="2_ldriw"]
 [ext_resource type="Script" path="res://abilities/weapons/weapon_animations.gd" id="2_trs36"]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_xrekb"]
-top_radius = 0.01
-bottom_radius = 0.03
-height = 0.4
-
-[sub_resource type="Animation" id="Animation_jixb8"]
-resource_name = "Shooting"
-length = 0.5
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.0001, 1, 0, 0, 0, 0.05, 1, 0, -0.1, 0, 0.2, 1, 0, 0, 0)
-tracks/1/type = "rotation_3d"
-tracks/1/imported = false
-tracks/1/enabled = false
-tracks/1/path = NodePath(".")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.1, 1, 0.991445, 0, 0, 0.130526, 0.2, 1, -0.75184, 0, 0, 0.659346, 0.3, 1, 0, 0, 0, 1)
+[sub_resource type="Animation" id="Animation_wi6hf"]
+length = 0.001
 
 [sub_resource type="Animation" id="Animation_42kyr"]
 resource_name = "Reloading"
@@ -51,8 +32,23 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_wi6hf"]
-length = 0.001
+[sub_resource type="Animation" id="Animation_jixb8"]
+resource_name = "Shooting"
+length = 0.5
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.0001, 1, 0, 0, 0, 0.05, 1, 0, 0.3, 0.1, 0.125, 1, 0, 0, 0)
+tracks/1/type = "rotation_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 0.130526, 0, 0, 0.991445, 0.05, 1, 0.5, 0, 0, 0.866025, 0.15, 1, 0.130526, 0, 0, 0.991445)
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_be7hb"]
 _data = {
@@ -72,12 +68,10 @@ DESCRIPTION = "A 6 bullets revolver"
 RARITY = 2
 
 [node name="Hand" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.5, 0, -0.45)
+transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.5, 0, -0.45)
 
-[node name="Model" type="MeshInstance3D" parent="Hand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("CylinderMesh_xrekb")
-skeleton = NodePath("../..")
+[node name="Model" parent="Hand" instance=ExtResource("2_ldriw")]
+transform = Transform3D(0.03, 0, 0, 0, 0.0300001, 0, 0, 0, 0.0300001, 0, 0, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Hand/Model"]
 libraries = {

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://levels/level_one.gd" id="1_s2fpf"]
 [ext_resource type="PackedScene" uid="uid://dvbw7aiyi1smw" path="res://interactibles/ability_container.tscn" id="2_3byy0"]
 [ext_resource type="Texture2D" uid="uid://bftfh34a3plms" path="res://addons/kenney_prototype_textures/light/texture_12.png" id="2_256a5"]
-[ext_resource type="Script" path="res://levels/DeathZone.gd" id="3_kxbfs"]
+[ext_resource type="Script" path="res://levels/damage_zone.gd" id="3_kxbfs"]
 [ext_resource type="Texture2D" uid="uid://b40soeo0qp6fq" path="res://addons/kenney_prototype_textures/red/texture_13.png" id="5_wowuv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2nswc"]
