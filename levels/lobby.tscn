@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://levels/lobby.gd" id="1_57qj7"]
 [ext_resource type="Texture2D" uid="uid://bftfh34a3plms" path="res://addons/kenney_prototype_textures/light/texture_12.png" id="3_3tpx2"]
-[ext_resource type="PackedScene" uid="uid://cgbjj2wp44alh" path="res://levels/level_one.tscn" id="3_82m6v"]
+[ext_resource type="PackedScene" uid="uid://cgbjj2wp44alh" path="res://levels/test_level.tscn" id="3_82m6v"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5jqvm"]
 albedo_texture = ExtResource("3_3tpx2")

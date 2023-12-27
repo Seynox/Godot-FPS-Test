@@ -1,13 +1,13 @@
 [gd_scene load_steps=12 format=3 uid="uid://cgbjj2wp44alh"]
 
-[ext_resource type="Script" path="res://levels/level_one.gd" id="1_s2fpf"]
-[ext_resource type="PackedScene" uid="uid://dvbw7aiyi1smw" path="res://interactibles/ability_container.tscn" id="2_3byy0"]
-[ext_resource type="Texture2D" uid="uid://bftfh34a3plms" path="res://addons/kenney_prototype_textures/light/texture_12.png" id="2_256a5"]
-[ext_resource type="Script" path="res://levels/damage_zone.gd" id="3_kxbfs"]
-[ext_resource type="Texture2D" uid="uid://b40soeo0qp6fq" path="res://addons/kenney_prototype_textures/red/texture_13.png" id="5_wowuv"]
+[ext_resource type="Script" path="res://levels/test_level.gd" id="1_0mnbi"]
+[ext_resource type="Texture2D" uid="uid://bftfh34a3plms" path="res://addons/kenney_prototype_textures/light/texture_12.png" id="2_msqre"]
+[ext_resource type="PackedScene" uid="uid://dvbw7aiyi1smw" path="res://interactibles/ability_container.tscn" id="3_64jln"]
+[ext_resource type="Script" path="res://levels/damage_zone.gd" id="4_cxowc"]
+[ext_resource type="Texture2D" uid="uid://b40soeo0qp6fq" path="res://addons/kenney_prototype_textures/red/texture_13.png" id="5_mhgvo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2nswc"]
-albedo_texture = ExtResource("2_256a5")
+albedo_texture = ExtResource("2_msqre")
 uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_3yoc5"]
@@ -24,7 +24,7 @@ size = Vector3(5, 5, 5)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_usv6i"]
 blend_mode = 1
 albedo_color = Color(1, 0, 0, 1)
-albedo_texture = ExtResource("5_wowuv")
+albedo_texture = ExtResource("5_mhgvo")
 uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_bkygh"]
@@ -32,7 +32,7 @@ material = SubResource("StandardMaterial3D_usv6i")
 size = Vector3(5, 5, 5)
 
 [node name="LevelOne" type="Node3D" node_paths=PackedStringArray("PLAYER_SPAWN")]
-script = ExtResource("1_s2fpf")
+script = ExtResource("1_0mnbi")
 LEVEL_NAME = "Level one"
 PLAYER_SPAWN = NodePath("Spawnpoint")
 
@@ -55,16 +55,16 @@ light_energy = 2.0
 omni_range = 25.0
 
 [node name="Spawnpoint" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 0)
 
-[node name="AbilityContainer" parent="." instance=ExtResource("2_3byy0")]
+[node name="AbilityContainer" parent="." instance=ExtResource("3_64jln")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.48951, 0, 0)
 
 [node name="DeathZone" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.9019, 2.1022, 0)
 collision_layer = 0
 monitorable = false
-script = ExtResource("3_kxbfs")
+script = ExtResource("4_cxowc")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DeathZone"]
 shape = SubResource("BoxShape3D_n61cd")
@@ -72,7 +72,7 @@ shape = SubResource("BoxShape3D_n61cd")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DeathZone"]
 mesh = SubResource("BoxMesh_bkygh")
 
-[node name="AbilityContainer2" parent="." instance=ExtResource("2_3byy0")]
+[node name="AbilityContainer2" parent="." instance=ExtResource("3_64jln")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.19123, 0, 5.04057)
 
 [connection signal="body_entered" from="DeathZone" to="DeathZone" method="_on_body_entered"]
