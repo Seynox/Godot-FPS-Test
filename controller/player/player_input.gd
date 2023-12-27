@@ -6,6 +6,7 @@ var jumping: bool
 var dashing: bool
 var attacking: bool
 var interacting: bool
+var reloading: bool
 
 @export var movement_direction: Vector2 # Input direction for movement
 @export var camera_rotation: Vector2
@@ -35,6 +36,7 @@ func _unhandled_key_input(event):
 	if event.is_action_pressed("jump"): jump.rpc()
 	if event.is_action_pressed("dash"): dash.rpc()
 	if event.is_action_pressed("interact"): interact.rpc()
+	if event.is_action_pressed("reload"): reload.rpc()
 	if event.is_action_pressed("exit"): get_tree().quit() # TODO Temporary, listen for it somewhere else
 
 func _process(delta):
@@ -61,6 +63,10 @@ func interact():
 func attack():
 	attacking = true
 
+@rpc("call_local", "reliable")
+func reload():
+	reloading = true
+
 #
 # Input handling
 #
@@ -84,6 +90,11 @@ func consume_attacking() -> bool:
 	var is_attacking = attacking
 	attacking = false
 	return is_attacking
+
+func consume_reloading() -> bool:
+	var is_reloading = reloading
+	reloading = false
+	return is_reloading
 
 #
 # Camera

@@ -2,8 +2,7 @@ class_name Weapon extends Ability
 
 const TYPE: String = "Weapon"
 
-signal attack_started
-signal attack_ended
+signal attacked
 signal attack_failed
 
 @export var ATTACK_DAMAGE: float

@@ -24,6 +24,7 @@ func _create_timer(time: float) -> Timer:
 
 func try_attack(player: Player, delta: float):
 	if not is_on_cooldown:
+		_start_cooldown()
 		_attack(player, delta)
 	else:
 		attack_failed.emit()
