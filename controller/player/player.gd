@@ -41,6 +41,12 @@ func _ready():
 	show_camera(is_local_player)
 	_init_default_abilities()
 
+func _exit_tree():
+	# Free all abilities
+	for ability: Ability in abilities.get_children():
+		abilities.remove_child(ability)
+		ability.queue_free()
+
 #
 # Player processing
 #
@@ -57,13 +63,13 @@ func _process(delta: float):
 
 func _process_abilities_inputs(delta: float):
 	if input.consume_dashing() and dash != null:
-		dash.try_dash(self)
+		dash.try_executing(self, delta)
 	
 	if input.consume_jumping() and jump != null:
-		jump.try_jump(self)
+		jump.try_executing(self, delta)
 	
 	if input.consume_attacking() and weapon != null:
-		weapon.try_attack(self, delta)
+		weapon.try_executing(self, delta)
 	
 	if input.consume_reloading() and weapon != null:
 		if weapon.has_method("reload"):
@@ -89,12 +95,15 @@ func _calculate_movement_velocity(_delta: float) -> Vector3:
 	return movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
 
 func _process_abilities_physics(delta: float):
+	# TODO Check performance diff
+	#for ability: Ability in abilities.get_children():
+	#	ability.process_ability_physics(self, delta)
 	if dash != null:
-		velocity = dash.get_velocity(self, delta)
+		dash.process_ability_physics(self, delta)
 	if jump != null:
-		velocity = jump.get_velocity(self, delta)
+		jump.process_ability_physics(self, delta)
 	if weapon != null:
-		velocity = weapon.get_velocity(self, delta)
+		weapon.process_ability_physics(self, delta)
 
 #
 # ACTIONS
