@@ -1,7 +1,6 @@
 class_name ForwardDash extends TimedDash
 
-func _execute(player: Player, delta: float):
-	super(player, delta)
+func _execute(player: Player, _delta: float):
 	dash_velocity = _get_dash_velocity(player.camera)
 
 func _on_player_physics(player: Player, delta: float):
@@ -10,5 +9,5 @@ func _on_player_physics(player: Player, delta: float):
 		player.velocity = dash_velocity
 
 func _get_dash_velocity(camera: Camera3D) -> Vector3:
-	var dash_vector: Vector3 = Vector3(0, 0, DASH_SPEED * -1)
+	var dash_vector: Vector3 = Vector3(0, 0, -DASH_SPEED)
 	return camera.global_transform.basis * dash_vector

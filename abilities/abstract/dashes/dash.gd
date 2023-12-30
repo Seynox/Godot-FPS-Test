@@ -1,4 +1,4 @@
-class_name Dash extends CooldownAbility
+class_name Dash extends RechargingAbility
 
 const TYPE: String = "Dash"
 

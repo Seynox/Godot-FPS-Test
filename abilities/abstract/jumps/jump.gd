@@ -2,23 +2,25 @@ class_name Jump extends Ability
 
 const TYPE: String = "Jump"
 
-signal jump_ready
-signal jump_disabled
-signal jump_started
-signal jump_ended
-signal jump_failed
+## The speed of the jump in meters per second.
+@export var JUMP_SPEED: float = 20.0
 
-@export var JUMP_HEIGHT: float # In meters
+## If the first jump can be started in the air
+@export var STARTABLE_IN_AIR: bool
 
-var is_jumping: bool = false
-var can_jump: bool = true
+## The current jump velocity
+var jump_velocity: Vector3
+
+## If the ability owner is in the air because of a jump.
+var is_jumping: bool
 
 func get_ability_type() -> String:
 	return TYPE
 
-func try_jump(_entity: Entity):
-	pass
+func _cancel_ability():
+	is_jumping = false
+	jump_velocity = Vector3.ZERO
 
-# Override this!
-func get_velocity(entity: Entity, _delta: float) -> Vector3:
-	return entity.velocity
+func _can_execute(player: Player) -> bool:
+	var can_jump: bool = is_jumping or player.is_on_floor() or STARTABLE_IN_AIR
+	return can_jump and super(player)

@@ -4,6 +4,6 @@
 
 [node name="SimpleJump" type="Node3D"]
 script = ExtResource("1_i2ggj")
-JUMP_HEIGHT = 1.0
+JUMP_SPEED = 10.0
 NAME = "Jump"
 DESCRIPTION = "Allows you to jump"

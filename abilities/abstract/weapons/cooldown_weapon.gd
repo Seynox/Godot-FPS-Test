@@ -11,7 +11,7 @@ var cooldown: Timer
 
 func _ready():
 	cooldown = _create_timer(WEAPON_COOLDOWN)
-	cooldown.timeout.connect(_on_cooldown_end)
+	cooldown.timeout.connect(_on_recharge_end)
 	
 func _create_timer(time: float) -> Timer:
 	var timer = Timer.new()
@@ -34,7 +34,7 @@ func _attack(_player: Player, _delta: float):
 
 # Cooldown
 
-func _on_cooldown_end():
+func _on_recharge_end():
 	is_on_cooldown = false
 	weapon_ready.emit()
 	

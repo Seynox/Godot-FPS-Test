@@ -25,7 +25,7 @@ func _on_player_physics(player: Player, _delta: float):
 		player.gravity_velocity = Vector3.ZERO
 
 func _on_dash_timeout():
-	start_cooldown()
+	start_recharging()
 
 func is_dashing() -> bool:
 	return not dash_timer.is_stopped()

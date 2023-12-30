@@ -6,7 +6,7 @@ class_name ImpulseDash extends Dash
 func _execute(player: Player, _delta: float):
 	dash_velocity = _get_impulse_velocity(player.camera)
 	player.gravity_velocity = Vector3.ZERO
-	start_cooldown()
+	start_recharging()
 
 #
 # Physics

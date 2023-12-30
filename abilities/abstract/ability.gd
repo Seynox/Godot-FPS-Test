@@ -3,8 +3,9 @@ class_name Ability extends Node3D
 ## Emitted when the ability failed to execute
 signal failed
 ## Emitted when the amount of uses is changed. (Decreased or filled)[br]
-## [param uses_remaining] is the new amount of uses left.
-signal uses_updated(uses_remaining: int)
+## [param uses_remaining] is the new amount of uses left.[br]
+## [param previous_uses] is the previous amount of uses left.
+signal uses_updated(previous_uses: int, uses_remaining: int)
 ## Emitted when the ability got canceled. (By another ability for exemple)
 signal canceled
 
@@ -114,5 +115,5 @@ func consume_use():
 	_set_uses(new_uses)
 
 func _set_uses(uses_amount: int):
+	uses_updated.emit(uses_left, uses_amount)
 	uses_left = uses_amount
-	uses_updated.emit(uses_amount)
