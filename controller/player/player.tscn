@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
 [ext_resource type="PackedScene" uid="uid://cmgybnep2rv4j" path="res://abilities/jumps/simple_jump.tscn" id="2_gxt7g"]
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="3_2bvf4"]
-[ext_resource type="PackedScene" uid="uid://boeb2mdml1qwn" path="res://abilities/weapons/hitscan_weapon.tscn" id="3_l8jlm"]
+[ext_resource type="PackedScene" uid="uid://boeb2mdml1qwn" path="res://abilities/weapons/revolver.tscn" id="3_l8jlm"]
 [ext_resource type="PackedScene" uid="uid://imjypsavad40" path="res://gui/in-game/elements/player_infos.tscn" id="4_0bd1c"]
 [ext_resource type="Texture2D" uid="uid://b3enoam5p1vdl" path="res://assets/sprites/enemy.png" id="5_me18p"]
 
