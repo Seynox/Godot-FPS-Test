@@ -8,7 +8,7 @@ const ALL_ABILITY_SCENES: Array = [
 	"res://abilities/dashes/foward_dash.tscn",
 	"res://abilities/dashes/impulse_dash.tscn",
 	"res://abilities/jumps/simple_jump.tscn",
-	"res://abilities/weapons/hitscan_weapon.tscn"
+	"res://abilities/weapons/revolver.tscn"
 ]
 
 func _ready():

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://boeb2mdml1qwn"]
 
-[ext_resource type="Script" path="res://abilities/weapons/ranged_weapon.gd" id="1_oim57"]
+[ext_resource type="Script" path="res://abilities/weapons/ranged_weapon.gd" id="1_ksnyh"]
 [ext_resource type="PackedScene" uid="uid://bwgd88jpynm6s" path="res://assets/models/tmp_revolver/revolver_model.tscn" id="2_ktgjo"]
 [ext_resource type="Script" path="res://abilities/weapons/weapon_animations.gd" id="2_trs36"]
 [ext_resource type="Texture2D" uid="uid://bnfnodaqvkmt0" path="res://addons/kenney_particle_pack/star_06.png" id="4_u7wvp"]
@@ -123,7 +123,7 @@ _data = {
 }
 
 [node name="Revolver" type="Node3D"]
-script = ExtResource("1_oim57")
+script = ExtResource("1_ksnyh")
 WEAPON_COOLDOWN = 0.4
 ATTACK_DAMAGE = 1.0
 ATTACK_RANGE = 50.0
