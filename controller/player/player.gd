@@ -72,8 +72,8 @@ func _process_abilities_inputs(delta: float):
 		weapon.try_executing(self, delta)
 	
 	if input.consume_reloading() and weapon != null:
-		if weapon.has_method("reload"):
-			weapon.reload()
+		if weapon.has_method("try_reloading"):
+			weapon.try_reloading()
 
 func _physics_process(delta: float):
 	# Get aimed interactible

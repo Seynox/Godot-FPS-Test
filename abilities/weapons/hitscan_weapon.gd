@@ -1,37 +1,30 @@
-class_name HitscanWeapon extends CooldownWeapon
+class_name RangedWeapon extends CooldownWeapon
 
+## Emitted when the weapon successfully tries to reload.[br]
+## Used to play the reloading animation which will call [method Ability.reload]
 signal reloading
 
-@export var MAXIMUM_AMMO: int
-
+## If the current weapon is reloading
 var is_reloading: bool
-var current_ammo: int
 
-func _ready():
-	super()
-	finish_reload()
+func _can_execute(player: Player):
+	return not is_reloading and super(player)
 
-func try_attack(player: Player, delta: float):
-	if current_ammo > 0 and not is_reloading:
-		super(player, delta)
-	else:
-		attack_failed.emit()
-
-func _attack(player: Player, _delta: float):
-	attacked.emit()
-	current_ammo -= 1
+func _execute(player: Player, _delta: float):
+	_start_cooldown()
 	if player.is_local_player:
-		var aimed_object: Node3D = player.get_aimed_object(self.ATTACK_RANGE)
+		var aimed_object: Node3D = player.get_aimed_object(self.ATTACK_RANGE) # TODO Handle on server
 		if aimed_object != null:
 			hit_target(aimed_object)
 
-func reload():
-	if is_reloading or current_ammo == MAXIMUM_AMMO:
-		return
-	
-	is_reloading = true
-	reloading.emit()
+## Called to try reloading manually. Will not reload if the weapon is already reloading.[br]
+## If successfull, will emit [signal RangedWeapon.reloading]
+func try_reloading():
+	if not is_reloading and not has_maximum_uses():
+		is_reloading = true
+		reloading.emit()
 
-func finish_reload():
-	is_reloading = false
-	current_ammo = MAXIMUM_AMMO
+func _set_uses(new_amount: int):
+	if is_reloading and new_amount >= uses_left: # If the weapon just reloaded
+		is_reloading = false 
+	super(new_amount)

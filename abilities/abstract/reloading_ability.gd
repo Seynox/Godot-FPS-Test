@@ -9,6 +9,9 @@ signal recharge_started(duration: float)
 ## The time it takes to recharge one use of the ability
 @export var RECHARGE_TIME: float = 1.0
 
+## If the ability should start recharging again until it's at its maximum uses.
+@export var RECHARGE_UNTIL_FULL: bool = true
+
 ## The recharge timer. Null if [member RechargingAbility.RECHARGE_TIME] is 0 or less.
 var recharge_timer: Timer
 
@@ -25,8 +28,12 @@ func _create_timer(time: float) -> Timer:
 	return timer
 
 #
-# Recharge start/end
+# Recharge
 #
+
+## If the current ability is recharging
+func is_recharging() -> bool:
+	return recharge_timer != null and not recharge_timer.is_stopped()
 
 ## Start the ability recharge.[br]
 ## Does not check if the ability is already recharging.
@@ -43,5 +50,5 @@ func _on_recharge_end():
 	reload()
 	recharged.emit()
 	
-	if recharge_timer != null and not has_maximum_uses():
+	if RECHARGE_UNTIL_FULL and recharge_timer != null and not has_maximum_uses():
 		start_recharging()
