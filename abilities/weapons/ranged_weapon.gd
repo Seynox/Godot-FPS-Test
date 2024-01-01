@@ -28,3 +28,8 @@ func _set_uses(new_amount: int):
 	if is_reloading and new_amount >= uses_left: # If the weapon just reloaded
 		is_reloading = false 
 	super(new_amount)
+
+func _handle_player_inputs(player: Player, delta: float, inputs: Dictionary):
+	super(player, delta, inputs)
+	if inputs.get("reload"):
+		try_reloading()

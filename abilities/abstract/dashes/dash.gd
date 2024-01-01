@@ -11,5 +11,9 @@ var dash_velocity: Vector3
 func get_ability_type() -> String:
 	return TYPE
 
+func _handle_player_inputs(player: Player, delta: float, input: Dictionary):
+	if input.get("dash"):
+		try_executing(player, delta)
+
 func _cancel_ability():
 	dash_velocity = Vector3.ZERO

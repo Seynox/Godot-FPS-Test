@@ -24,3 +24,7 @@ func _cancel_ability():
 func _can_execute(player: Player) -> bool:
 	var can_jump: bool = is_jumping or player.is_on_floor() or STARTABLE_IN_AIR
 	return can_jump and super(player)
+
+func _handle_player_inputs(player: Player, delta: float, input: Dictionary):
+	if input.get("jump"):
+		try_executing(player, delta)

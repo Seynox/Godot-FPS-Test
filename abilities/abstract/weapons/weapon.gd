@@ -8,6 +8,10 @@ const TYPE: String = "Weapon"
 func get_ability_type() -> String:
 	return TYPE
 
+func _handle_player_inputs(player: Player, delta: float, inputs: Dictionary):
+	if inputs.get("attack", false):
+		try_executing(player, delta)
+
 func hit_target(target: Node3D):
 	if target.has_method("try_hitting"):
 		var authority_id: int = target.get_multiplayer_authority()

@@ -62,18 +62,11 @@ func _process(delta: float):
 	_process_abilities_inputs(delta)
 
 func _process_abilities_inputs(delta: float):
-	if input.consume_dashing() and dash != null:
-		dash.try_executing(self, delta)
+	var inputs: Dictionary = input.current_inputs
+	for ability: Ability in abilities.get_children():
+		ability.process_inputs(self, delta, inputs)
 	
-	if input.consume_jumping() and jump != null:
-		jump.try_executing(self, delta)
-	
-	if input.consume_attacking() and weapon != null:
-		weapon.try_executing(self, delta)
-	
-	if input.consume_reloading() and weapon != null:
-		if weapon.has_method("try_reloading"):
-			weapon.try_reloading()
+	input.reset_inputs()
 
 func _physics_process(delta: float):
 	# Get aimed interactible
@@ -95,15 +88,8 @@ func _calculate_movement_velocity(_delta: float) -> Vector3:
 	return movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
 
 func _process_abilities_physics(delta: float):
-	# TODO Check performance diff
-	#for ability: Ability in abilities.get_children():
-	#	ability.process_ability_physics(self, delta)
-	if dash != null:
-		dash.process_ability_physics(self, delta)
-	if jump != null:
-		jump.process_ability_physics(self, delta)
-	if weapon != null:
-		weapon.process_ability_physics(self, delta)
+	for ability: Ability in abilities.get_children():
+		ability.process_ability_physics(self, delta)
 
 #
 # ACTIONS
@@ -130,7 +116,8 @@ func _update_aimed_interactible():
 		currently_hovered = null
 	
 	# Interact with interactible if the player tries to
-	if input.consume_interacting() and currently_hovered != null:
+	var wants_to_interact: bool = input.current_inputs["interact"]
+	if wants_to_interact and currently_hovered != null:
 		var authority_id: int = currently_hovered.get_multiplayer_authority()
 		currently_hovered.try_interact.rpc_id(authority_id)
 	

@@ -45,6 +45,16 @@ func get_ability_type() -> String: # TODO Rework
 	return "none"
 
 #
+# Inputs
+#
+
+func process_inputs(player: Player, delta: float, inputs: Dictionary):
+	_handle_player_inputs(player, delta, inputs)
+
+func _handle_player_inputs(_player: Player, _delta: float, _inputs: Dictionary):
+	pass
+
+#
 # Physics
 #
 
