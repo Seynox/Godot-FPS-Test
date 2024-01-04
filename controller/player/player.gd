@@ -53,12 +53,18 @@ func _process(delta: float):
 	head.basis = Basis() # Reset head rotation
 	head.rotate_object_local(Vector3(1, 0, 0), input.camera_rotation.x) # Rotate head
 	
-	_process_abilities_inputs(delta)
+	_process_inputs(delta)
 
-func _process_abilities_inputs(delta: float):
+func _process_inputs(delta: float):
 	var inputs: Dictionary = input.current_inputs
+	# Abilities input
 	for ability: Ability in abilities.get_children():
 		ability.process_inputs(self, delta, inputs)
+	
+	# Interact input
+	if inputs["interact"] and interactible_hovered != null:
+		var interactible_authority: int = interactible_hovered.get_multiplayer_authority()
+		interactible_hovered.try_interact.rpc_id(interactible_authority)
 	
 	input.reset_inputs()
 
@@ -108,12 +114,6 @@ func _update_aimed_interactible():
 	
 	if not currently_hovered is Interactible:
 		currently_hovered = null
-	
-	# Interact with interactible if the player tries to
-	var wants_to_interact: bool = input.current_inputs["interact"]
-	if wants_to_interact and currently_hovered != null:
-		var authority_id: int = currently_hovered.get_multiplayer_authority()
-		currently_hovered.try_interact.rpc_id(authority_id)
 	
 	# Send signals when hovering or stopping hovering
 	if currently_hovered != null:
