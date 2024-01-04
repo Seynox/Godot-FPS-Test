@@ -46,8 +46,7 @@ properties/7/replication_mode = 2
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 collision_mask = 6
 script = ExtResource("1_xm53f")
-DEFAULT_JUMP = ExtResource("2_gxt7g")
-DEFAULT_WEAPON = ExtResource("3_l8jlm")
+DEFAULT_ABILITIES = Array[PackedScene]([ExtResource("2_gxt7g"), ExtResource("3_l8jlm")])
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -81,7 +80,8 @@ script = ExtResource("2_cbi6x")
 [node name="ClientSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_cabjf")
 
-[connection signal="ability_changed" from="." to="Head/Camera/UI/PlayerInfos" method="_on_player_ability_changed"]
+[connection signal="ability_added" from="." to="Head/Camera/UI/PlayerInfos" method="_on_player_ability_added"]
+[connection signal="ability_removed" from="." to="Head/Camera/UI/PlayerInfos" method="_on_player_ability_removed"]
 [connection signal="health_update" from="." to="Head/Camera/UI" method="_on_player_health_update"]
 [connection signal="health_update" from="." to="Head/Camera/UI/PlayerInfos" method="_on_player_health_update"]
 [connection signal="interactible_hover_ended" from="." to="Head/Camera/UI" method="_on_player_interactible_hover_ended"]

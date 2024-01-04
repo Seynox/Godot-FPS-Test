@@ -72,7 +72,7 @@ func interact(player: Player):
 func _ability_taken_by(player: Player):
 	if player.is_local_player:
 		var ability: Ability = _get_ability()
-		player.set_ability(ability)
+		player.try_adding_ability(ability)
 	
 	set_empty()
 

@@ -5,7 +5,7 @@ const TYPE: String = "Weapon"
 @export var ATTACK_DAMAGE: float
 @export var ATTACK_RANGE: float
 
-func get_ability_type() -> String:
+func _get_unique_type() -> String:
 	return TYPE
 
 func _handle_player_inputs(player: Player, delta: float, inputs: Dictionary):

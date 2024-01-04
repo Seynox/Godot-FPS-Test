@@ -127,6 +127,7 @@ script = ExtResource("1_ksnyh")
 WEAPON_COOLDOWN = 0.4
 ATTACK_DAMAGE = 1.0
 ATTACK_RANGE = 50.0
+IDENTIFIER_NAME = "revolver"
 NAME = "Revolver"
 DESCRIPTION = "A 6 bullets revolver"
 MAX_USES = 6

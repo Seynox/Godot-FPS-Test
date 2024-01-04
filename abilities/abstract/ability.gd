@@ -10,6 +10,9 @@ signal uses_updated(previous_uses: int, uses_remaining: int)
 signal canceled
 
 @export_category("Ability")
+## The ability unique name
+@export var IDENTIFIER_NAME: String
+
 ## The ability name
 @export var NAME: String
 
@@ -36,21 +39,31 @@ signal canceled
 @export var GENERATE_SINCE_LEVEL: int
 
 ## The number of uses the ability has left. Ability will not be executable if equal to 0.[br]
-## Should be refilled by [method Ability.reload].
+## Should be refilled by [method Ability.reload].[br]
+## Default value is [member Ability.MAX_USES]
 @onready var uses_left: int = MAX_USES
 
-## The ability type.
-## Should only be overriden by a direct child of the [Ability] class.
-func get_ability_type() -> String: # TODO Rework
-	return "none"
+## The unique ability type. See [method Ability._get_unique_type]
+func get_type() -> String:
+	return _get_unique_type()
+
+## Return the unique ability type. A player can only have 1 ability of a type.[br]
+## Return an empty string if the ability has no unique type.
+func _get_unique_type() -> String:
+	return ""
 
 #
 # Inputs
 #
 
+## Call to handle the player inputs related to the ability.[br]
+## [param player] is the ability owner.[br]
+## [param delta] is the frames delta time.[br]
+## [param inputs] is a dictionary containing the actions name as key, and a boolean as a value, showing if the input is pressed.
 func process_inputs(player: Player, delta: float, inputs: Dictionary):
 	_handle_player_inputs(player, delta, inputs)
 
+## Called on every frame. Used to make the ability react to a given input.
 func _handle_player_inputs(_player: Player, _delta: float, _inputs: Dictionary):
 	pass
 
@@ -58,11 +71,13 @@ func _handle_player_inputs(_player: Player, _delta: float, _inputs: Dictionary):
 # Physics
 #
 
-## Call only from ability owner _physics_process
+## Call only from ability owner [method Node._physics_process].[br]
+## Used to apply ability physics modifications to the player.
 func process_ability_physics(player: Player, delta: float):
 	_on_player_physics(player, delta)
 
-## Called on ability owner physics ticks
+## Called on ability owner physics ticks.[br]
+## Used to apply physics modifications to the player.
 func _on_player_physics(_player: Player, _delta: float):
 	pass
 

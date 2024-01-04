@@ -5,6 +5,7 @@
 [node name="FowardDash" type="Node3D"]
 script = ExtResource("1_d4ecr")
 DASH_SPEED = 60.0
+IDENTIFIER_NAME = "forward_dash"
 NAME = "Forward Dash"
 DESCRIPTION = "Dash in the direction you are looking"
 RARITY = 1

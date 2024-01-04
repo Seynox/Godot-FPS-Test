@@ -8,7 +8,7 @@ const TYPE: String = "Dash"
 ## The current dash velocity
 var dash_velocity: Vector3
 
-func get_ability_type() -> String:
+func _get_unique_type() -> String:
 	return TYPE
 
 func _handle_player_inputs(player: Player, delta: float, input: Dictionary):

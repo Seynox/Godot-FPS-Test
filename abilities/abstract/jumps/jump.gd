@@ -14,7 +14,7 @@ var jump_velocity: Vector3
 ## If the ability owner is in the air because of a jump.
 var is_jumping: bool
 
-func get_ability_type() -> String:
+func _get_unique_type() -> String:
 	return TYPE
 
 func _cancel_ability():

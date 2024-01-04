@@ -1,13 +1,12 @@
 class_name Player extends Entity
 
-signal ability_changed(player: Player, ability_type: String, ability: Ability)
+signal ability_added(ability: Ability)
+signal ability_removed(ability_identifier: String)
 signal interactible_hovering(interactible: Interactible)
 signal interactible_hover_ended
 
 @export_subgroup("Abilities")
-@export var DEFAULT_DASH: PackedScene
-@export var DEFAULT_JUMP: PackedScene
-@export var DEFAULT_WEAPON: PackedScene
+@export var DEFAULT_ABILITIES: Array[PackedScene]
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera
@@ -16,11 +15,6 @@ signal interactible_hover_ended
 @onready var interaction_ray: RayCast3D = $Head/Camera/InteractionRay
 @onready var input: Node = $PlayerInput
 @onready var abilities: Node = $Abilities
-
-# A dictionary would be cleaner but a bit slower
-var dash: Dash
-var jump: Jump
-var weapon: Weapon
 
 var movement_velocity: Vector3
 var interactible_hovered: Interactible
@@ -135,41 +129,33 @@ func _update_aimed_interactible():
 #
 
 func _init_default_abilities():
-	if DEFAULT_DASH != null:
-		dash = _put_ability(dash, DEFAULT_DASH.instantiate())
-	if DEFAULT_JUMP != null:
-		jump = _put_ability(jump, DEFAULT_JUMP.instantiate())
-	if DEFAULT_WEAPON != null:
-		weapon = _put_ability(weapon, DEFAULT_WEAPON.instantiate())
+	for ability_scene: PackedScene in DEFAULT_ABILITIES:
+		try_adding_ability(ability_scene.instantiate())
 
-func set_ability(ability: Ability):
-	var ability_type: String = ability.get_ability_type()
-	match ability_type:
-		Dash.TYPE:
-			dash = _put_ability(dash, ability)
-		Jump.TYPE:
-			jump = _put_ability(jump, ability)
-		Weapon.TYPE:
-			weapon = _put_ability(weapon, ability)
-
-func _put_ability(current: Ability, new: Ability) -> Ability:
-	# Remove the current if new is null
-	if new == null:
-		if current != null:
-			ability_changed.emit(self, current.get_ability_type(), null)
-			current.queue_free()
-		return null
+func try_adding_ability(ability: Ability):
+	var type: String = ability.get_type()
 	
-	# Add the new ability or replace the current one
-	if current == null:
-		abilities.add_child(new)
-	else:
-		var old: Node = current
-		current.replace_by(new)
-		old.queue_free()
-		
-	ability_changed.emit(self, new.get_ability_type(), new)
-	return new
+	if not type.is_empty():
+		# Check if the player already own an ability of the same type
+		for owned_ability: Ability in abilities.get_children():
+			if type == owned_ability.get_type():
+				_replace_ability(ability, owned_ability)
+				return
+	
+	_add_ability(ability)
+
+func _add_ability(ability: Ability):
+	abilities.add_child(ability)
+	ability_added.emit(ability)
+
+func _replace_ability(new_ability: Ability, current_ability: Ability):
+	_drop_ability(current_ability)
+	_add_ability(new_ability)
+
+func _drop_ability(ability: Ability):
+	abilities.remove_child(ability)
+	ability_removed.emit(ability.IDENTIFIER_NAME)
+	# TODO Create the dropped ability
 
 #
 # Spectating

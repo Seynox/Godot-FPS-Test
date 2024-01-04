@@ -6,6 +6,7 @@
 script = ExtResource("1_oh0dr")
 FRICTION_FORCE = 150.0
 DASH_SPEED = 30.0
+IDENTIFIER_NAME = "impulse_dash"
 NAME = "Impulse Dash"
 DESCRIPTION = "Gives you a speed impulse in the direction you're facing"
 RARITY = 2
