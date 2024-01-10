@@ -84,7 +84,7 @@ func set_empty():
 
 func set_broken():
 	var ability: Ability = _get_ability()
-	var item_prompt = "%s %s" % [BROKEN_INTERACTION_PROMPT_MESSAGE, ability.NAME]
+	var item_prompt = "%s %s\n\n%s" % [BROKEN_INTERACTION_PROMPT_MESSAGE, ability.NAME, ability.DESCRIPTION]
 	INTERACTION_PROMPT_MESSAGE = item_prompt
 	
 	ability.queue_free()
