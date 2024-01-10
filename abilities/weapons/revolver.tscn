@@ -1,8 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://boeb2mdml1qwn"]
+[gd_scene load_steps=11 format=3 uid="uid://boeb2mdml1qwn"]
 
-[ext_resource type="Script" path="res://abilities/weapons/ranged_weapon.gd" id="1_ksnyh"]
+[ext_resource type="Script" path="res://abilities/weapons/hitscan_weapon.gd" id="1_yunly"]
 [ext_resource type="PackedScene" uid="uid://bwgd88jpynm6s" path="res://assets/models/tmp_revolver/revolver_model.tscn" id="2_ktgjo"]
+[ext_resource type="PackedScene" uid="uid://mvf6m3rd6lef" path="res://abilities/weapons/bullets/visual_bullet.tscn" id="2_llxa6"]
 [ext_resource type="Script" path="res://abilities/weapons/weapon_animations.gd" id="2_trs36"]
+[ext_resource type="Script" path="res://entities/abstract/entity.gd" id="3_4i3rm"]
 [ext_resource type="Texture2D" uid="uid://bnfnodaqvkmt0" path="res://addons/kenney_particle_pack/star_06.png" id="4_u7wvp"]
 
 [sub_resource type="Animation" id="Animation_wi6hf"]
@@ -97,10 +99,9 @@ _data = {
 }
 
 [node name="Revolver" type="Node3D"]
-script = ExtResource("1_ksnyh")
+script = ExtResource("1_yunly")
+BULLET_SCENE = ExtResource("2_llxa6")
 WEAPON_COOLDOWN = 0.4
-ATTACK_DAMAGE = 1.0
-ATTACK_RANGE = 50.0
 IDENTIFIER_NAME = "revolver"
 NAME = "Revolver"
 DESCRIPTION = "A 6 bullets revolver"
@@ -110,6 +111,7 @@ RARITY = 2
 
 [node name="Hand" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.5, 0, -0.45)
+script = ExtResource("3_4i3rm")
 
 [node name="Model" parent="Hand" instance=ExtResource("2_ktgjo")]
 transform = Transform3D(0.03, 0, 0, 0, 0.0300001, 0, 0, 0, 0.0300001, 0, 0, 0)

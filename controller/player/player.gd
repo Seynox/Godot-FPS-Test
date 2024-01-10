@@ -92,21 +92,8 @@ func _process_abilities_physics(delta: float):
 		ability.process_ability_physics(self, delta)
 
 #
-# ACTIONS
+# Interaction
 #
-
-func get_aimed_object(range_in_meters: float) -> Node3D:
-	var mouse_position = get_viewport().get_mouse_position()
-	var ray_origin = camera.project_ray_origin(mouse_position)
-	var ray_max = ray_origin + camera.project_ray_normal(mouse_position) * range_in_meters
-	
-	var ray = PhysicsRayQueryParameters3D.create(ray_origin, ray_max)
-	ray.collide_with_areas = true
-	ray.exclude = [self]
-	
-	var space = camera.get_world_3d().direct_space_state
-	var result = space.intersect_ray(ray)
-	return result.get("collider")
 
 func _update_aimed_interactible():
 	if not is_local_player: return

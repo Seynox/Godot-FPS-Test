@@ -6,7 +6,7 @@ signal weapon_ready
 signal weapon_disabled(for_seconds: float)
 
 ## The weapon cooldown between uses, in seconds
-@export var WEAPON_COOLDOWN: float
+@export var WEAPON_COOLDOWN: float = 1
 
 ## The cooldown timer
 var cooldown: Timer

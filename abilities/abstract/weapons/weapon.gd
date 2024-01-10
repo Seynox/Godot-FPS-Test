@@ -2,8 +2,8 @@ class_name Weapon extends Ability
 
 const TYPE: String = "Weapon"
 
-@export var ATTACK_DAMAGE: float
-@export var ATTACK_RANGE: float
+@export var ATTACK_DAMAGE: float = 1
+@export var ATTACK_RANGE: float = 50
 
 func _get_unique_type() -> String:
 	return TYPE
