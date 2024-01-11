@@ -1,6 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://imjypsavad40"]
+[gd_scene load_steps=5 format=3 uid="uid://imjypsavad40"]
 
 [ext_resource type="Script" path="res://gui/in-game/elements/player_infos.gd" id="1_tifbv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6dioc"]
+bg_color = Color(0, 0, 0, 0.239216)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5miqf"]
+bg_color = Color(1, 0, 0.184314, 1)
+border_width_bottom = 50
+border_color = Color(0, 0, 0, 0.392157)
+border_blend = true
+corner_detail = 1
+shadow_color = Color(1, 0, 0.164706, 0.298039)
+shadow_size = 20
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_m7xf0"]
 properties/0/path = NodePath("Healthbar:max_value")
@@ -36,8 +49,11 @@ offset_right = 250.0
 offset_bottom = 13.5
 grow_vertical = 2
 mouse_filter = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_6dioc")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5miqf")
 value = 100.0
 rounded = true
+show_percentage = false
 
 [node name="Abilities" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(200, 0)
@@ -53,6 +69,7 @@ offset_right = -50.0
 offset_bottom = 20.0
 grow_horizontal = 0
 grow_vertical = 2
+theme_override_constants/separation = 50
 alignment = 1
 
 [node name="InfosSynchronizer" type="MultiplayerSynchronizer" parent="."]
