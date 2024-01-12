@@ -1,27 +1,42 @@
 class_name Player extends Entity
 
+## Emitted when an ability is added to the player
 signal ability_added(ability: Ability)
+## Emitted when an ability is removed from the player
 signal ability_removed(ability_identifier: String)
+## Emitted when the player is hovering an interactible
 signal interactible_hovering(interactible: Interactible)
+## Emitted when the player stopped hovering an interactible
 signal interactible_hover_ended
 
-@export_subgroup("Abilities")
+## The abilities given to the player it gets created
 @export var DEFAULT_ABILITIES: Array[PackedScene]
+@export_subgroup("Controlled nodes")
+## The player head that gets rotated up and down
+@export var head: Node3D
+## The first person player camera
+@export var camera: Camera3D
+## The user interface displayed on the player camera
+@export var camera_ui: Control
 
-@onready var head: Node3D = $Head
-@onready var camera: Camera3D = $Head/Camera
-@onready var camera_ui: Control = $Head/Camera/UI
+## The raycast used to detect and use interactibles
+@export var interaction_ray: RayCast3D
+## The player controller owned by the peer owning the player.
+@export var input: Node
+## The node containing all player abilities
+@export var abilities: Node3D
 
-@onready var interaction_ray: RayCast3D = $Head/Camera/InteractionRay
-@onready var input: Node = $PlayerInput
-@onready var abilities: Node = $Abilities
-
+## The velocity given by the player movements inputs
 var movement_velocity: Vector3
+## The interactible currently hovered. Null if no interactible is hovered.
 var interactible_hovered: Interactible
 
+## The id of the peer controlling the player 
 var player_peer: int
+## If the player is being controlled by the current peer
 var is_local_player: bool
 
+## The spectator controller. Null when not a spectator.
 var local_spectator_node: Spectator
 
 func _enter_tree():
@@ -35,8 +50,8 @@ func _ready():
 	show_camera(is_local_player)
 	_init_default_abilities()
 
+## Free all player abilities
 func _exit_tree():
-	# Free all abilities
 	for ability: Ability in abilities.get_children():
 		abilities.remove_child(ability)
 		ability.queue_free()
@@ -119,6 +134,8 @@ func _init_default_abilities():
 	for ability_scene: PackedScene in DEFAULT_ABILITIES:
 		try_adding_ability(ability_scene.instantiate())
 
+## Try adding the ability to the player.[br]
+## If the player already own an ability of the same type, the ability will be replaced by the new one.
 func try_adding_ability(ability: Ability):
 	var type: String = ability.get_type()
 	
@@ -148,6 +165,7 @@ func _drop_ability(ability: Ability):
 # Spectating
 #
 
+## Display the camera and ui of the player. Used by spectator controller to spectate other players.
 func show_camera(value: bool):
 	camera.current = value
 	camera_ui.visible = value
@@ -175,7 +193,8 @@ func _die():
 	_make_spectator()
 	super()
 
-@rpc("call_local", "reliable")
+## Resurrect the player. Will only set the player at full health if the player is alive.[br]
+## This function does not teleport the player to spawn.
 func resurrect():
 	set_health(MAX_HEALTH)
 	_set_enabled(true)

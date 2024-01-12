@@ -43,10 +43,16 @@ properties/7/path = NodePath("PlayerInput:camera_rotation")
 properties/7/spawn = true
 properties/7/replication_mode = 2
 
-[node name="Player" type="CharacterBody3D" groups=["Player"]]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camera_ui", "interaction_ray", "input", "abilities") groups=["Player"]]
 collision_mask = 6
 script = ExtResource("1_xm53f")
 DEFAULT_ABILITIES = Array[PackedScene]([ExtResource("2_gxt7g"), ExtResource("3_l8jlm")])
+head = NodePath("Head")
+camera = NodePath("Head/Camera")
+camera_ui = NodePath("Head/Camera/UI")
+interaction_ray = NodePath("Head/Camera/InteractionRay")
+input = NodePath("PlayerInput")
+abilities = NodePath("Abilities")
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
