@@ -17,27 +17,14 @@ func on_level_initialization():
 		var authority_peer_id: int = get_multiplayer_authority()
 		_request_current_state.rpc_id(authority_peer_id)
 
-## Try hitting the object from rpc sender player.
-## Calls [method BreakableInteractible.try_getting_hit_by] if player exists.
+## Hits the object if it can be hit.
 @rpc("any_peer", "call_local", "reliable")
-func try_hitting():
-	if not is_multiplayer_authority(): return
-	
-	var player_peer_id: int = multiplayer.get_remote_sender_id()
-	var player_node_name: String = str(player_peer_id)
-	var hitting_player: Player = $/root/Game/Players.get_node_or_null(player_node_name)
-	
-	if hitting_player != null:
-		try_getting_hit_by(hitting_player)
-
-## Try hitting the object from entity.[br]
-## Calls [method BreakableInteractible.take_hit] if successfull[br]
-func try_getting_hit_by(_source: Entity):
+func try_hitting(_hitting_player_peer: int):
 	if CAN_BE_HIT and is_multiplayer_authority():
 		take_hit.rpc()
 
 ## Called when the object takes a hit, even if it's already broken.[br]
-## Don't call directly. Use [method BreakableInteractible.try_getting_hit_by] instead.[br]
+## Don't call directly. Use [method BreakableInteractible.try_hitting] instead.[br]
 ## Will not call [method BreakableInteractible.set_broken] if it's already broken
 @rpc("call_local", "reliable")
 func take_hit():

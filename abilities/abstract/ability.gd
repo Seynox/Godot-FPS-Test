@@ -43,6 +43,9 @@ signal canceled
 ## Default value is [member Ability.MAX_USES]
 @onready var uses_left: int = MAX_USES
 
+## The multiplayer peer of the ability owner.
+var owner_peer: int
+
 ## The unique ability type. See [method Ability._get_unique_type]
 func get_type() -> String:
 	return _get_unique_type()

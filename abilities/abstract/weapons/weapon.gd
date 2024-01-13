@@ -14,5 +14,4 @@ func _handle_player_inputs(player: Player, delta: float, inputs: Dictionary):
 
 func hit_target(target: Node3D):
 	if target.has_method("try_hitting"):
-		var authority_id: int = target.get_multiplayer_authority()
-		target.try_hitting.rpc_id(authority_id)
+		target.try_hitting(self.owner_peer)

@@ -54,11 +54,10 @@ func reduce_health(damages: float) -> void:
 	set_health(new_health)
 
 @rpc("any_peer", "call_local", "reliable")
-func try_hitting():
+func try_hitting(hitting_player_peer: int):
 	if not is_multiplayer_authority(): return
 	
-	var player_peer_id: int = multiplayer.get_remote_sender_id()
-	var player_node_name: String = str(player_peer_id)
+	var player_node_name: String = str(hitting_player_peer)
 	var player_hitting: Player = $/root/Game/Players.get_node_or_null(player_node_name)
 	
 	if player_hitting != null:

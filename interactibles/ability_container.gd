@@ -62,7 +62,7 @@ func interact(player: Player):
 	if IS_BROKEN:
 		_ability_taken_by(player)
 	else:
-		try_getting_hit_by(player)
+		try_hitting(player.player_peer)
 	
 	super(player)
 

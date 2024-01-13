@@ -149,6 +149,7 @@ func try_adding_ability(ability: Ability):
 	_add_ability(ability)
 
 func _add_ability(ability: Ability):
+	ability.owner_peer = player_peer
 	abilities.add_child(ability)
 	ability_added.emit(ability)
 
