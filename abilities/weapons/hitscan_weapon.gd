@@ -1,34 +1,30 @@
-extends RangedWeapon
+class_name HitscanWeapon extends RangedWeapon
 
-var hitscan_rays: Array[HitscanRay]
+## The list of raycast to process on physics ticks
+var ray_query_queue: Array[PhysicsRayQueryParameters3D]
 
-class HitscanRay:
-	var starting_position: Vector3
-	var end_position: Vector3
-	
-	func _init(start: Vector3, end: Vector3):
-		starting_position = start
-		end_position = end
-
+## Shoot a raycast from the shooter position towards the direction they are facing
 func _spawn_bullet(starting_position: Vector3, direction: Basis):
 	var forward_range: Vector3 = -direction.z * ATTACK_RANGE
 	var end_position: Vector3 = starting_position + forward_range
 	
-	var ray: HitscanRay = HitscanRay.new(starting_position, end_position)
-	hitscan_rays.append(ray)
+	var ray: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(starting_position, end_position)
+	ray_query_queue.append(ray)
 	
 	super(starting_position, direction)
 
+## Process all ray queries inside [member HitscanWeapon.ray_query_queue] and removes it after being processed.
 func _physics_process(_delta):
-	for index: int in hitscan_rays.size():
-		var ray: HitscanRay = hitscan_rays[index]
+	for index: int in ray_query_queue.size():
+		var ray: PhysicsRayQueryParameters3D = ray_query_queue[index]
 		_process_hit_ray(ray)
-		hitscan_rays.remove_at(index)
+		ray_query_queue.remove_at(index)
 
-func _process_hit_ray(ray: HitscanRay):
-	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(ray.starting_position, ray.end_position)
+## Process the ray collision to try hitting the collided object.[br]
+## Can only be called on physics ticks
+func _process_hit_ray(ray: PhysicsRayQueryParameters3D):
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
-	var collided_object: Node3D = space.intersect_ray(query).get("collider")
+	var collided_object: Node3D = space.intersect_ray(ray).get("collider")
 	
 	if collided_object != null:
 		hit_target(collided_object)
