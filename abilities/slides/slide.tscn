@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4at7fp3534vw"]
+
+[ext_resource type="Script" path="res://abilities/abstract/slides/slide.gd" id="1_fqjxt"]
+
+[node name="Slide" type="Node3D"]
+script = ExtResource("1_fqjxt")
+IDENTIFIER_NAME = "slide"
+NAME = "Slide"
+DESCRIPTION = "Wooooo"
