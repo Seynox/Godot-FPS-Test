@@ -72,6 +72,7 @@ func _process(delta: float):
 
 func _process_inputs(delta: float):
 	var inputs: Dictionary = input.current_inputs
+	
 	# Abilities input
 	for ability: Ability in abilities.get_children():
 		ability.process_inputs(self, delta, inputs)
@@ -80,8 +81,8 @@ func _process_inputs(delta: float):
 	if inputs["interact"] and interactible_hovered != null:
 		var interactible_authority: int = interactible_hovered.get_multiplayer_authority()
 		interactible_hovered.try_interact.rpc_id(interactible_authority)
-	
-	input.reset_inputs()
+		input.update_input_state.rpc("interact", false) # Stop trying to interact
+
 
 func _physics_process(delta: float):
 	# Get aimed interactible

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://hu7ojvfabj3c"]
+[gd_scene load_steps=13 format=3 uid="uid://hu7ojvfabj3c"]
 
 [ext_resource type="Script" path="res://controller/player/player.gd" id="1_xm53f"]
 [ext_resource type="Script" path="res://controller/player/player_input.gd" id="2_cbi6x"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://mwljs7b5v7ss" path="res://gui/in-game/fps_gui.tscn" id="3_2bvf4"]
 [ext_resource type="PackedScene" uid="uid://boeb2mdml1qwn" path="res://abilities/weapons/revolver.tscn" id="3_l8jlm"]
 [ext_resource type="PackedScene" uid="uid://imjypsavad40" path="res://gui/in-game/elements/player_infos.tscn" id="4_0bd1c"]
+[ext_resource type="PackedScene" uid="uid://c4at7fp3534vw" path="res://abilities/slides/slide.tscn" id="4_ebhs1"]
 [ext_resource type="Texture2D" uid="uid://b3enoam5p1vdl" path="res://assets/sprites/enemy.png" id="5_me18p"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iow1f"]
@@ -46,7 +47,7 @@ properties/7/replication_mode = 2
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("head", "camera", "camera_ui", "interaction_ray", "input", "abilities") groups=["Player"]]
 collision_mask = 6
 script = ExtResource("1_xm53f")
-DEFAULT_ABILITIES = Array[PackedScene]([ExtResource("2_gxt7g"), ExtResource("3_l8jlm")])
+DEFAULT_ABILITIES = Array[PackedScene]([ExtResource("2_gxt7g"), ExtResource("3_l8jlm"), ExtResource("4_ebhs1")])
 head = NodePath("Head")
 camera = NodePath("Head/Camera")
 camera_ui = NodePath("Head/Camera/UI")

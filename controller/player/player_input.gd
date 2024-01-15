@@ -11,13 +11,14 @@ extends Node
 ## The cursor movement direction
 var look_direction: Vector2
 
-## The dictionary representing the currently pressed inputs
+## The dictionary representing the currently pressed inputs. Used to share inputs across peers
 var current_inputs: Dictionary = {
 	"jump": false,
 	"dash": false,
 	"attack": false,
 	"interact": false,
-	"reload": false
+	"reload": false,
+	"slide": false
 }
 
 func _ready():
@@ -47,17 +48,13 @@ func _process(delta):
 	handle_camera_movements(delta)
 	movement_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 
-func reset_inputs():
-	for input in current_inputs.keys():
-		current_inputs[input] = false
-
 func _update_inputs(event: InputEvent):
-	for input: String in current_inputs.keys():
-		var is_pressed: bool = event.is_action_pressed(input)
-		
-		# Update input if it changed state
-		if current_inputs[input] != is_pressed:
-			update_input_state.rpc(input, is_pressed)
+	for action: String in current_inputs.keys():
+		if event.is_action(action) and not event.is_echo(): # If the pressed/unpressed key is an action
+			var is_pressed: bool = event.is_pressed()
+			if current_inputs[action] != is_pressed: # Send it to all peers if it has changed state
+				update_input_state.rpc(action, is_pressed)
+			return
 
 @rpc("call_local", "reliable")
 func update_input_state(input: String, is_pressed: bool):
