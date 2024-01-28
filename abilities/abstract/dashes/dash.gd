@@ -15,5 +15,5 @@ func _handle_player_inputs(player: Player, delta: float, input: Dictionary):
 	if input.get("dash"):
 		try_executing(player, delta)
 
-func _cancel_ability():
+func _cancel_ability(_player: Player):
 	dash_velocity = Vector3.ZERO

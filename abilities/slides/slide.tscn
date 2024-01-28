@@ -4,6 +4,10 @@
 
 [node name="Slide" type="Node3D"]
 script = ExtResource("1_fqjxt")
+DECCELERATION = 0.5
+FLOOR_FRICTION = 1.5
+RECHARGE_TIME = 0.8
+RECHARGE_UNTIL_FULL = false
 IDENTIFIER_NAME = "slide"
 NAME = "Slide"
-DESCRIPTION = "Wooooo"
+DESCRIPTION = "Slide in the given direction"

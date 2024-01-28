@@ -12,8 +12,8 @@ func _ready():
 	dash_timer = _create_timer(DASH_DURATION)
 	dash_timer.timeout.connect(_on_dash_timeout)
 
-func _cancel_ability():
-	super()
+func _cancel_ability(player: Player):
+	super(player)
 	dash_timer.stop()
 	_on_dash_timeout()
 

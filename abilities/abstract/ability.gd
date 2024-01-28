@@ -88,16 +88,19 @@ func _on_player_physics(_player: Player, _delta: float):
 # Execution
 #
 
-## Called to cancel the execution of the current ability.
-func cancel():
-	_cancel_ability()
+## Called to cancel the execution of the current ability.[br]
+## [param player] is the ability owner.
+func cancel(player: Player):
+	_cancel_ability(player)
 	canceled.emit()
 
 ## Called when the execution of the current ability needs to be canceled.
-func _cancel_ability():
+## [param _player] is the ability owner.
+func _cancel_ability(_player: Player):
 	pass
 
-## Called when the owner successfully execute the ability.
+## Called when the owner successfully execute the ability.[br]
+## [param _delta] is the frames delta time
 func _execute(_player: Player, _delta: float):
 	pass
 

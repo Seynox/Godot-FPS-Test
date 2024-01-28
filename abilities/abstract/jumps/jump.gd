@@ -17,7 +17,7 @@ var is_jumping: bool
 func _get_unique_type() -> String:
 	return TYPE
 
-func _cancel_ability():
+func _cancel_ability(_player: Player):
 	is_jumping = false
 	jump_velocity = Vector3.ZERO
 

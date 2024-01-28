@@ -54,6 +54,7 @@ camera_ui = NodePath("Head/Camera/UI")
 interaction_ray = NodePath("Head/Camera/InteractionRay")
 input = NodePath("PlayerInput")
 abilities = NodePath("Abilities")
+SPEED = 15.0
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

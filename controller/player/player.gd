@@ -11,6 +11,7 @@ signal interactible_hover_ended
 
 ## The abilities given to the player it gets created
 @export var DEFAULT_ABILITIES: Array[PackedScene]
+
 @export_subgroup("Controlled nodes")
 ## The player head that gets rotated up and down
 @export var head: Node3D
@@ -26,8 +27,6 @@ signal interactible_hover_ended
 ## The node containing all player abilities
 @export var abilities: Node3D
 
-## The velocity given by the player movements inputs
-var movement_velocity: Vector3
 ## The interactible currently hovered. Null if no interactible is hovered.
 var interactible_hovered: Interactible
 
@@ -38,6 +37,9 @@ var is_local_player: bool
 
 ## The spectator controller. Null when not a spectator.
 var local_spectator_node: Spectator
+
+## The velocity given by the player movements inputs
+var movement_velocity: Vector3
 
 func _enter_tree():
 	player_peer = str(name).to_int()
@@ -55,6 +57,18 @@ func _exit_tree():
 	for ability: Ability in abilities.get_children():
 		abilities.remove_child(ability)
 		ability.queue_free()
+
+#
+# Getters
+#
+
+## Get the input movement direction
+func get_input_direction() -> Vector2:
+	return input.movement_direction
+
+## Get the direction relative to the player rotation
+func get_look_relative_direction(direction: Vector3) -> Vector3:
+	return camera.global_transform.basis * direction
 
 #
 # Player processing
@@ -89,19 +103,20 @@ func _physics_process(delta: float):
 	_update_aimed_interactible()
 	
 	# Calculate forces
-	velocity = _calculate_movement_velocity(delta)
+	movement_velocity = _calculate_movement_velocity(delta)
 	gravity_velocity = _calculate_gravity_velocity(delta)
-	velocity += gravity_velocity
 	
+	velocity = movement_velocity + gravity_velocity
 	_process_abilities_physics(delta)
+	
 	super(delta)
 
 func _calculate_movement_velocity(_delta: float) -> Vector3:
 	var movement_direction: Vector3 = Vector3(input.movement_direction.x, 0, input.movement_direction.y)
-	var movement_vector_raw: Vector3 = camera.global_transform.basis * movement_direction
-	movement_vector_raw.y = 0
+	var relative_movement_direction: Vector3 = get_look_relative_direction(movement_direction)
+	relative_movement_direction.y = 0
 	
-	return movement_vector_raw.normalized() * SPEED * input.movement_direction.length()
+	return relative_movement_direction.normalized() * SPEED * input.movement_direction.length()
 
 func _process_abilities_physics(delta: float):
 	for ability: Ability in abilities.get_children():
